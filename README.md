@@ -1,2 +1,1 @@
-# Colectania_Proverbios
-Só para mim
+Dicionário de Ditados e Provérbios

@@ -1,0 +1,76 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background-color: #f9f9f9; /* opcional */
+  box-sizing: border-box;
+}
+
+/* Dá margens internas para não colar às bordas do ecrã */
+body {
+  padding: 10px;
+}
+
+/* Container geral */
+#results, .intro, .credits, .pdf-link, .search-container {
+  max-width: 800px;      /* limita largura em desktops */
+  width: 100%;
+  margin: 10px auto;
+  padding: 0 15px;       /* margem interna lateral */
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Logo */
+.logo-container img.logo {
+  display: block;
+  margin: 0 auto 20px auto;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Caixa de pesquisa */
+.search-container input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Foto do autor */
+.credits img.author-photo {
+  border-radius: 50%;
+  max-width: 150px;
+  height: auto;
+  display: block;
+  margin: 10px auto;
+}
+
+/* Link */
+.pdf-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.pdf-link a:hover {
+  text-decoration: underline;
+}
+
+/* Nota ortográfica */
+.note {
+  max-width: 800px;
+  margin: 20px auto;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Ajustes específicos para telemóvel */
+@media (max-width: 600px) {
+  body {
+    padding: 15px; /* aumenta espaço lateral no mobile */
+  }
+}
