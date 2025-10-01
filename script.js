@@ -8,26 +8,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let dicionario = [];
 
-    // Carregar o JSON
+    // Carregar JSON
     fetch("./dicionario_cinfaes.json")
-        .then(res => {
-            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-            return res.json();
-        })
+        .then(res => res.json())
         .then(data => {
-            console.log(`Dicionário carregado com sucesso! ${data.length} entradas`);
+            console.log(`Dicionário carregado! ${data.length} entradas`);
             dicionario = data;
         })
         .catch(err => {
-            console.error("Erro ao carregar o JSON:", err);
+            console.error("Erro ao carregar JSON:", err);
             titulo.textContent = "Erro ao carregar o dicionário";
             descricao.textContent = "Verifique se o ficheiro dicionario_cinfaes.json está na raiz e abra via servidor HTTP.";
             resultado.classList.remove("display-none");
         });
 
-    // Normalizar string: remove acentos, espaços extras, converte para minúsculas
+    // Normaliza string: minúsculas, sem acentos, sem espaços extras
     function normalize(str) {
-        return str.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        if (!str) return "";
+        return str
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "") // remove acentos
+            .replace(/\s+/g, " "); // remove múltiplos espaços
     }
 
     form.addEventListener("submit", (e) => {
@@ -39,20 +42,22 @@ document.addEventListener("DOMContentLoaded", () => {
         carregamento.classList.remove("display-none");
         resultado.classList.remove("display-none");
 
-        // Busca parcial no JSON com chaves "Palavra" e "Significado"
-        const matches = dicionario.filter(item => item.Palavra && normalize(item.Palavra).includes(query));
+        // Busca parcial no JSON real
+        const matches = dicionario.filter(item => 
+            item.Palavra && normalize(item.Palavra).includes(query)
+        );
 
         carregamento.classList.add("display-none");
 
         if (matches.length > 0) {
             if (matches.length === 1) {
-                // Mostrar um único resultado
                 titulo.textContent = matches[0].Palavra;
                 descricao.textContent = matches[0].Significado || "Sem descrição disponível.";
             } else {
-                // Mostrar lista de resultados
                 titulo.textContent = `${matches.length} resultados encontrados:`;
-                descricao.innerHTML = matches.map(item => `<strong>${item.Palavra}</strong>: ${item.Significado || "Sem descrição disponível."}`).join("<br>");
+                descricao.innerHTML = matches
+                    .map(item => `<strong>${item.Palavra}</strong>: ${item.Significado || "Sem descrição disponível."}`)
+                    .join("<br>");
             }
         } else {
             titulo.textContent = "Não encontrado";
