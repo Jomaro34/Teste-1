@@ -8,15 +8,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let dicionario = [];
 
-    // Carregar o ficheiro JSON
+    // Carregar o JSON
     fetch("./dicionario_cinfaes.json")
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            return res.json();
+        })
         .then(data => {
-            console.log("Dicionário carregado:", data.length, "entradas");
+            console.log(`Dicionário carregado com sucesso! ${data.length} entradas`);
             dicionario = data;
         })
         .catch(err => {
-            console.error("Erro ao carregar ou parsear JSON:", err);
+            console.error("Erro ao carregar o JSON:", err);
+            titulo.textContent = "Erro ao carregar o dicionário";
+            descricao.textContent = "Verifique se o ficheiro dicionario_cinfaes.json está na raiz e abra via servidor HTTP.";
+            resultado.classList.remove("display-none");
         });
 
     form.addEventListener("submit", (e) => {
@@ -28,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         carregamento.classList.remove("display-none");
         resultado.classList.remove("display-none");
 
-        // Procurar no dicionário (garantindo que existe campo 'palavra')
+        // Procura a palavra no dicionário (campo palavra existe)
         const entrada = dicionario.find(item =>
             item.palavra && item.palavra.toLowerCase() === palavra
         );
@@ -44,3 +52,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
