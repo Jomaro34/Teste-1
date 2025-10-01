@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
             resultado.classList.remove("display-none");
         });
 
-    // Função para normalizar palavras (remove acentos, espaços, minúsculas)
+    // Normalizar string: remove acentos, espaços extras, converte para minúsculas
     function normalize(str) {
         return str.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
@@ -39,20 +39,20 @@ document.addEventListener("DOMContentLoaded", () => {
         carregamento.classList.remove("display-none");
         resultado.classList.remove("display-none");
 
-        // Busca parcial: encontra todas as palavras que CONTÊM o texto digitado
-        const matches = dicionario.filter(item => item.palavra && normalize(item.palavra).includes(query));
+        // Busca parcial no JSON com chaves "Palavra" e "Significado"
+        const matches = dicionario.filter(item => item.Palavra && normalize(item.Palavra).includes(query));
 
         carregamento.classList.add("display-none");
 
         if (matches.length > 0) {
             if (matches.length === 1) {
-                // Se só tiver 1 resultado, mostra palavra + descrição
-                titulo.textContent = matches[0].palavra;
-                descricao.textContent = matches[0].descricao || "Sem descrição disponível.";
+                // Mostrar um único resultado
+                titulo.textContent = matches[0].Palavra;
+                descricao.textContent = matches[0].Significado || "Sem descrição disponível.";
             } else {
-                // Se tiver vários resultados, mostra lista
+                // Mostrar lista de resultados
                 titulo.textContent = `${matches.length} resultados encontrados:`;
-                descricao.innerHTML = matches.map(item => `<strong>${item.palavra}</strong>: ${item.descricao || "Sem descrição disponível."}`).join("<br>");
+                descricao.innerHTML = matches.map(item => `<strong>${item.Palavra}</strong>: ${item.Significado || "Sem descrição disponível."}`).join("<br>");
             }
         } else {
             titulo.textContent = "Não encontrado";
