@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let dicionario = [];
 
-    // Carregar JSON
     fetch("./dicionario_cinfaes.json")
         .then(res => res.json())
         .then(data => {
@@ -22,42 +21,41 @@ document.addEventListener("DOMContentLoaded", () => {
             resultado.classList.remove("display-none");
         });
 
-    // Normaliza string: minúsculas, sem acentos, sem espaços extras
     function normalize(str) {
-        if (!str) return "";
-        return str
-            .trim()
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "") // remove acentos
-            .replace(/\s+/g, " "); // remove múltiplos espaços
+        return str ? str.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
     }
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const query = normalize(input.value);
-
         if (!query) return;
 
         carregamento.classList.remove("display-none");
         resultado.classList.remove("display-none");
 
-        // Busca parcial no JSON real
-        const matches = dicionario.filter(item => 
-            item.Palavra && normalize(item.Palavra).includes(query)
-        );
+        const matches = dicionario.filter(item => {
+            // procura em qualquer chave do objeto
+            for (let key in item) {
+                if (typeof item[key] === "string" && normalize(item[key]).includes(query)) {
+                    return true;
+                }
+            }
+            return false;
+        });
 
         carregamento.classList.add("display-none");
 
         if (matches.length > 0) {
             if (matches.length === 1) {
-                titulo.textContent = matches[0].Palavra;
-                descricao.textContent = matches[0].Significado || "Sem descrição disponível.";
+                titulo.textContent = matches[0].Palavra || Object.keys(matches[0])[0];
+                descricao.textContent = matches[0].Significado || Object.values(matches[0])[1] || "Sem descrição disponível.";
             } else {
                 titulo.textContent = `${matches.length} resultados encontrados:`;
-                descricao.innerHTML = matches
-                    .map(item => `<strong>${item.Palavra}</strong>: ${item.Significado || "Sem descrição disponível."}`)
-                    .join("<br>");
+                descricao.innerHTML = matches.map(item => {
+                    const palavra = item.Palavra || Object.keys(item)[0];
+                    const significado = item.Significado || Object.values(item)[1] || "Sem descrição disponível.";
+                    return `<strong>${palavra}</strong>: ${significado}`;
+                }).join("<br>");
             }
         } else {
             titulo.textContent = "Não encontrado";
