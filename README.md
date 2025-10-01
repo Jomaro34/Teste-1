@@ -1,1 +1,1 @@
-Dicionário de Ditados e Provérbios
+Dicionário TESTE
