@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("Documento carregado");
     const form = document.querySelector(".js-formulario");
     const input = document.querySelector("input[name='palavra']");
     const resultado = document.querySelector(".js-resultado");
@@ -9,13 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let dicionario = [];
 
+    // Carregar o ficheiro JSON
     fetch("./dicionario_cinfaes.json")
-        .then(res => {
-            console.log("Resposta do fetch:", res);
-            return res.json();
-        })
+        .then(res => res.json())
         .then(data => {
-            console.log("Dados carregados do JSON:", data);
+            console.log("Dicionário carregado:", data.length, "entradas");
             dicionario = data;
         })
         .catch(err => {
@@ -25,21 +22,22 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const palavra = input.value.trim().toLowerCase();
-        console.log("Palavra digitada:", palavra);
 
         if (!palavra) return;
 
         carregamento.classList.remove("display-none");
         resultado.classList.remove("display-none");
 
-        const entrada = dicionario.find(item => item.palavra.toLowerCase() === palavra);
-        console.log("Entrada encontrada:", entrada);
+        // Procurar no dicionário (garantindo que existe campo 'palavra')
+        const entrada = dicionario.find(item =>
+            item.palavra && item.palavra.toLowerCase() === palavra
+        );
 
         carregamento.classList.add("display-none");
 
         if (entrada) {
             titulo.textContent = entrada.palavra;
-            descricao.textContent = entrada.descricao;
+            descricao.textContent = entrada.descricao || "Sem descrição disponível.";
         } else {
             titulo.textContent = "Não encontrado";
             descricao.textContent = "A palavra não consta no dicionário de Cinfães.";
