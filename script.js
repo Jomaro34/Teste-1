@@ -11,9 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Carregar o JSON
     fetch("./dicionario_cinfaes.json")
         .then(res => {
-            if (!res.ok) {
-                throw new Error(`HTTP error! Status: ${res.status}`);
-            }
+            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
             return res.json();
         })
         .then(data => {
@@ -27,29 +25,40 @@ document.addEventListener("DOMContentLoaded", () => {
             resultado.classList.remove("display-none");
         });
 
+    // Função para normalizar palavras (remove acentos, espaços, minúsculas)
+    function normalize(str) {
+        return str.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-        const palavra = input.value.trim().toLowerCase();
+        const query = normalize(input.value);
 
-        if (!palavra) return;
+        if (!query) return;
 
         carregamento.classList.remove("display-none");
         resultado.classList.remove("display-none");
 
-        // Procura a palavra no dicionário (campo palavra existe)
-        const entrada = dicionario.find(item =>
-            item.palavra && item.palavra.toLowerCase() === palavra
-        );
+        // Busca parcial: encontra todas as palavras que CONTÊM o texto digitado
+        const matches = dicionario.filter(item => item.palavra && normalize(item.palavra).includes(query));
 
         carregamento.classList.add("display-none");
 
-        if (entrada) {
-            titulo.textContent = entrada.palavra;
-            descricao.textContent = entrada.descricao || "Sem descrição disponível.";
+        if (matches.length > 0) {
+            if (matches.length === 1) {
+                // Se só tiver 1 resultado, mostra palavra + descrição
+                titulo.textContent = matches[0].palavra;
+                descricao.textContent = matches[0].descricao || "Sem descrição disponível.";
+            } else {
+                // Se tiver vários resultados, mostra lista
+                titulo.textContent = `${matches.length} resultados encontrados:`;
+                descricao.innerHTML = matches.map(item => `<strong>${item.palavra}</strong>: ${item.descricao || "Sem descrição disponível."}`).join("<br>");
+            }
         } else {
             titulo.textContent = "Não encontrado";
             descricao.textContent = "A palavra não consta no dicionário de Cinfães.";
         }
     });
 });
+
 
