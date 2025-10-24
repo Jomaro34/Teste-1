@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Editor Visual de PDF Online</title>
   <style>
     body { font-family: sans-serif; display:flex; flex-direction:column; align-items:center; margin:20px; }
@@ -13,16 +13,15 @@
 </head>
 <body>
   <h2>Editor Visual de PDF Online</h2>
-  <input type="file" id="fileInput" accept="application/pdf" />
+  <input type="file" id="fileInput" accept="application/pdf">
   <div id="pdfContainer"></div>
   <button id="exportBtn">Exportar PDF editado</button>
 
   <!-- Bibliotecas via CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script>
-    // Configura worker diretamente via CDN
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.worker.min.js';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
     const fileInput = document.getElementById("fileInput");
     const pdfContainer = document.getElementById("pdfContainer");
@@ -33,27 +32,30 @@
 
     fileInput.addEventListener("change", async (e) => {
       const file = e.target.files[0];
+      if (!file) return;
       const arrayBuffer = await file.arrayBuffer();
       currentPdfBytes = arrayBuffer;
 
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
       pdfContainer.innerHTML = "";
 
       const page = await pdf.getPage(1);
       const scale = 1.5;
-      const viewport = page.getViewport({ scale });
+      const viewport = page.getViewport({scale});
 
+      // Canvas
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d");
-      canvas.height = viewport.height;
       canvas.width = viewport.width;
+      canvas.height = viewport.height;
       pageHeight = viewport.height;
       pdfContainer.style.width = `${canvas.width}px`;
       pdfContainer.style.height = `${canvas.height}px`;
       pdfContainer.appendChild(canvas);
 
-      await page.render({ canvasContext: context, viewport }).promise;
+      await page.render({canvasContext: context, viewport}).promise;
 
+      // Camada de texto editável
       const textContent = await page.getTextContent();
       const textLayer = document.createElement("div");
       textLayer.className = "text-layer";
@@ -71,8 +73,8 @@
         div.className = "editable";
         div.style.fontSize = `${fontSize*scale}px`;
         div.style.left = `${eX*scale}px`;
-        div.style.top = `${(pageHeight-eY)*scale}px`;
-        div.style.lineHeight="1";
+        div.style.top = `${(pageHeight - eY)*scale}px`;
+        div.style.lineHeight = "1";
         textLayer.appendChild(div);
         editableTexts.push({div, x:eX, y:eY, fontSize});
       });
@@ -88,16 +90,15 @@
       editableTexts.forEach(({div, x, y, fontSize}) => {
         const newText = div.textContent.trim();
         if(newText.length>0){
-          firstPage.drawText(newText,{x:x,y:y-fontSize,size:fontSize,font});
+          firstPage.drawText(newText, {x:x, y:y-fontSize, size:fontSize, font});
         }
       });
 
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], {type:"application/pdf"});
 
-      // Força download
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(blob,"pdf_editado.pdf");
+        window.navigator.msSaveOrOpenBlob(blob, "pdf_editado.pdf");
       } else {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
