@@ -1,118 +1,114 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>Editor Visual de PDF Online</title>
-  <style>
-    body { font-family: sans-serif; display:flex; flex-direction:column; align-items:center; margin:20px; }
-    #pdfContainer { position: relative; border: 1px solid #ccc; display:inline-block; }
-    canvas { display:block; border:1px solid red; } /* borda para debug */
-    .text-layer { position:absolute; top:0; left:0; pointer-events:none; }
-    .editable { position:absolute; pointer-events:auto; cursor:text; background-color:rgba(255,255,0,0.15); white-space:pre; }
-  </style>
+<meta charset="UTF-8">
+<title>Editor Visual de PDF Inline</title>
+<style>
+body { font-family: sans-serif; display:flex; flex-direction:column; align-items:center; margin:20px; }
+#pdfContainer { position: relative; border: 1px solid #ccc; display:inline-block; }
+canvas { display:block; }
+.text-layer { position:absolute; top:0; left:0; pointer-events:none; }
+.editable { 
+  position:absolute; pointer-events:auto; cursor:text; 
+  background-color: rgba(255,255,255,0.8); /* fundo branco para cobrir o texto original */
+  white-space: pre; 
+}
+</style>
 </head>
 <body>
-  <h2>Editor Visual de PDF Online</h2>
-  <input type="file" id="fileInput" accept="application/pdf">
-  <div id="pdfContainer"></div>
-  <button id="exportBtn">Exportar PDF editado</button>
+<h2>Editor Visual de PDF Inline</h2>
+<input type="file" id="fileInput" accept="application/pdf">
+<div id="pdfContainer"></div>
+<button id="exportBtn">Exportar PDF editado</button>
 
-  <!-- Bibliotecas via CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-  <script>
-    // Configura worker do PDF.js
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-    const fileInput = document.getElementById("fileInput");
-    const pdfContainer = document.getElementById("pdfContainer");
-    const exportBtn = document.getElementById("exportBtn");
-    let currentPdfBytes;
-    let pageHeight = 0;
-    let editableTexts = [];
+const fileInput = document.getElementById("fileInput");
+const pdfContainer = document.getElementById("pdfContainer");
+const exportBtn = document.getElementById("exportBtn");
+let currentPdfBytes;
+let pageHeight = 0;
+let editableTexts = [];
 
-    fileInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const arrayBuffer = await file.arrayBuffer();
-      currentPdfBytes = arrayBuffer;
+fileInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const arrayBuffer = await file.arrayBuffer();
+  currentPdfBytes = arrayBuffer;
 
-      const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-      pdfContainer.innerHTML = "";
+  const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+  pdfContainer.innerHTML = "";
 
-      const page = await pdf.getPage(1);
-      const scale = 1.5;
-      const viewport = page.getViewport({scale});
+  const page = await pdf.getPage(1);
+  const scale = 1.5;
+  const viewport = page.getViewport({scale});
 
-      // Canvas
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      pageHeight = viewport.height;
-      pdfContainer.style.width = `${canvas.width}px`;
-      pdfContainer.style.height = `${canvas.height}px`;
-      pdfContainer.appendChild(canvas);
+  // Canvas
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  pageHeight = viewport.height;
+  pdfContainer.style.width = `${canvas.width}px`;
+  pdfContainer.style.height = `${canvas.height}px`;
+  pdfContainer.appendChild(canvas);
 
-      await page.render({canvasContext: context, viewport}).promise;
+  await page.render({canvasContext: context, viewport}).promise;
 
-      // Camada de texto editável
-      const textContent = await page.getTextContent();
-      const textLayer = document.createElement("div");
-      textLayer.className = "text-layer";
-      textLayer.style.width = `${canvas.width}px`;
-      textLayer.style.height = `${canvas.height}px`;
-      pdfContainer.appendChild(textLayer);
+  // Camada de texto editável
+  const textContent = await page.getTextContent();
+  editableTexts = [];
 
-      editableTexts = [];
-      textContent.items.forEach((item) => {
-        const [a, b, c, d, eX, eY] = item.transform;
-        const fontSize = Math.sqrt(a*a + b*b);
-        const div = document.createElement("div");
-        div.textContent = item.str;
-        div.contentEditable = "true";
-        div.className = "editable";
-        div.style.fontSize = `${fontSize*scale}px`;
-        div.style.left = `${eX*scale}px`;
-        div.style.top = `${(pageHeight - eY)*scale}px`;
-        div.style.lineHeight = "1";
-        textLayer.appendChild(div);
-        editableTexts.push({div, x:eX, y:eY, fontSize});
-      });
-    });
+  textContent.items.forEach((item) => {
+    const [a,b,c,d,eX,eY] = item.transform;
+    const fontSize = Math.sqrt(a*a + b*b) * scale;
 
-    exportBtn.addEventListener("click", async () => {
-      if (!currentPdfBytes) return alert("Importa primeiro um PDF!");
+    const div = document.createElement("div");
+    div.textContent = item.str;
+    div.contentEditable = "true";
+    div.className = "editable";
+    div.style.fontSize = `${fontSize}px`;
+    div.style.left = `${eX*scale}px`;
+    div.style.top = `${(pageHeight - eY)*scale - fontSize}px`; // ajusta vertical
+    div.style.lineHeight="1";
 
-      const pdfDoc = await PDFLib.PDFDocument.load(currentPdfBytes);
-      const firstPage = pdfDoc.getPages()[0];
-      const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+    pdfContainer.appendChild(div);
+    editableTexts.push({div, x:eX, y:eY, fontSize});
+  });
+});
 
-      editableTexts.forEach(({div, x, y, fontSize}) => {
-        const newText = div.textContent.trim();
-        if(newText.length>0){
-          firstPage.drawText(newText, {x:x, y:y-fontSize, size:fontSize, font});
-        }
-      });
+exportBtn.addEventListener("click", async () => {
+  if (!currentPdfBytes) return alert("Importa primeiro um PDF!");
 
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], {type:"application/pdf"});
+  const pdfDoc = await PDFLib.PDFDocument.load(currentPdfBytes);
+  const firstPage = pdfDoc.getPages()[0];
+  const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
 
-      // Força download
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(blob, "pdf_editado.pdf");
-      } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "pdf_editado.pdf";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }
-    });
-  </script>
+  editableTexts.forEach(({div, x, y, fontSize}) => {
+    const newText = div.textContent.trim();
+    if(newText.length>0){
+      firstPage.drawText(newText, {x:x, y:y-fontSize, size:fontSize, font});
+    }
+  });
+
+  const pdfBytes = await pdfDoc.save();
+  const blob = new Blob([pdfBytes], {type:"application/pdf"});
+  if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(blob, "pdf_editado.pdf");
+  } else {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "pdf_editado.pdf";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+});
+</script>
 </body>
 </html>
