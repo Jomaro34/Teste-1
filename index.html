@@ -6,7 +6,7 @@
   <style>
     body { font-family: sans-serif; display:flex; flex-direction:column; align-items:center; margin:20px; }
     #pdfContainer { position: relative; border: 1px solid #ccc; display:inline-block; }
-    canvas { display:block; }
+    canvas { display:block; border:1px solid red; } /* borda para debug */
     .text-layer { position:absolute; top:0; left:0; pointer-events:none; }
     .editable { position:absolute; pointer-events:auto; cursor:text; background-color:rgba(255,255,0,0.15); white-space:pre; }
   </style>
@@ -21,7 +21,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    // Configura worker do PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
     const fileInput = document.getElementById("fileInput");
     const pdfContainer = document.getElementById("pdfContainer");
@@ -97,6 +99,7 @@
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], {type:"application/pdf"});
 
+      // Força download
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(blob, "pdf_editado.pdf");
       } else {
