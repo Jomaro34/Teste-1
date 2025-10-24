@@ -1,87 +1,113 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dicionário de Cinfães</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f7f9fc;
-            color: #333;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .conteudo {
-            max-width: 600px;
-            margin: auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        }
-
-        form input[type="text"] {
-            width: 70%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-
-        form input[type="submit"] {
-            padding: 8px 16px;
-            border: none;
-            background: #628bc7;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .resultado {
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .resultado__titulo {
-            font-size: 20px;
-            font-weight: bold;
-            color: #628bc7;
-        }
-
-        .resultado__descricao {
-            display: block;
-            margin-top: 8px;
-        }
-
-        .display-none {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Editor Visual de PDF (corrigido)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
+    #pdfContainer {
+      position: relative;
+      border: 1px solid #ccc;
+      display: inline-block;
+    }
+    canvas {
+      display: block;
+    }
+    .text-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+    .editable {
+      position: absolute;
+      pointer-events: auto;
+      cursor: text;
+      background-color: rgba(255, 255, 0, 0.15);
+      white-space: pre;
+    }
+  </style>
 </head>
-
 <body>
-    <h1 style="color:#628bc7;">Dicionário de Cinfães TESTE_Com Povérbiso</h1>
-    <p>e Norte de Portugal</p>
-    <img src="Dicionario_de_Cinfaes.png" alt="Logo do Dicionário" style="max-width:200px;">
+  <h2>Editor Visual de PDF (corrigido)</h2>
+  <input type="file" id="fileInput" accept="application/pdf" />
+  <div id="pdfContainer"></div>
+  <button id="exportBtn">Exportar PDF editado</button>
 
-    <section class="conteudo">
-        <form class="js-formulario">
-            <input type="text" name="palavra" placeholder="Digite a palavra" required autocomplete="off" />
-            <input type="submit" value="Buscar" />
-        </form>
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const pdfContainer = document.getElementById("pdfContainer");
+    const exportBtn = document.getElementById("exportBtn");
+    let currentPdfBytes;
+    let pageHeight = 0;
+    let editableTexts = [];
 
-        <section class="resultado js-resultado display-none">
-            <div class="carregamento js-carregamento display-none">A carregar...</div>
-            <h3 class="resultado__titulo js-resultado__titulo"></h3>
-            <span class="resultado__descricao js-resultado__descricao"></span>
-        </section>
-    </section>
+    // Função principal: renderizar e criar textos editáveis
+    fileInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      const arrayBuffer = await file.arrayBuffer();
+      currentPdfBytes = arrayBuffer;
 
-    <script src="./script.js"></script>
-</body>
+      const pdfjsLib = window["pdfjs-dist/build/pdf"];
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
-</html>
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      pdfContainer.innerHTML = "";
 
+      // Apenas a primeira página (para simplificar)
+      const page = await pdf.getPage(1);
+      const scale = 1.2;
+      const viewport = page.getViewport({ scale });
+
+      // Render PDF
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      pageHeight = viewport.height;
+      pdfContainer.style.width = `${canvas.width}px`;
+      pdfContainer.style.height = `${canvas.height}px`;
+      pdfContainer.appendChild(canvas);
+
+      await page.render({ canvasContext: context, viewport }).promise;
+
+      // Camada de texto editável
+      const textContent = await page.getTextContent();
+      const textLayer = document.createElement("div");
+      textLayer.className = "text-layer";
+      textLayer.style.width = `${canvas.width}px`;
+      textLayer.style.height = `${canvas.height}px`;
+      pdfContainer.appendChild(textLayer);
+
+      editableTexts = [];
+
+      textContent.items.forEach((item) => {
+        const [a, b, c, d, eX, eY] = item.transform;
+        const fontSize = Math.sqrt(a * a + b * b);
+        const div = document.createElement("div");
+
+        div.textContent = item.str;
+        div.contentEditable = "true";
+        div.className = "editable";
+        div.style.fontSize = `${fontSize * scale}px`;
+        div.style.left = `${eX * scale}px`;
+        div.style.top = `${(pageHeight - eY) * scale}px`;
+        div.style.lineHeight = "1";
+        textLayer.appendChild(div);
+
+        editableTexts.push({ div, x: eX, y: eY, fontSize });
+      });
+    });
+
+    // Exportar com pdf-lib
+    exportBtn.addEventListener("click", async () => {
+      if (!currentPdfBytes) return aler
