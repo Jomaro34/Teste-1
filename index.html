@@ -1,114 +1,482 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<title>Editor Visual de PDF Inline</title>
-<style>
-body { font-family: sans-serif; display:flex; flex-direction:column; align-items:center; margin:20px; }
-#pdfContainer { position: relative; border: 1px solid #ccc; display:inline-block; }
-canvas { display:block; }
-.text-layer { position:absolute; top:0; left:0; pointer-events:none; }
-.editable { 
-  position:absolute; pointer-events:auto; cursor:text; 
-  background-color: rgba(255,255,255,0.8); /* fundo branco para cobrir o texto original */
-  white-space: pre; 
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seres Imaginários - Visualizador PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .toolbar {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-wrapper label {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-input-wrapper label:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        button:hover:not(:disabled) {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .page-info {
+            color: white;
+            font-size: 14px;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .pdf-viewer {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-height: 700px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #pdf-canvas {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+
+        .placeholder {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 60px 20px;
+        }
+
+        .placeholder h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 2em;
+        }
+
+        .placeholder p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .placeholder .icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .search-results {
+            background: rgba(46, 204, 113, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid rgba(46, 204, 113, 0.5);
+        }
+
+        .filename-display {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: white;
+            font-weight: 500;
+            display: none;
+        }
+
+        .filename-display.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container {
+                min-width: 100%;
+                flex-direction: column;
+            }
+
+            .controls {
+                justify-content: center;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
 </head>
 <body>
-<h2>Editor Visual de PDF Inline</h2>
-<input type="file" id="fileInput" accept="application/pdf">
-<div id="pdfContainer"></div>
-<button id="exportBtn">Exportar PDF editado</button>
+    <div class="header">
+        <h1>📚 Seres Imaginários</h1>
+        <p>Explore o mundo dos seres fantásticos e mitológicos</p>
+    </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-<script>
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    <div class="toolbar">
+        <div class="file-input-wrapper">
+            <input type="file" id="file-input" accept=".pdf">
+            <label for="file-input">
+                <span>📁</span>
+                <span>Carregar PDF</span>
+            </label>
+        </div>
 
-const fileInput = document.getElementById("fileInput");
-const pdfContainer = document.getElementById("pdfContainer");
-const exportBtn = document.getElementById("exportBtn");
-let currentPdfBytes;
-let pageHeight = 0;
-let editableTexts = [];
+        <div class="filename-display" id="filename-display">
+            📄 Nenhum arquivo carregado
+        </div>
 
-fileInput.addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const arrayBuffer = await file.arrayBuffer();
-  currentPdfBytes = arrayBuffer;
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="🔍 Pesquisar no documento...">
+            <button id="search-btn">Procurar</button>
+            <button id="prev-match">← Anterior</button>
+            <button id="next-match">Próximo →</button>
+            <span class="search-results" id="search-results"></span>
+        </div>
 
-  const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-  pdfContainer.innerHTML = "";
+        <div class="controls">
+            <button id="zoom-out" title="Diminuir zoom">−</button>
+            <button id="zoom-in" title="Aumentar zoom">+</button>
+            <button id="prev-page" title="Página anterior">←</button>
+            <span class="page-info" id="page-info">Página: -/-</span>
+            <button id="next-page" title="Próxima página">→</button>
+        </div>
+    </div>
 
-  const page = await pdf.getPage(1);
-  const scale = 1.5;
-  const viewport = page.getViewport({scale});
+    <div class="container">
+        <div class="pdf-viewer">
+            <div class="placeholder" id="placeholder">
+                <div class="icon">📄</div>
+                <h2>Visualizador de PDF</h2>
+                <p>Carregue o arquivo "Seres Imaginários.pdf" para começar</p>
+                <p style="font-size: 0.9em; color: #95a5a6;">Utilize a barra de pesquisa para encontrar seres específicos no documento</p>
+            </div>
+            <canvas id="pdf-canvas" style="display: none;"></canvas>
+        </div>
+    </div>
 
-  // Canvas
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
-  canvas.width = viewport.width;
-  canvas.height = viewport.height;
-  pageHeight = viewport.height;
-  pdfContainer.style.width = `${canvas.width}px`;
-  pdfContainer.style.height = `${canvas.height}px`;
-  pdfContainer.appendChild(canvas);
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-  await page.render({canvasContext: context, viewport}).promise;
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.5;
+        let searchMatches = [];
+        let currentMatch = 0;
 
-  // Camada de texto editável
-  const textContent = await page.getTextContent();
-  editableTexts = [];
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+        const placeholder = document.getElementById('placeholder');
+        const filenameDisplay = document.getElementById('filename-display');
 
-  textContent.items.forEach((item) => {
-    const [a,b,c,d,eX,eY] = item.transform;
-    const fontSize = Math.sqrt(a*a + b*b) * scale;
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                filenameDisplay.textContent = `📄 ${file.name}`;
+                filenameDisplay.classList.add('active');
+                
+                const fileReader = new FileReader();
+                fileReader.onload = function() {
+                    const typedarray = new Uint8Array(this.result);
+                    loadPDF(typedarray);
+                };
+                fileReader.readAsArrayBuffer(file);
+            } else {
+                alert('Por favor, selecione um arquivo PDF válido.');
+            }
+        });
 
-    const div = document.createElement("div");
-    div.textContent = item.str;
-    div.contentEditable = "true";
-    div.className = "editable";
-    div.style.fontSize = `${fontSize}px`;
-    div.style.left = `${eX*scale}px`;
-    div.style.top = `${(pageHeight - eY)*scale - fontSize}px`; // ajusta vertical
-    div.style.lineHeight="1";
+        function loadPDF(data) {
+            pdfjsLib.getDocument(data).promise.then(function(pdf) {
+                pdfDoc = pdf;
+                document.getElementById('page-info').textContent = `Página: ${pageNum}/${pdf.numPages}`;
+                placeholder.style.display = 'none';
+                canvas.style.display = 'block';
+                renderPage(pageNum);
+            }).catch(function(error) {
+                console.error('Erro ao carregar PDF:', error);
+                alert('Erro ao carregar o PDF. Verifique se o arquivo está correto.');
+            });
+        }
 
-    pdfContainer.appendChild(div);
-    editableTexts.push({div, x:eX, y:eY, fontSize});
-  });
-});
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(function(page) {
+                const viewport = page.getViewport({scale: scale});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
 
-exportBtn.addEventListener("click", async () => {
-  if (!currentPdfBytes) return alert("Importa primeiro um PDF!");
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
 
-  const pdfDoc = await PDFLib.PDFDocument.load(currentPdfBytes);
-  const firstPage = pdfDoc.getPages()[0];
-  const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                const renderTask = page.render(renderContext);
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
 
-  editableTexts.forEach(({div, x, y, fontSize}) => {
-    const newText = div.textContent.trim();
-    if(newText.length>0){
-      firstPage.drawText(newText, {x:x, y:y-fontSize, size:fontSize, font});
-    }
-  });
+            document.getElementById('page-info').textContent = `Página: ${num}/${pdfDoc.numPages}`;
+        }
 
-  const pdfBytes = await pdfDoc.save();
-  const blob = new Blob([pdfBytes], {type:"application/pdf"});
-  if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveOrOpenBlob(blob, "pdf_editado.pdf");
-  } else {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "pdf_editado.pdf";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-});
-</script>
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        document.getElementById('prev-page').addEventListener('click', function() {
+            if (pageNum <= 1 || !pdfDoc) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+        });
+
+        document.getElementById('next-page').addEventListener('click', function() {
+            if (pageNum >= pdfDoc.numPages || !pdfDoc) return;
+            pageNum++;
+            queueRenderPage(pageNum);
+        });
+
+        document.getElementById('zoom-in').addEventListener('click', function() {
+            if (!pdfDoc) return;
+            scale += 0.25;
+            renderPage(pageNum);
+        });
+
+        document.getElementById('zoom-out').addEventListener('click', function() {
+            if (!pdfDoc || scale <= 0.5) return;
+            scale -= 0.25;
+            renderPage(pageNum);
+        });
+
+        async function searchPDF() {
+            if (!pdfDoc) {
+                alert('Por favor, carregue um PDF primeiro.');
+                return;
+            }
+            
+            const searchText = document.getElementById('search-input').value.toLowerCase().trim();
+            if (!searchText) {
+                alert('Digite algo para pesquisar.');
+                return;
+            }
+
+            searchMatches = [];
+            const searchResults = document.getElementById('search-results');
+            searchResults.textContent = '🔍 Procurando...';
+            searchResults.style.background = 'rgba(241, 196, 15, 0.2)';
+            searchResults.style.borderColor = 'rgba(241, 196, 15, 0.5)';
+
+            for (let i = 1; i <= pdfDoc.numPages; i++) {
+                const page = await pdfDoc.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ').toLowerCase();
+                
+                let index = pageText.indexOf(searchText);
+                while (index !== -1) {
+                    searchMatches.push({page: i, index: index});
+                    index = pageText.indexOf(searchText, index + 1);
+                }
+            }
+
+            if (searchMatches.length > 0) {
+                currentMatch = 0;
+                goToMatch(0);
+                searchResults.textContent = `✓ ${searchMatches.length} resultado(s) encontrado(s)`;
+                searchResults.style.background = 'rgba(46, 204, 113, 0.2)';
+                searchResults.style.borderColor = 'rgba(46, 204, 113, 0.5)';
+            } else {
+                searchResults.textContent = '✗ Nenhum resultado encontrado';
+                searchResults.style.background = 'rgba(231, 76, 60, 0.2)';
+                searchResults.style.borderColor = 'rgba(231, 76, 60, 0.5)';
+            }
+        }
+
+        function goToMatch(matchIndex) {
+            if (searchMatches.length === 0) return;
+            
+            currentMatch = matchIndex;
+            const match = searchMatches[currentMatch];
+            pageNum = match.page;
+            queueRenderPage(pageNum);
+            
+            const searchResults = document.getElementById('search-results');
+            searchResults.textContent = `📍 Resultado ${currentMatch + 1} de ${searchMatches.length}`;
+        }
+
+        document.getElementById('search-btn').addEventListener('click', searchPDF);
+        
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchPDF();
+            }
+        });
+
+        document.getElementById('prev-match').addEventListener('click', function() {
+            if (searchMatches.length === 0) return;
+            currentMatch = (currentMatch - 1 + searchMatches.length) % searchMatches.length;
+            goToMatch(currentMatch);
+        });
+
+        document.getElementById('next-match').addEventListener('click', function() {
+            if (searchMatches.length === 0) return;
+            currentMatch = (currentMatch + 1) % searchMatches.length;
+            goToMatch(currentMatch);
+        });
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', function(e) {
+            if (!pdfDoc) return;
+            
+            if (e.key === 'ArrowLeft' && !e.target.matches('input')) {
+                document.getElementById('prev-page').click();
+            } else if (e.key === 'ArrowRight' && !e.target.matches('input')) {
+                document.getElementById('next-page').click();
+            } else if (e.key === '+' || e.key === '=') {
+                document.getElementById('zoom-in').click();
+            } else if (e.key === '-') {
+                document.getElementById('zoom-out').click();
+            }
+        });
+    </script>
 </body>
 </html>
