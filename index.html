@@ -285,7 +285,7 @@
                 font-size: 1.8em;
             }
         }
-    
+
         /* Forçar remoção de sublinhado e estilos indesejados em <mark> */
         mark, .search-result-text mark, .search-result-text mark * {
             text-decoration: none !important;
@@ -298,7 +298,7 @@
             display: inline;
         }
 
-    
+
         /* Remover todos os sublinhados e bordas de texto */
         * {
             text-decoration: none !important;
@@ -384,10 +384,10 @@
         }
 
         function loadPDF(data) {
-            const loadingPromise = typeof data.numPages !== 'undefined' 
-                ? Promise.resolve(data) 
+            const loadingPromise = typeof data.numPages !== 'undefined'
+                ? Promise.resolve(data)
                 : pdfjsLib.getDocument(data).promise;
-            
+
             loadingPromise.then(function(pdf) {
                 pdfDoc = pdf;
                 document.getElementById('page-info').textContent = `Página: ${pageNum}/${pdf.numPages}`;
@@ -403,11 +403,11 @@
         async function renderPage(num) {
             pageRendering = true;
             const page = await pdfDoc.getPage(num);
-            
+
             // Extrair texto da página
             const textContent = await page.getTextContent();
             currentPageText[num] = textContent;
-            
+
             const viewport = page.getViewport({scale: scale});
             canvas.height = viewport.height;
             canvas.width = viewport.width;
@@ -418,14 +418,14 @@
             };
 
             await page.render(renderContext).promise;
-            
+
             // Desenhar highlights se houver termo de pesquisa
             if (currentSearchTerm) {
                 highlightSearchTermOnCanvas(textContent, viewport);
             }
-            
+
             pageRendering = false;
-            
+
             if (pageNumPending !== null) {
                 renderPage(pageNumPending);
                 pageNumPending = null;
@@ -436,7 +436,7 @@
 
         function highlightSearchTermOnCanvas(textContent, viewport) {
             const searchLower = currentSearchTerm.toLowerCase();
-            
+
             textContent.items.forEach(item => {
                 const itemText = item.str.toLowerCase();
                 if (itemText.includes(searchLower)) {
@@ -445,16 +445,16 @@
                         viewport.transform,
                         item.transform
                     );
-                    
+
                     const x = transform[4];
                     const y = transform[5];
                     const width = item.width * viewport.scale;
                     const height = item.height * viewport.scale;
-                    
+
                     // Desenhar retângulo amarelo
-                    ctx.fillStyle = 'rgba(255, 235, 59, 0.4)';
-                    ctx.fillRect(x, canvas.height - y - height, width, height);
-                    
+                    //ctx.fillStyle = 'rgba(255, 235, 59, 0.4)';
+                    //ctx.fillRect(x, canvas.height - y - height, width, height);
+
                     // Desenhar borda
                     // Borda removida
 }
@@ -498,7 +498,7 @@
                 alert('PDF ainda não foi carregado.');
                 return;
             }
-            
+
             const searchText = document.getElementById('search-input').value.toLowerCase().trim();
             if (!searchText) {
                 alert('Digite algo para pesquisar.');
@@ -511,7 +511,7 @@
             searchResults.textContent = '🔍 Procurando...';
             searchResults.style.background = 'rgba(241, 196, 15, 0.2)';
             searchResults.style.borderColor = 'rgba(241, 196, 15, 0.5)';
-            
+
             searchResultsList.innerHTML = '';
 
             for (let i = 1; i <= pdfDoc.numPages; i++) {
@@ -519,21 +519,21 @@
                 const textContent = await page.getTextContent();
                 const pageText = textContent.items.map(item => item.str).join(' ');
                 const pageTextLower = pageText.toLowerCase();
-                
+
                 let index = pageTextLower.indexOf(searchText);
                 while (index !== -1) {
                     // Extrair contexto (50 caracteres antes e depois)
                     const start = Math.max(0, index - 50);
                     const end = Math.min(pageText.length, index + searchText.length + 50);
                     const context = pageText.substring(start, end);
-                    
+
                     searchMatches.push({
                         page: i,
                         index: index,
                         context: context,
                         fullText: pageText
                     });
-                    
+
                     index = pageTextLower.indexOf(searchText, index + 1);
                 }
             }
@@ -557,60 +557,60 @@
 
         function displaySearchResults(searchText) {
             searchResultsList.innerHTML = '';
-            
+
             searchMatches.forEach((match, index) => {
                 const item = document.createElement('div');
                 item.className = 'search-result-item';
-                
+
                 const pageLabel = document.createElement('div');
                 pageLabel.className = 'search-result-page';
                 pageLabel.textContent = `📄 Página ${match.page}`;
-                
+
                 const textDiv = document.createElement('div');
                 textDiv.className = 'search-result-text';
-                
+
                 // Destacar o texto encontrado
                 const regex = new RegExp(`(${searchText})`, 'gi');
                 const highlightedText = match.context.replace(regex, '<mark>$1</mark>');
                 textDiv.innerHTML = '...' + highlightedText + '...';
-                
+
                 item.appendChild(pageLabel);
                 item.appendChild(textDiv);
-                
+
                 item.addEventListener('click', function() {
                     goToMatch(index);
                 });
-                
+
                 searchResultsList.appendChild(item);
             });
         }
 
         function goToMatch(matchIndex) {
             if (searchMatches.length === 0) return;
-            
+
             // Remover highlight anterior
             document.querySelectorAll('.search-result-item').forEach(item => {
                 item.classList.remove('active');
             });
-            
+
             currentMatch = matchIndex;
             const match = searchMatches[currentMatch];
             pageNum = match.page;
             queueRenderPage(pageNum);
-            
+
             // Destacar item na sidebar
             const items = document.querySelectorAll('.search-result-item');
             if (items[currentMatch]) {
                 items[currentMatch].classList.add('active');
                 items[currentMatch].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
-            
+
             const searchResults = document.getElementById('search-results');
             searchResults.textContent = `📍 ${currentMatch + 1} de ${searchMatches.length}`;
         }
 
         document.getElementById('search-btn').addEventListener('click', searchPDF);
-        
+
         document.getElementById('search-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 searchPDF();
@@ -632,7 +632,7 @@
         // Atalhos de teclado
         document.addEventListener('keydown', function(e) {
             if (!pdfDoc) return;
-            
+
             if (e.key === 'ArrowLeft' && !e.target.matches('input')) {
                 document.getElementById('prev-page').click();
             } else if (e.key === 'ArrowRight' && !e.target.matches('input')) {
