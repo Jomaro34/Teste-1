@@ -53,36 +53,6 @@
             z-index: 100;
         }
 
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            left: -9999px;
-        }
-
-        .file-input-wrapper label {
-            background: #3498db;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .file-input-wrapper label:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
         .search-container {
             display: flex;
             gap: 10px;
@@ -145,53 +115,6 @@
             font-weight: 500;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .pdf-viewer {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            min-height: 700px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #pdf-canvas {
-            max-width: 100%;
-            height: auto;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            border-radius: 4px;
-        }
-
-        .placeholder {
-            text-align: center;
-            color: #7f8c8d;
-            padding: 60px 20px;
-        }
-
-        .placeholder h2 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-            font-size: 2em;
-        }
-
-        .placeholder p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-        }
-
-        .placeholder .icon {
-            font-size: 5em;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-
         .search-results {
             background: rgba(46, 204, 113, 0.2);
             color: white;
@@ -202,18 +125,143 @@
             border: 1px solid rgba(46, 204, 113, 0.5);
         }
 
-        .filename-display {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px 15px;
-            border-radius: 6px;
-            font-size: 14px;
-            color: white;
-            font-weight: 500;
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            align-items: flex-start;
+        }
+
+        .sidebar {
+            width: 350px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
             display: none;
         }
 
-        .filename-display.active {
+        .sidebar.active {
             display: block;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 12px 12px 0 0;
+            font-weight: 600;
+        }
+
+        .search-result-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #ecf0f1;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-result-item:hover {
+            background: #f8f9fa;
+        }
+
+        .search-result-item.active {
+            background: #e8f4fd;
+            border-left: 4px solid #3498db;
+        }
+
+        .search-result-page {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .search-result-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        .search-result-text mark {
+            background-color: #fff59d;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .pdf-container {
+            flex: 1;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-height: calc(100vh - 250px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #pdf-canvas {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 60px 20px;
+        }
+
+        .loading h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 2em;
+        }
+
+        .loading p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .loading .spinner {
+            border: 4px solid #ecf0f1;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .highlight-overlay {
+            position: absolute;
+            background: rgba(255, 235, 59, 0.4);
+            border: 2px solid #ffd700;
+            pointer-events: none;
+            z-index: 10;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 400px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -244,18 +292,6 @@
     </div>
 
     <div class="toolbar">
-        <div class="file-input-wrapper">
-            <input type="file" id="file-input" accept=".pdf">
-            <label for="file-input">
-                <span>📁</span>
-                <span>Carregar PDF</span>
-            </label>
-        </div>
-
-        <div class="filename-display" id="filename-display">
-            📄 Nenhum arquivo carregado
-        </div>
-
         <div class="search-container">
             <input type="text" id="search-input" placeholder="🔍 Pesquisar no documento...">
             <button id="search-btn">Procurar</button>
@@ -273,13 +309,19 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="pdf-viewer">
-            <div class="placeholder" id="placeholder">
-                <div class="icon">📄</div>
-                <h2>Visualizador de PDF</h2>
-                <p>Carregue o arquivo "Seres Imaginários.pdf" para começar</p>
-                <p style="font-size: 0.9em; color: #95a5a6;">Utilize a barra de pesquisa para encontrar seres específicos no documento</p>
+    <div class="main-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div>📋 Resultados da Pesquisa</div>
+            </div>
+            <div id="search-results-list"></div>
+        </div>
+
+        <div class="pdf-container">
+            <div class="loading" id="loading">
+                <h2>📄 A carregar PDF...</h2>
+                <div class="spinner"></div>
+                <p>Seres Imaginários.pdf</p>
             </div>
             <canvas id="pdf-canvas" style="display: none;"></canvas>
         </div>
@@ -294,64 +336,100 @@
         let pageNumPending = null;
         let scale = 1.5;
         let searchMatches = [];
-        let currentMatch = 0;
+        let currentMatch = -1;
+        let currentPageText = {};
 
         const canvas = document.getElementById('pdf-canvas');
         const ctx = canvas.getContext('2d');
-        const placeholder = document.getElementById('placeholder');
-        const filenameDisplay = document.getElementById('filename-display');
+        const loading = document.getElementById('loading');
+        const sidebar = document.getElementById('sidebar');
+        const searchResultsList = document.getElementById('search-results-list');
 
-        document.getElementById('file-input').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file && file.type === 'application/pdf') {
-                filenameDisplay.textContent = `📄 ${file.name}`;
-                filenameDisplay.classList.add('active');
+        // Carregar PDF automaticamente
+        window.addEventListener('load', function() {
+            // Simulação: Em produção, você colocaria o URL real do PDF aqui
+            // Por exemplo: loadPDFFromURL('https://seusite.com/Seres Imaginários.pdf');
+            
+            // Como não temos o arquivo real, vamos mostrar uma mensagem
+            setTimeout(function() {
+                loading.innerHTML = `
+                    <h2>⚠️ PDF não encontrado</h2>
+                    <p>Para usar esta página, você precisa:</p>
+                    <p style="font-size: 0.9em; margin-top: 20px;">
+                        1. Hospedar o arquivo "Seres Imaginários.pdf" no mesmo servidor<br>
+                        2. Ou usar um serviço como GitHub Pages, Netlify, ou Vercel<br>
+                        3. Colocar o URL do PDF na função loadPDFFromURL()
+                    </p>
+                    <p style="margin-top: 20px; font-size: 0.9em; color: #e74c3c;">
+                        <strong>Nota:</strong> Por enquanto, você pode testar carregando manualmente:
+                    </p>
+                    <input type="file" id="manual-upload" accept=".pdf" style="margin-top: 20px; padding: 10px;">
+                `;
                 
-                const fileReader = new FileReader();
-                fileReader.onload = function() {
-                    const typedarray = new Uint8Array(this.result);
-                    loadPDF(typedarray);
-                };
-                fileReader.readAsArrayBuffer(file);
-            } else {
-                alert('Por favor, selecione um arquivo PDF válido.');
-            }
+                document.getElementById('manual-upload').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file && file.type === 'application/pdf') {
+                        const fileReader = new FileReader();
+                        fileReader.onload = function() {
+                            const typedarray = new Uint8Array(this.result);
+                            loadPDF(typedarray);
+                        };
+                        fileReader.readAsArrayBuffer(file);
+                    }
+                });
+            }, 1000);
         });
 
+        function loadPDFFromURL(url) {
+            pdfjsLib.getDocument(url).promise.then(function(pdf) {
+                loadPDF(pdf);
+            }).catch(function(error) {
+                console.error('Erro ao carregar PDF:', error);
+                loading.innerHTML = '<h2>❌ Erro ao carregar PDF</h2><p>Verifique se o arquivo existe no servidor.</p>';
+            });
+        }
+
         function loadPDF(data) {
-            pdfjsLib.getDocument(data).promise.then(function(pdf) {
+            const loadingPromise = typeof data.numPages !== 'undefined' 
+                ? Promise.resolve(data) 
+                : pdfjsLib.getDocument(data).promise;
+            
+            loadingPromise.then(function(pdf) {
                 pdfDoc = pdf;
                 document.getElementById('page-info').textContent = `Página: ${pageNum}/${pdf.numPages}`;
-                placeholder.style.display = 'none';
+                loading.style.display = 'none';
                 canvas.style.display = 'block';
                 renderPage(pageNum);
             }).catch(function(error) {
                 console.error('Erro ao carregar PDF:', error);
-                alert('Erro ao carregar o PDF. Verifique se o arquivo está correto.');
+                loading.innerHTML = '<h2>❌ Erro ao carregar PDF</h2><p>Verifique se o arquivo está correto.</p>';
             });
         }
 
-        function renderPage(num) {
+        async function renderPage(num) {
             pageRendering = true;
-            pdfDoc.getPage(num).then(function(page) {
-                const viewport = page.getViewport({scale: scale});
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+            const page = await pdfDoc.getPage(num);
+            
+            // Extrair texto da página
+            const textContent = await page.getTextContent();
+            currentPageText[num] = textContent;
+            
+            const viewport = page.getViewport({scale: scale});
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: viewport
-                };
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
 
-                const renderTask = page.render(renderContext);
-                renderTask.promise.then(function() {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
-                });
-            });
+            await page.render(renderContext).promise;
+            pageRendering = false;
+            
+            if (pageNumPending !== null) {
+                renderPage(pageNumPending);
+                pageNumPending = null;
+            }
 
             document.getElementById('page-info').textContent = `Página: ${num}/${pdfDoc.numPages}`;
         }
@@ -390,7 +468,7 @@
 
         async function searchPDF() {
             if (!pdfDoc) {
-                alert('Por favor, carregue um PDF primeiro.');
+                alert('PDF ainda não foi carregado.');
                 return;
             }
             
@@ -405,42 +483,101 @@
             searchResults.textContent = '🔍 Procurando...';
             searchResults.style.background = 'rgba(241, 196, 15, 0.2)';
             searchResults.style.borderColor = 'rgba(241, 196, 15, 0.5)';
+            
+            searchResultsList.innerHTML = '';
 
             for (let i = 1; i <= pdfDoc.numPages; i++) {
                 const page = await pdfDoc.getPage(i);
                 const textContent = await page.getTextContent();
-                const pageText = textContent.items.map(item => item.str).join(' ').toLowerCase();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                const pageTextLower = pageText.toLowerCase();
                 
-                let index = pageText.indexOf(searchText);
+                let index = pageTextLower.indexOf(searchText);
                 while (index !== -1) {
-                    searchMatches.push({page: i, index: index});
-                    index = pageText.indexOf(searchText, index + 1);
+                    // Extrair contexto (50 caracteres antes e depois)
+                    const start = Math.max(0, index - 50);
+                    const end = Math.min(pageText.length, index + searchText.length + 50);
+                    const context = pageText.substring(start, end);
+                    
+                    searchMatches.push({
+                        page: i,
+                        index: index,
+                        context: context,
+                        fullText: pageText
+                    });
+                    
+                    index = pageTextLower.indexOf(searchText, index + 1);
                 }
             }
 
             if (searchMatches.length > 0) {
+                sidebar.classList.add('active');
+                displaySearchResults(searchText);
                 currentMatch = 0;
                 goToMatch(0);
-                searchResults.textContent = `✓ ${searchMatches.length} resultado(s) encontrado(s)`;
+                searchResults.textContent = `✓ ${searchMatches.length} resultado(s)`;
                 searchResults.style.background = 'rgba(46, 204, 113, 0.2)';
                 searchResults.style.borderColor = 'rgba(46, 204, 113, 0.5)';
             } else {
-                searchResults.textContent = '✗ Nenhum resultado encontrado';
+                sidebar.classList.remove('active');
+                searchResults.textContent = '✗ Nenhum resultado';
                 searchResults.style.background = 'rgba(231, 76, 60, 0.2)';
                 searchResults.style.borderColor = 'rgba(231, 76, 60, 0.5)';
             }
         }
 
+        function displaySearchResults(searchText) {
+            searchResultsList.innerHTML = '';
+            
+            searchMatches.forEach((match, index) => {
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                
+                const pageLabel = document.createElement('div');
+                pageLabel.className = 'search-result-page';
+                pageLabel.textContent = `📄 Página ${match.page}`;
+                
+                const textDiv = document.createElement('div');
+                textDiv.className = 'search-result-text';
+                
+                // Destacar o texto encontrado
+                const regex = new RegExp(`(${searchText})`, 'gi');
+                const highlightedText = match.context.replace(regex, '<mark>$1</mark>');
+                textDiv.innerHTML = '...' + highlightedText + '...';
+                
+                item.appendChild(pageLabel);
+                item.appendChild(textDiv);
+                
+                item.addEventListener('click', function() {
+                    goToMatch(index);
+                });
+                
+                searchResultsList.appendChild(item);
+            });
+        }
+
         function goToMatch(matchIndex) {
             if (searchMatches.length === 0) return;
+            
+            // Remover highlight anterior
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.classList.remove('active');
+            });
             
             currentMatch = matchIndex;
             const match = searchMatches[currentMatch];
             pageNum = match.page;
             queueRenderPage(pageNum);
             
+            // Destacar item na sidebar
+            const items = document.querySelectorAll('.search-result-item');
+            if (items[currentMatch]) {
+                items[currentMatch].classList.add('active');
+                items[currentMatch].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            
             const searchResults = document.getElementById('search-results');
-            searchResults.textContent = `📍 Resultado ${currentMatch + 1} de ${searchMatches.length}`;
+            searchResults.textContent = `📍 ${currentMatch + 1} de ${searchMatches.length}`;
         }
 
         document.getElementById('search-btn').addEventListener('click', searchPDF);
