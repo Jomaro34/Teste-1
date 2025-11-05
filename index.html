@@ -338,6 +338,7 @@
         let searchMatches = [];
         let currentMatch = -1;
         let currentPageText = {};
+        let currentSearchTerm = '';
 
         const canvas = document.getElementById('pdf-canvas');
         const ctx = canvas.getContext('2d');
@@ -347,37 +348,8 @@
 
         // Carregar PDF automaticamente
         window.addEventListener('load', function() {
-            // Simulação: Em produção, você colocaria o URL real do PDF aqui
-            // Por exemplo: loadPDFFromURL('https://seusite.com/Seres Imaginários.pdf');
-            
-            // Como não temos o arquivo real, vamos mostrar uma mensagem
-            setTimeout(function() {
-                loading.innerHTML = `
-                    <h2>⚠️ PDF não encontrado</h2>
-                    <p>Para usar esta página, você precisa:</p>
-                    <p style="font-size: 0.9em; margin-top: 20px;">
-                        1. Hospedar o arquivo "Seres Imaginários.pdf" no mesmo servidor<br>
-                        2. Ou usar um serviço como GitHub Pages, Netlify, ou Vercel<br>
-                        3. Colocar o URL do PDF na função loadPDFFromURL()
-                    </p>
-                    <p style="margin-top: 20px; font-size: 0.9em; color: #e74c3c;">
-                        <strong>Nota:</strong> Por enquanto, você pode testar carregando manualmente:
-                    </p>
-                    <input type="file" id="manual-upload" accept=".pdf" style="margin-top: 20px; padding: 10px;">
-                `;
-                
-                document.getElementById('manual-upload').addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file && file.type === 'application/pdf') {
-                        const fileReader = new FileReader();
-                        fileReader.onload = function() {
-                            const typedarray = new Uint8Array(this.result);
-                            loadPDF(typedarray);
-                        };
-                        fileReader.readAsArrayBuffer(file);
-                    }
-                });
-            }, 1000);
+            // Carregar o PDF da mesma pasta
+            loadPDFFromURL('Seres Imaginários.pdf');
         });
 
         function loadPDFFromURL(url) {
@@ -424,6 +396,12 @@
             };
 
             await page.render(renderContext).promise;
+            
+            // Desenhar highlights se houver termo de pesquisa
+            if (currentSearchTerm) {
+                highlightSearchTermOnCanvas(textContent, viewport);
+            }
+            
             pageRendering = false;
             
             if (pageNumPending !== null) {
@@ -432,6 +410,35 @@
             }
 
             document.getElementById('page-info').textContent = `Página: ${num}/${pdfDoc.numPages}`;
+        }
+
+        function highlightSearchTermOnCanvas(textContent, viewport) {
+            const searchLower = currentSearchTerm.toLowerCase();
+            
+            textContent.items.forEach(item => {
+                const itemText = item.str.toLowerCase();
+                if (itemText.includes(searchLower)) {
+                    // Calcular posição do texto no canvas
+                    const transform = pdfjsLib.Util.transform(
+                        viewport.transform,
+                        item.transform
+                    );
+                    
+                    const x = transform[4];
+                    const y = transform[5];
+                    const width = item.width * viewport.scale;
+                    const height = item.height * viewport.scale;
+                    
+                    // Desenhar retângulo amarelo
+                    ctx.fillStyle = 'rgba(255, 235, 59, 0.4)';
+                    ctx.fillRect(x, canvas.height - y - height, width, height);
+                    
+                    // Desenhar borda
+                    ctx.strokeStyle = '#ffd700';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x, canvas.height - y - height, width, height);
+                }
+            });
         }
 
         function queueRenderPage(num) {
@@ -478,6 +485,7 @@
                 return;
             }
 
+            currentSearchTerm = searchText;
             searchMatches = [];
             const searchResults = document.getElementById('search-results');
             searchResults.textContent = '🔍 Procurando...';
@@ -520,6 +528,7 @@
                 searchResults.style.borderColor = 'rgba(46, 204, 113, 0.5)';
             } else {
                 sidebar.classList.remove('active');
+                currentSearchTerm = '';
                 searchResults.textContent = '✗ Nenhum resultado';
                 searchResults.style.background = 'rgba(231, 76, 60, 0.2)';
                 searchResults.style.borderColor = 'rgba(231, 76, 60, 0.5)';
