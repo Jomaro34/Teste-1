@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seres Imaginários - Visualizador PDF</title>
+    <title>Livro de Seres Imaginários / Book of Imaginary Beings - Visualizador PDF</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            text-decoration: none !important;
+            border-bottom: none !important;
         }
 
         body {
@@ -28,19 +32,25 @@
 
         .header h1 {
             color: #2c3e50;
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2.3em;
+            margin-bottom: 8px;
             font-weight: 700;
         }
 
         .header p {
-            color: #7f8c8d;
+            color: #2c3e50;
             font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .header .credit {
+            color: #000;
+            font-weight: 600;
+            font-size: 1em;
         }
 
         .toolbar {
             background: rgba(44, 62, 80, 0.95);
-            backdrop-filter: blur(10px);
             color: white;
             padding: 15px 20px;
             display: flex;
@@ -172,28 +182,6 @@
             border-left: 4px solid #3498db;
         }
 
-        .search-result-page {
-            font-size: 12px;
-            color: #7f8c8d;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .search-result-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #2c3e50;
-        }
-
-        .search-result-text mark {
-            background-color: #fff59d;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-weight: 600;
-            text-decoration: none;
-            border-bottom: none;
-        }
-
         .pdf-container {
             flex: 1;
             background: white;
@@ -214,58 +202,6 @@
             border-radius: 4px;
         }
 
-        .loading {
-            text-align: center;
-            color: #7f8c8d;
-            padding: 60px 20px;
-        }
-
-        .loading h2 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-            font-size: 2em;
-        }
-
-        .loading p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-        }
-
-        .loading .spinner {
-            border: 4px solid #ecf0f1;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .highlight-overlay {
-            position: absolute;
-            background: rgba(255, 235, 59, 0.4);
-            border: 2px solid #ffd700;
-            pointer-events: none;
-            z-index: 10;
-            border-radius: 3px;
-        }
-
-        @media (max-width: 1200px) {
-            .main-container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                max-height: 400px;
-            }
-        }
-
         @media (max-width: 768px) {
             .toolbar {
                 flex-direction: column;
@@ -279,38 +215,29 @@
 
             .controls {
                 justify-content: center;
+                flex-wrap: wrap;
             }
 
             .header h1 {
                 font-size: 1.8em;
             }
+
+            .pdf-container {
+                padding: 10px;
+            }
+
+            button {
+                flex: 1;
+            }
         }
-
-        /* Forçar remoção de sublinhado e estilos indesejados em <mark> */
-        mark, .search-result-text mark, .search-result-text mark * {
-            text-decoration: none !important;
-            border-bottom: none !important;
-            box-shadow: none !important;
-            background-color: #fff59d;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-weight: 600;
-            display: inline;
-        }
-
-
-        /* Remover todos os sublinhados e bordas de texto */
-        * {
-            text-decoration: none !important;
-            border-bottom: none !important;
-        }
-
     </style>
 </head>
+
 <body>
     <div class="header">
-        <h1>📚 Seres Imaginários</h1>
-        <p>Explore o mundo dos seres fantásticos e mitológicos</p>
+        <h1>📚 Livro de Seres Imaginários / Book of Imaginary Beings</h1>
+        <p>Explore o mundo dos Seres Imaginários / Explore the world of Imaginary Beings</p>
+        <p class="credit">@Jomaro Cabrela</p>
     </div>
 
     <div class="toolbar">
@@ -328,18 +255,17 @@
             <button id="prev-page" title="Página anterior">←</button>
             <span class="page-info" id="page-info">Página: -/-</span>
             <button id="next-page" title="Próxima página">→</button>
+            <button id="download-pdf" title="Descarregar PDF">⬇️ Download</button>
         </div>
     </div>
 
     <div class="main-container">
         <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div>📋 Resultados da Pesquisa</div>
-            </div>
+            <div class="sidebar-header">📋 Resultados da Pesquisa</div>
             <div id="search-results-list"></div>
         </div>
 
-        <div class="pdf-container">
+        <div class="pdf-container" id="pdf-container">
             <div class="loading" id="loading">
                 <h2>📄 A carregar PDF...</h2>
                 <div class="spinner"></div>
@@ -350,298 +276,66 @@
     </div>
 
     <script>
+        // Redirecionar ao clicar fora do PDF
+        document.body.addEventListener('click', function (e) {
+            const pdfContainer = document.getElementById('pdf-container');
+            if (!pdfContainer.contains(e.target)) {
+                window.location.href = "https://jomaro34.github.io/Jomaro-Cabrela/";
+            }
+        });
+
+        // PDF.js configuração
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-        let pdfDoc = null;
-        let pageNum = 1;
-        let pageRendering = false;
-        let pageNumPending = null;
-        let scale = 1.5;
-        let searchMatches = [];
-        let currentMatch = -1;
-        let currentPageText = {};
-        let currentSearchTerm = '';
-
+        let pdfDoc = null, pageNum = 1, scale = 1.5, pageRendering = false, pageNumPending = null;
         const canvas = document.getElementById('pdf-canvas');
         const ctx = canvas.getContext('2d');
         const loading = document.getElementById('loading');
-        const sidebar = document.getElementById('sidebar');
-        const searchResultsList = document.getElementById('search-results-list');
 
-        // Carregar PDF automaticamente
         window.addEventListener('load', function() {
-            // Carregar o PDF da mesma pasta
             loadPDFFromURL('Seres_Imaginarios.pdf');
         });
 
         function loadPDFFromURL(url) {
             pdfjsLib.getDocument(url).promise.then(function(pdf) {
-                loadPDF(pdf);
-            }).catch(function(error) {
-                console.error('Erro ao carregar PDF:', error);
-                loading.innerHTML = '<h2>❌ Erro ao carregar PDF</h2><p>Verifique se o arquivo existe no servidor.</p>';
-            });
-        }
-
-        function loadPDF(data) {
-            const loadingPromise = typeof data.numPages !== 'undefined'
-                ? Promise.resolve(data)
-                : pdfjsLib.getDocument(data).promise;
-
-            loadingPromise.then(function(pdf) {
                 pdfDoc = pdf;
                 document.getElementById('page-info').textContent = `Página: ${pageNum}/${pdf.numPages}`;
                 loading.style.display = 'none';
                 canvas.style.display = 'block';
                 renderPage(pageNum);
             }).catch(function(error) {
-                console.error('Erro ao carregar PDF:', error);
-                loading.innerHTML = '<h2>❌ Erro ao carregar PDF</h2><p>Verifique se o arquivo está correto.</p>';
+                loading.innerHTML = '<h2>❌ Erro ao carregar PDF</h2><p>Verifique se o arquivo existe.</p>';
             });
         }
 
         async function renderPage(num) {
             pageRendering = true;
             const page = await pdfDoc.getPage(num);
-
-            // Extrair texto da página
-            const textContent = await page.getTextContent();
-            currentPageText[num] = textContent;
-
             const viewport = page.getViewport({scale: scale});
             canvas.height = viewport.height;
             canvas.width = viewport.width;
 
-            const renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
-
-            await page.render(renderContext).promise;
-
-            // Desenhar highlights se houver termo de pesquisa
-            if (currentSearchTerm) {
-                highlightSearchTermOnCanvas(textContent, viewport);
-            }
-
+            await page.render({canvasContext: ctx, viewport: viewport}).promise;
             pageRendering = false;
-
-            if (pageNumPending !== null) {
-                renderPage(pageNumPending);
-                pageNumPending = null;
-            }
-
             document.getElementById('page-info').textContent = `Página: ${num}/${pdfDoc.numPages}`;
         }
 
-        function highlightSearchTermOnCanvas(textContent, viewport) {
-            const searchLower = currentSearchTerm.toLowerCase();
-
-            textContent.items.forEach(item => {
-                const itemText = item.str.toLowerCase();
-                if (itemText.includes(searchLower)) {
-                    // Calcular posição do texto no canvas
-                    const transform = pdfjsLib.Util.transform(
-                        viewport.transform,
-                        item.transform
-                    );
-
-                    const x = transform[4];
-                    const y = transform[5];
-                    const width = item.width * viewport.scale;
-                    const height = item.height * viewport.scale;
-
-                    // Desenhar retângulo amarelo
-                    //ctx.fillStyle = 'rgba(255, 235, 59, 0.4)';
-                    //ctx.fillRect(x, canvas.height - y - height, width, height);
-
-                    // Desenhar borda
-                    // Borda removida
-}
-            });
-        }
-
         function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
-            }
+            if (pageRendering) pageNumPending = num;
+            else renderPage(num);
         }
 
-        document.getElementById('prev-page').addEventListener('click', function() {
-            if (pageNum <= 1 || !pdfDoc) return;
-            pageNum--;
-            queueRenderPage(pageNum);
-        });
+        document.getElementById('prev-page').addEventListener('click', () => { if (pageNum > 1) { pageNum--; queueRenderPage(pageNum); } });
+        document.getElementById('next-page').addEventListener('click', () => { if (pageNum < pdfDoc.numPages) { pageNum++; queueRenderPage(pageNum); } });
+        document.getElementById('zoom-in').addEventListener('click', () => { scale += 0.25; renderPage(pageNum); });
+        document.getElementById('zoom-out').addEventListener('click', () => { if (scale > 0.5) { scale -= 0.25; renderPage(pageNum); } });
 
-        document.getElementById('next-page').addEventListener('click', function() {
-            if (pageNum >= pdfDoc.numPages || !pdfDoc) return;
-            pageNum++;
-            queueRenderPage(pageNum);
-        });
-
-        document.getElementById('zoom-in').addEventListener('click', function() {
-            if (!pdfDoc) return;
-            scale += 0.25;
-            renderPage(pageNum);
-        });
-
-        document.getElementById('zoom-out').addEventListener('click', function() {
-            if (!pdfDoc || scale <= 0.5) return;
-            scale -= 0.25;
-            renderPage(pageNum);
-        });
-
-        async function searchPDF() {
-            if (!pdfDoc) {
-                alert('PDF ainda não foi carregado.');
-                return;
-            }
-
-            const searchText = document.getElementById('search-input').value.toLowerCase().trim();
-            if (!searchText) {
-                alert('Digite algo para pesquisar.');
-                return;
-            }
-
-            currentSearchTerm = searchText;
-            searchMatches = [];
-            const searchResults = document.getElementById('search-results');
-            searchResults.textContent = '🔍 Procurando...';
-            searchResults.style.background = 'rgba(241, 196, 15, 0.2)';
-            searchResults.style.borderColor = 'rgba(241, 196, 15, 0.5)';
-
-            searchResultsList.innerHTML = '';
-
-            for (let i = 1; i <= pdfDoc.numPages; i++) {
-                const page = await pdfDoc.getPage(i);
-                const textContent = await page.getTextContent();
-                const pageText = textContent.items.map(item => item.str).join(' ');
-                const pageTextLower = pageText.toLowerCase();
-
-                let index = pageTextLower.indexOf(searchText);
-                while (index !== -1) {
-                    // Extrair contexto (50 caracteres antes e depois)
-                    const start = Math.max(0, index - 50);
-                    const end = Math.min(pageText.length, index + searchText.length + 50);
-                    const context = pageText.substring(start, end);
-
-                    searchMatches.push({
-                        page: i,
-                        index: index,
-                        context: context,
-                        fullText: pageText
-                    });
-
-                    index = pageTextLower.indexOf(searchText, index + 1);
-                }
-            }
-
-            if (searchMatches.length > 0) {
-                sidebar.classList.add('active');
-                displaySearchResults(searchText);
-                currentMatch = 0;
-                goToMatch(0);
-                searchResults.textContent = `✓ ${searchMatches.length} resultado(s)`;
-                searchResults.style.background = 'rgba(46, 204, 113, 0.2)';
-                searchResults.style.borderColor = 'rgba(46, 204, 113, 0.5)';
-            } else {
-                sidebar.classList.remove('active');
-                currentSearchTerm = '';
-                searchResults.textContent = '✗ Nenhum resultado';
-                searchResults.style.background = 'rgba(231, 76, 60, 0.2)';
-                searchResults.style.borderColor = 'rgba(231, 76, 60, 0.5)';
-            }
-        }
-
-        function displaySearchResults(searchText) {
-            searchResultsList.innerHTML = '';
-
-            searchMatches.forEach((match, index) => {
-                const item = document.createElement('div');
-                item.className = 'search-result-item';
-
-                const pageLabel = document.createElement('div');
-                pageLabel.className = 'search-result-page';
-                pageLabel.textContent = `📄 Página ${match.page}`;
-
-                const textDiv = document.createElement('div');
-                textDiv.className = 'search-result-text';
-
-                // Destacar o texto encontrado
-                const regex = new RegExp(`(${searchText})`, 'gi');
-                const highlightedText = match.context.replace(regex, '<mark>$1</mark>');
-                textDiv.innerHTML = '...' + highlightedText + '...';
-
-                item.appendChild(pageLabel);
-                item.appendChild(textDiv);
-
-                item.addEventListener('click', function() {
-                    goToMatch(index);
-                });
-
-                searchResultsList.appendChild(item);
-            });
-        }
-
-        function goToMatch(matchIndex) {
-            if (searchMatches.length === 0) return;
-
-            // Remover highlight anterior
-            document.querySelectorAll('.search-result-item').forEach(item => {
-                item.classList.remove('active');
-            });
-
-            currentMatch = matchIndex;
-            const match = searchMatches[currentMatch];
-            pageNum = match.page;
-            queueRenderPage(pageNum);
-
-            // Destacar item na sidebar
-            const items = document.querySelectorAll('.search-result-item');
-            if (items[currentMatch]) {
-                items[currentMatch].classList.add('active');
-                items[currentMatch].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-
-            const searchResults = document.getElementById('search-results');
-            searchResults.textContent = `📍 ${currentMatch + 1} de ${searchMatches.length}`;
-        }
-
-        document.getElementById('search-btn').addEventListener('click', searchPDF);
-
-        document.getElementById('search-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchPDF();
-            }
-        });
-
-        document.getElementById('prev-match').addEventListener('click', function() {
-            if (searchMatches.length === 0) return;
-            currentMatch = (currentMatch - 1 + searchMatches.length) % searchMatches.length;
-            goToMatch(currentMatch);
-        });
-
-        document.getElementById('next-match').addEventListener('click', function() {
-            if (searchMatches.length === 0) return;
-            currentMatch = (currentMatch + 1) % searchMatches.length;
-            goToMatch(currentMatch);
-        });
-
-        // Atalhos de teclado
-        document.addEventListener('keydown', function(e) {
-            if (!pdfDoc) return;
-
-            if (e.key === 'ArrowLeft' && !e.target.matches('input')) {
-                document.getElementById('prev-page').click();
-            } else if (e.key === 'ArrowRight' && !e.target.matches('input')) {
-                document.getElementById('next-page').click();
-            } else if (e.key === '+' || e.key === '=') {
-                document.getElementById('zoom-in').click();
-            } else if (e.key === '-') {
-                document.getElementById('zoom-out').click();
-            }
+        // Botão de download
+        document.getElementById('download-pdf').addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.href = 'Seres_Imaginarios.pdf';
+            link.download = 'Seres_Imaginarios.pdf';
+            link.click();
         });
     </script>
 </body>
