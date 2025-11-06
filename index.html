@@ -47,6 +47,17 @@
             color: #000;
             font-weight: 600;
             font-size: 1em;
+            margin-top: 10px;
+        }
+
+        .header .credit a {
+            color: #000;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .header .credit a:hover {
+            text-decoration: underline;
         }
 
         .toolbar {
@@ -237,7 +248,9 @@
     <div class="header">
         <h1>📚 Livro de Seres Imaginários / Book of Imaginary Beings</h1>
         <p>Explore o mundo dos Seres Imaginários / Explore the world of Imaginary Beings</p>
-        <p class="credit">@Jomaro Cabrela</p>
+        <p class="credit">
+            <a href="https://jomaro34.github.io/Jomaro-Cabrela/" target="_blank">@2025 Jomaro Cabrela</a>
+        </p>
     </div>
 
     <div class="toolbar">
@@ -276,14 +289,6 @@
     </div>
 
     <script>
-        // Redirecionar ao clicar fora do PDF
-        document.body.addEventListener('click', function (e) {
-            const pdfContainer = document.getElementById('pdf-container');
-            if (!pdfContainer.contains(e.target)) {
-                window.location.href = "https://jomaro34.github.io/Jomaro-Cabrela/";
-            }
-        });
-
         // PDF.js configuração
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
