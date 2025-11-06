@@ -3,20 +3,114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Visualizador PDF com Índice</title>
+<title>Livro de Seres Imaginários / Book of Imaginary Beings</title>
 <link rel="icon" href="favicon.png" type="image/png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; }
-    .header { background: #667eea; color: white; padding: 20px; text-align: center; }
-    .main { display: flex; flex: 1; min-height: 80vh; }
-    .sidebar { width: 300px; background: #f4f4f4; overflow-y: auto; padding: 15px; }
-    .sidebar h3 { margin-top: 0; }
-    .sidebar ul { list-style: none; padding-left: 0; }
-    .sidebar li { cursor: pointer; padding: 5px 0; }
-    .sidebar li:hover { background: #ddd; }
-    .pdf-container { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
-    canvas { border: 1px solid #ccc; max-width: 100%; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; background: #f9f9f9; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* HEADER */
+    .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px 15px;
+        text-align: center;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+    .header h1 {
+        font-size: 1.9em;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .header p {
+        font-size: 1em;
+        color: #000;
+        background: rgba(255,255,255,0.9);
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+    }
+    .header a {
+        color: #000;
+        font-weight: 600;
+        text-decoration: none;
+        display: block;
+        margin-top: 6px;
+    }
+    .header a:hover {
+        text-decoration: underline;
+    }
+
+    /* MAIN */
+    .main { display: flex; flex: 1; min-height: 75vh; flex-wrap: wrap; }
+    .sidebar {
+        width: 300px;
+        background: #fff;
+        overflow-y: auto;
+        padding: 15px;
+        border-right: 1px solid #ddd;
+    }
+    .sidebar h3 { margin-bottom: 10px; }
+    .sidebar ul { list-style: none; }
+    .sidebar li {
+        cursor: pointer;
+        padding: 5px 0;
+        border-bottom: 1px solid #eee;
+        transition: background 0.3s;
+    }
+    .sidebar li:hover { background: #f0f0f0; }
+
+    .pdf-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 20px;
+        background: #fff;
+    }
+
+    /* DOWNLOAD BOX */
+    .download-box {
+        background: #3498db;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        font-weight: 600;
+        text-align: center;
+    }
+    .download-box:hover {
+        background: #2980b9;
+        transform: scale(1.05);
+    }
+
+    canvas {
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        max-width: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* MOBILE */
+    @media (max-width: 900px) {
+        .main { flex-direction: column; }
+        .sidebar {
+            width: 100%;
+            max-height: 300px;
+            border-right: none;
+            border-bottom: 1px solid #ddd;
+        }
+        .pdf-container {
+            padding: 10px;
+        }
+        .header h1 { font-size: 1.4em; }
+    }
 </style>
 </head>
 <body>
@@ -24,6 +118,7 @@
 <div class="header">
     <h1>📚 Livro de Seres Imaginários / Book of Imaginary Beings</h1>
     <p>Explore o mundo dos Seres Imaginários / Explore the world of Imaginary Beings</p>
+    <a href="https://jomaro34.github.io/Jomaro-Cabrela/" target="_blank">@2025 Jomaro Cabrela</a>
 </div>
 
 <div class="main">
@@ -31,7 +126,9 @@
         <h3>Índice de Palavras</h3>
         <ul id="index-list"></ul>
     </div>
+
     <div class="pdf-container">
+        <div class="download-box" onclick="downloadPDF()">⬇️ Download PDF</div>
         <canvas id="pdf-canvas"></canvas>
     </div>
 </div>
@@ -50,7 +147,7 @@ let pageRendering = false;
 let pageNumPending = null;
 
 let indexData = {}; // { palavra: [paginas] }
-const stopWords = ["e","de","o","a","que","com","em","para","os","as","um","uma","no","na","dos","das","ao","à","do","da","se","por","como","mais","ou","só","mas","foi","ser","está","estão"];
+const stopWords = ["e","de","o","a","que","com","em","para","os","as","um","uma","no","na","dos","das","ao","à","do","da","se","por","como","mais","ou","só","mas","foi","ser","está","estão","nas","nos","são","era","tem","há","bem","lhe","eles","elas","isso","isto"];
 
 async function loadPDF(url) {
     pdfDoc = await pdfjsLib.getDocument(url).promise;
@@ -98,6 +195,13 @@ function goToPage(num) {
     pageNum = num;
     if (pageRendering) pageNumPending = num;
     else renderPage(num);
+}
+
+function downloadPDF() {
+    const link = document.createElement('a');
+    link.href = 'Seres_Imaginarios.pdf';
+    link.download = 'Seres_Imaginarios.pdf';
+    link.click();
 }
 
 loadPDF('Seres_Imaginarios.pdf');
