@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rodapé - Jomaro Cabrela</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f7f7f7;
+      color: #333;
+    }
+
+    footer {
+      background-color: #111;
+      color: #ddd;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 14px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* link clicável (ampliado) */
+    .copyright-link {
+      position: relative;
+      display: inline-block;
+      color: inherit;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* aumenta a área clicável ao redor do texto */
+    .copyright-link::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      left: -12px;
+      right: -12px;
+      bottom: -8px;
+    }
+
+    .copyright-link:hover,
+    .copyright-link:focus {
+      color: #fff;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <footer>
+    <a href="https://jomaro34.github.io/Jomaro-Cabrela/"
+       class="copyright-link"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Visitar página de Jomaro Cabrela">
+       ©Jomaro Cabrela
+    </a>
+  </footer>
+
+</body>
+</html>
