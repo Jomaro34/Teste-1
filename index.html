@@ -2,65 +2,96 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Editor de PDFs</title>
-  <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+  <title>Gerador de Código de Barras e QR Code</title>
+
+  <!-- Biblioteca para código de barras EAN-13 -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+  <!-- Biblioteca para QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
+      margin: 40px;
       text-align: center;
     }
-    #pdf-container {
-      border: 1px solid #ccc;
-      margin-top: 20px;
-      display: inline-block;
+    input {
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
     }
-    canvas {
-      border: 1px solid #999;
+    button {
+      padding: 10px 20px;
+      margin-left: 10px;
+      font-size: 16px;
+      cursor: pointer;
     }
-    #file-input {
-      margin-top: 20px;
+    .output {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+    .box {
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Editor de PDFs</h1>
-  <p>Carregue um PDF para visualizar e editar.</p>
+  <h1>Gerador de Código de Barras EAN-13 e QR Code</h1>
+  <p>Digite um número (para EAN-13) ou texto (para QR Code):</p>
 
-  <input type="file" id="file-input" accept="application/pdf" />
-  <div id="pdf-container"></div>
+  <input type="text" id="inputText" placeholder="Ex: 5601234567890">
+  <button onclick="gerarCodigos()">Gerar</button>
+
+  <div class="output">
+    <div class="box">
+      <h3>Código de Barras EAN-13</h3>
+      <svg id="barcode"></svg>
+    </div>
+
+    <div class="box">
+      <h3>QR Code</h3>
+      <div id="qrcode"></div>
+    </div>
+  </div>
 
   <script>
-    const input = document.getElementById('file-input');
-    const container = document.getElementById('pdf-container');
+    function gerarCodigos() {
+      const texto = document.getElementById("inputText").value.trim();
+      const barcode = document.getElementById("barcode");
+      const qrcodeDiv = document.getElementById("qrcode");
 
-    input.addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
+      // Limpar QR anterior
+      qrcodeDiv.innerHTML = "";
 
-      const fileReader = new FileReader();
-      fileReader.onload = async function() {
-        const typedarray = new Uint8Array(this.result);
+      if (!texto) {
+        alert("Por favor, insira um número ou texto.");
+        return;
+      }
 
-        const pdf = await pdfjsLib.getDocument(typedarray).promise;
-        const page = await pdf.getPage(1);
+      // Gera o código de barras EAN-13 (só funciona com 12 ou 13 dígitos numéricos)
+      try {
+        JsBarcode("#barcode", texto, {
+          format: "ean13",
+          lineColor: "#000",
+          width: 2,
+          height: 100,
+          displayValue: true
+        });
+      } catch (e) {
+        barcode.innerHTML = "<text x='10' y='20'>Código inválido para EAN-13</text>";
+      }
 
-        const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        container.innerHTML = '';
-        container.appendChild(canvas);
-
-        const renderContext = {
-          canvasContext: context,
-          viewport: viewport
-        };
-        await page.render(renderContext).promise;
-      };
-      fileReader.readAsArrayBuffer(file);
-    });
+      // Gera o QR Code
+      new QRCode(qrcodeDiv, {
+        text: texto,
+        width: 150,
+        height: 150
+      });
+    }
   </script>
 </body>
 </html>
