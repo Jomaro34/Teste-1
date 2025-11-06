@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visualizador PDF com Índice</title>
+<link rel="icon" href="favicon.png" type="image/png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; }
+    .header { background: #667eea; color: white; padding: 20px; text-align: center; }
+    .main { display: flex; flex: 1; min-height: 80vh; }
+    .sidebar { width: 300px; background: #f4f4f4; overflow-y: auto; padding: 15px; }
+    .sidebar h3 { margin-top: 0; }
+    .sidebar ul { list-style: none; padding-left: 0; }
+    .sidebar li { cursor: pointer; padding: 5px 0; }
+    .sidebar li:hover { background: #ddd; }
+    .pdf-container { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
+    canvas { border: 1px solid #ccc; max-width: 100%; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>📚 Livro de Seres Imaginários / Book of Imaginary Beings</h1>
+    <p>Explore o mundo dos Seres Imaginários / Explore the world of Imaginary Beings</p>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <h3>Índice de Palavras</h3>
+        <ul id="index-list"></ul>
+    </div>
+    <div class="pdf-container">
+        <canvas id="pdf-canvas"></canvas>
+    </div>
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const canvas = document.getElementById('pdf-canvas');
+const ctx = canvas.getContext('2d');
+const indexList = document.getElementById('index-list');
+
+let pdfDoc = null;
+let pageNum = 1;
+let scale = 1.5;
+let pageRendering = false;
+let pageNumPending = null;
+
+let indexData = {}; // { palavra: [paginas] }
+const stopWords = ["e","de","o","a","que","com","em","para","os","as","um","uma","no","na","dos","das","ao","à","do","da","se","por","como","mais","ou","só","mas","foi","ser","está","estão"];
+
+async function loadPDF(url) {
+    pdfDoc = await pdfjsLib.getDocument(url).promise;
+    await buildIndex();
+    renderPage(pageNum);
+}
+
+async function buildIndex() {
+    for (let i = 1; i <= pdfDoc.numPages; i++) {
+        const page = await pdfDoc.getPage(i);
+        const content = await page.getTextContent();
+        const pageText = content.items.map(item => item.str).join(' ');
+        const words = pageText.split(/\W+/).filter(w => w.length > 2 && !stopWords.includes(w.toLowerCase()));
+
+        words.forEach(word => {
+            const w = word.toLowerCase();
+            if (!indexData[w]) indexData[w] = [];
+            if (!indexData[w].includes(i)) indexData[w].push(i);
+        });
+    }
+    displayIndex();
+}
+
+function displayIndex() {
+    const sortedWords = Object.keys(indexData).sort();
+    sortedWords.forEach(word => {
+        const li = document.createElement('li');
+        li.textContent = `${word} → ${indexData[word].join(', ')}`;
+        li.addEventListener('click', () => goToPage(indexData[word][0]));
+        indexList.appendChild(li);
+    });
+}
+
+async function renderPage(num) {
+    pageRendering = true;
+    const page = await pdfDoc.getPage(num);
+    const viewport = page.getViewport({scale: scale});
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    await page.render({canvasContext: ctx, viewport: viewport}).promise;
+    pageRendering = false;
+}
+
+function goToPage(num) {
+    pageNum = num;
+    if (pageRendering) pageNumPending = num;
+    else renderPage(num);
+}
+
+loadPDF('Seres_Imaginarios.pdf');
+</script>
+
+</body>
+</html>
