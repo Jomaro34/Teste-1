@@ -14,67 +14,40 @@
     --bg-grad-end:#764ba2;
     --panel-bg:#ffffff;
     --text:#2c3e50;
-    --highlight:rgba(255,235,59,0.6);
+    --highlight:#fff59d;
   }
-
   *{box-sizing:border-box;margin:0;padding:0;text-decoration:none}
   body{
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     background: linear-gradient(135deg, var(--bg-grad-start) 0%, var(--bg-grad-end) 100%);
     color:var(--text);
     min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:stretch;
+    display:flex;flex-direction:column;
   }
 
-  /* Header */
   .header{
-    background: rgba(255,255,255,0.95);
-    padding:24px 16px;
-    text-align:center;
+    background:rgba(255,255,255,0.95);
+    padding:24px 16px;text-align:center;
     box-shadow:0 4px 8px rgba(0,0,0,0.08);
   }
   .header h1{font-size:1.9rem;font-weight:700;margin-bottom:8px}
-  .header p.subtitle{
-    display:inline-block;
-    background:rgba(255,255,255,0.9);
-    padding:6px 10px;border-radius:6px;color:var(--text);
-    font-size:1rem;margin-bottom:8px;
-  }
-  .header a.credit{
-    display:block;margin-top:8px;color:#000;font-weight:700;
-  }
+  .header p.subtitle{display:inline-block;background:#fff;padding:6px 10px;border-radius:6px}
+  .header a.credit{display:block;margin-top:8px;color:#000;font-weight:700}
 
-  /* Toolbar */
   .toolbar{
-    background: rgba(44,62,80,0.95);
-    color:#fff;padding:12px 14px;
+    background:rgba(44,62,80,0.95);color:#fff;padding:12px 14px;
     display:flex;gap:12px;align-items:center;flex-wrap:wrap;
     position:sticky;top:0;z-index:40;
   }
-  .search-box{
-    display:flex;gap:8px;align-items:center;flex:1;min-width:220px;
-  }
-  .search-box input{
-    flex:1;padding:10px 12px;border-radius:8px;border:none;font-size:14px;
-  }
-  .search-box button{
-    background:var(--accent);border:none;padding:10px 12px;border-radius:8px;color:#fff;cursor:pointer;
-  }
+  .search-box{display:flex;gap:8px;align-items:center;flex:1;min-width:220px}
+  .search-box input{flex:1;padding:10px 12px;border-radius:8px;border:none;font-size:14px}
+  .search-box button{background:var(--accent);border:none;padding:10px 12px;border-radius:8px;color:#fff;cursor:pointer}
   .controls{display:flex;gap:8px;align-items:center}
-  .controls button, .controls a{
-    background:var(--accent);color:#fff;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;
-  }
+  .controls button,.controls a{background:var(--accent);color:#fff;border:none;padding:8px 10px;border-radius:8px;cursor:pointer}
   .page-info{color:#fff;background:rgba(255,255,255,0.08);padding:6px 10px;border-radius:8px;font-weight:600}
 
-  /* Layout */
-  .content{
-    display:flex;gap:18px;max-width:1400px;margin:20px auto;padding:0 16px;width:100%;
-    align-items:flex-start;
-  }
+  .content{display:flex;gap:18px;max-width:1400px;margin:20px auto;padding:0 16px;width:100%;align-items:flex-start}
 
-  /* Sidebar results */
   .sidebar{
     width:340px;background:var(--panel-bg);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.2);
     max-height:calc(100vh - 180px);overflow:auto;padding:12px;display:none;
@@ -87,7 +60,6 @@
   .result-excerpt{font-size:14px;color:var(--text);line-height:1.4}
   .result-excerpt mark{background:var(--highlight);padding:2px 3px;border-radius:3px;font-weight:700}
 
-  /* PDF panel */
   .pdf-panel{
     flex:1;background:var(--panel-bg);border-radius:12px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.2);
     position:relative;min-height:60vh;display:flex;justify-content:center;align-items:flex-start;
@@ -97,345 +69,129 @@
   .spinner{border:4px solid #ecf0f1;border-top:4px solid var(--accent);border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;margin:18px auto}
   @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
-  /* Highlight overlay container */
-  .overlay-container{
-    position:absolute;left:20px;right:20px;top:20px;bottom:20px;pointer-events:none;
-  }
-  .hl{
-    position:absolute;background:var(--highlight);border-radius:3px;pointer-events:none;
-    box-shadow:0 0 0 2px rgba(255,235,59,0.12) inset;
-  }
-
-  /* Responsive */
   @media (max-width:1000px){
     .sidebar{width:100%;max-height:260px}
     .content{flex-direction:column;gap:12px;padding-bottom:40px}
     .pdf-panel{min-height:50vh;padding:12px}
   }
-
 </style>
 </head>
 <body>
+<header class="header">
+  <h1>📚 Livro de Seres Imaginários / Book of Imaginary Beings</h1>
+  <p class="subtitle">Explore o mundo dos Seres Imaginários / Explore the world of Imaginary Beings</p>
+  <a class="credit" href="https://jomaro34.github.io/Jomaro-Cabrela/" target="_blank">@2025 Jomaro Cabrela</a>
+</header>
 
-  <header class="header">
-    <h1>📚 Livro de Seres Imaginários / Book of Imaginary Beings</h1>
-    <p class="subtitle">Explore o mundo dos Seres Imaginários / Explore the world of Imaginary Beings</p>
-    <a class="credit" href="https://jomaro34.github.io/Jomaro-Cabrela/" target="_blank">@2025 Jomaro Cabrela</a>
-  </header>
-
-  <div class="toolbar" role="toolbar" aria-label="PDF controls">
-    <div class="search-box">
-      <input id="search-input" type="search" placeholder="🔍 Pesquisar no documento (palavra ou frase)..." aria-label="Pesquisar no documento">
-      <button id="search-btn" title="Procurar">Procurar</button>
-      <button id="clear-btn" title="Limpar">Limpar</button>
-    </div>
-
-    <div class="controls" role="group" aria-label="Controles de visualização">
-      <button id="zoom-out" title="Diminuir zoom">−</button>
-      <button id="zoom-in" title="Aumentar zoom">+</button>
-      <button id="prev-page" title="Página anterior">←</button>
-      <div class="page-info" id="page-info">Página: -/-</div>
-      <button id="next-page" title="Próxima página">→</button>
-      <a id="download-link" href="Seres_Imaginarios.pdf" download="Seres_Imaginarios.pdf" title="Descarregar PDF">⬇️ Download PDF</a>
-    </div>
+<div class="toolbar">
+  <div class="search-box">
+    <input id="search-input" type="search" placeholder="🔍 Pesquisar no documento..." />
+    <button id="search-btn">Procurar</button>
+    <button id="clear-btn">Limpar</button>
   </div>
 
-  <main class="content">
-    <aside class="sidebar" id="sidebar" aria-live="polite">
-      <h4>📋 Resultados da Pesquisa</h4>
-      <div id="results"></div>
-    </aside>
+  <div class="controls">
+    <button id="zoom-out">−</button>
+    <button id="zoom-in">+</button>
+    <button id="prev-page">←</button>
+    <div class="page-info" id="page-info">Página: -/-</div>
+    <button id="next-page">→</button>
+    <a href="Seres_Imaginarios.pdf" download>⬇️ Download PDF</a>
+  </div>
+</div>
 
-    <section class="pdf-panel" id="pdf-panel" aria-label="Visualizador do PDF">
-      <div class="loading" id="loading">
-        <h2>📄 A carregar PDF...</h2>
-        <div class="spinner"></div>
-        <p id="loading-name">Seres_Imaginarios.pdf</p>
-      </div>
+<main class="content">
+  <aside class="sidebar" id="sidebar">
+    <h4>📋 Resultados da Pesquisa</h4>
+    <div id="results"></div>
+  </aside>
 
-      <div class="overlay-container" id="overlay-container" aria-hidden="true"></div>
-      <canvas id="pdf-canvas" style="display:none"></canvas>
-    </section>
-  </main>
+  <section class="pdf-panel">
+    <div class="loading" id="loading">
+      <h2>📄 A carregar PDF...</h2>
+      <div class="spinner"></div>
+      <p>Seres_Imaginarios.pdf</p>
+    </div>
+    <canvas id="pdf-canvas" style="display:none"></canvas>
+  </section>
+</main>
 
 <script>
-/* --------------------------------------------------------------------------------
-  Visualizador PDF + pesquisa com índice lateral e destaque no PDF (overlay divs)
-  Usa PDF.js (v3.x). Copia este ficheiro para a mesma pasta do Seres_Imaginarios.pdf
-  -------------------------------------------------------------------------------- */
-
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-const URL_PDF = 'Seres_Imaginarios.pdf'; // nome do ficheiro
+const URL_PDF = 'Seres_Imaginarios.pdf';
 const canvas = document.getElementById('pdf-canvas');
 const ctx = canvas.getContext('2d');
 const loadingEl = document.getElementById('loading');
-const overlayContainer = document.getElementById('overlay-container');
-const resultsEl = document.getElementById('results');
 const sidebar = document.getElementById('sidebar');
+const resultsEl = document.getElementById('results');
 const pageInfo = document.getElementById('page-info');
 
-let pdfDoc = null;
-let pageNum = 1;
-let scale = 1.5;
-let pageRendering = false;
-let pageNumPending = null;
-let currentSearchTerm = '';
-let matchesByPage = {}; // { pageNumber: [ {item, transform, rects, excerptIndex, excerptTextIndex } ] }
-let pageTextStore = {}; // cache textContent per page
+let pdfDoc=null,pageNum=1,scale=1.5,pageRendering=false,pageNumPending=null,currentSearchTerm='',matchesByPage={},pageTextStore={};
 
-// stopwords para filtrar excertos curtos irrelevantes (apenas para melhorar result list)
-const stopWords = new Set(["e","de","o","a","que","com","em","para","os","as","um","uma","no","na","dos","das","ao","à","do","da","se","por","como","mais","ou","só","mas","foi","ser","está","estão","nas","nos","são","era","tem","há","bem","lhe","eles","elas","isso","isto"]);
-
-/* ----- Carregar PDF ----- */
 async function loadPDF(url){
   try{
-    const loadingTask = pdfjsLib.getDocument(url);
-    pdfDoc = await loadingTask.promise;
-    pageInfo.textContent = `Página: ${pageNum}/${pdfDoc.numPages}`;
-    loadingEl.style.display = 'none';
-    canvas.style.display = 'block';
+    const pdf = await pdfjsLib.getDocument(url).promise;
+    pdfDoc = pdf;
+    pageInfo.textContent = `Página: ${pageNum}/${pdf.numPages}`;
+    loadingEl.style.display='none';canvas.style.display='block';
     renderPage(pageNum);
-  }catch(err){
-    loadingEl.innerHTML = '<h2>❌ Erro ao carregar PDF</h2><p>Verifique se o ficheiro existe e que estás a servir via HTTP (ex.: python -m http.server).</p>';
-    console.error(err);
-  }
+  }catch(e){loadingEl.innerHTML='<h2>❌ Erro ao carregar PDF</h2>';console.error(e);}
 }
 
-/* ----- Renderizar página ----- */
 async function renderPage(num){
-  pageRendering = true;
-  // limpar overlays anteriores
-  clearOverlays();
-
+  pageRendering=true;
   const page = await pdfDoc.getPage(num);
-  const viewport = page.getViewport({ scale: scale });
-  canvas.height = viewport.height;
-  canvas.width = viewport.width;
-
-  // renderizar no canvas
-  await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-  pageRendering = false;
-  pageInfo.textContent = `Página: ${num}/${pdfDoc.numPages}`;
-
-  // armazenar texto da página (se ainda não)
-  if(!pageTextStore[num]){
-    const textContent = await page.getTextContent();
-    pageTextStore[num] = textContent;
-  }
-
-  // se há termo de pesquisa, desenhar overlays para a página atual
-  if(currentSearchTerm){
-    drawHighlightsForPage(num);
-  }
-
-  if(pageNumPending !== null){
-    const next = pageNumPending; pageNumPending = null; renderPage(next);
-  }
+  const viewport = page.getViewport({scale});
+  canvas.height=viewport.height;canvas.width=viewport.width;
+  await page.render({canvasContext:ctx,viewport}).promise;
+  pageRendering=false;
+  pageInfo.textContent=`Página: ${num}/${pdfDoc.numPages}`;
+  if(pageNumPending!==null){renderPage(pageNumPending);pageNumPending=null;}
 }
+function queueRenderPage(num){if(pageRendering)pageNumPending=num;else renderPage(num);}
+document.getElementById('prev-page').onclick=()=>{if(pageNum<=1)return;pageNum--;queueRenderPage(pageNum);}
+document.getElementById('next-page').onclick=()=>{if(pageNum>=pdfDoc.numPages)return;pageNum++;queueRenderPage(pageNum);}
+document.getElementById('zoom-in').onclick=()=>{scale+=0.25;renderPage(pageNum);}
+document.getElementById('zoom-out').onclick=()=>{if(scale>0.5){scale-=0.25;renderPage(pageNum);}}
 
-/* ----- Util: fila de render ----- */
-function queueRenderPage(num){
-  if(pageRendering){ pageNumPending = num; }
-  else { renderPage(num); }
-}
-
-/* ----- Navegação e zoom ----- */
-document.getElementById('prev-page').addEventListener('click', ()=>{ if(pageNum<=1) return; pageNum--; queueRenderPage(pageNum); });
-document.getElementById('next-page').addEventListener('click', ()=>{ if(pageNum>=pdfDoc.numPages) return; pageNum++; queueRenderPage(pageNum); });
-document.getElementById('zoom-in').addEventListener('click', ()=>{ scale += 0.25; renderPage(pageNum); });
-document.getElementById('zoom-out').addEventListener('click', ()=>{ if(scale>0.5){ scale -= 0.25; renderPage(pageNum); } });
-
-/* ----- Pesquisa ----- */
-document.getElementById('search-btn').addEventListener('click', searchPDF);
-document.getElementById('clear-btn').addEventListener('click', clearSearch);
-document.getElementById('search-input').addEventListener('keypress', (e)=>{ if(e.key==='Enter') searchPDF(); });
+document.getElementById('search-btn').onclick=searchPDF;
+document.getElementById('clear-btn').onclick=clearSearch;
+document.getElementById('search-input').addEventListener('keypress',e=>{if(e.key==='Enter')searchPDF();});
 
 async function searchPDF(){
-  const q = document.getElementById('search-input').value.trim();
-  if(!q || !pdfDoc){ alert('Escreve uma palavra ou frase e tenta novamente.'); return; }
-
-  currentSearchTerm = q.toLowerCase();
-  matchesByPage = {};
-  resultsEl.innerHTML = '';
-  sidebar.classList.remove('active');
-
-  // procurar página a página
-  for(let p=1; p<=pdfDoc.numPages; p++){
-    const page = await pdfDoc.getPage(p);
-    const textContent = await page.getTextContent();
-    const pageText = textContent.items.map(it=>it.str).join(' ');
-    const pageTextLower = pageText.toLowerCase();
-
-    let idx = pageTextLower.indexOf(currentSearchTerm);
-    if(idx !== -1){
-      // encontrar todas as ocorrências nesta página
-      // para cada item do textContent, verificamos se contém o termo e capturamos posição/transform
-      const pageMatches = [];
-      textContent.items.forEach((item, itemIndex)=>{
-        const s = item.str || '';
-        if(!s) return;
-        const sLower = s.toLowerCase();
-        if(sLower.includes(currentSearchTerm)){
-          pageMatches.push({ item, itemIndex });
-        }
-      });
-
-      if(pageMatches.length){
-        // guardar textContent para uso posterior
-        pageTextStore[p] = textContent;
-        matchesByPage[p] = pageMatches;
-      }
-    }
+  const q=document.getElementById('search-input').value.trim().toLowerCase();
+  if(!q||!pdfDoc)return;
+  currentSearchTerm=q;matchesByPage={};resultsEl.innerHTML='';sidebar.classList.remove('active');
+  for(let i=1;i<=pdfDoc.numPages;i++){
+    const page=await pdfDoc.getPage(i);
+    const text=await page.getTextContent();
+    const joined=text.items.map(it=>it.str).join(' ');
+    if(joined.toLowerCase().includes(q))matchesByPage[i]=joined;
   }
-
-  // gerar lista de resultados com excertos (first occurrence per page)
-  const pages = Object.keys(matchesByPage).map(n=>parseInt(n)).sort((a,b)=>a-b);
-  if(pages.length===0){
-    resultsEl.innerHTML = '<div style="padding:12px;color:#a00">✗ Nenhum resultado encontrado</div>';
-    sidebar.classList.remove('active');
-    currentSearchTerm = '';
-    clearOverlays();
-    return;
-  }
-
+  const pages=Object.keys(matchesByPage);
+  if(!pages.length){resultsEl.innerHTML='<div style="padding:12px;color:#a00">✗ Nenhum resultado</div>';return;}
   sidebar.classList.add('active');
-
-  pages.forEach(pageNumKey=>{
-    // criar excerto: pega-se o texto da página e extrai em torno da primeira ocorrência
-    const textContent = pageTextStore[pageNumKey];
-    const pageText = textContent.items.map(it=>it.str).join(' ');
-    const idx = pageText.toLowerCase().indexOf(currentSearchTerm);
-    const start = Math.max(0, idx-80);
-    const end = Math.min(pageText.length, idx + currentSearchTerm.length + 80);
-    const excerpt = (start>0? '...':'') + pageText.substring(start,end) + (end<pageText.length? '...':'');
-
-    // highlight palavra no excerpt (escapa HTML)
-    const safeExcerpt = escapeHTML(excerpt);
-    const highlightHTML = safeExcerpt.replace(new RegExp(escapeRegExp(currentSearchTerm),'gi'), match => `<mark>${match}</mark>`);
-
-    // construir item
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'result-item';
-    const pageDiv = document.createElement('div');
-    pageDiv.className = 'result-page';
-    pageDiv.textContent = `📄 Página ${pageNumKey}`;
-    const exDiv = document.createElement('div');
-    exDiv.className = 'result-excerpt';
-    exDiv.innerHTML = highlightHTML;
-
-    itemDiv.appendChild(pageDiv);
-    itemDiv.appendChild(exDiv);
-
-    itemDiv.addEventListener('click', ()=>{
-      // ao clicar: ir para a página e focalizar (criar overlays) — escolher primeira ocorrência dessa página
-      pageNum = pageNumKey;
-      queueRenderPage(pageNum);
-      setTimeout(()=>{ // espera renderização
-        drawHighlightsForPage(pageNumKey, true);
-      }, 120); // timing razoável
-      // mobile: scroll para ver painel PDF
-      if(window.innerWidth < 1000) window.scrollTo({top: document.querySelector('.pdf-panel').offsetTop - 10, behavior:'smooth'});
-    });
-
-    resultsEl.appendChild(itemDiv);
+  resultsEl.innerHTML='';
+  pages.forEach(p=>{
+    const t=matchesByPage[p];
+    const idx=t.toLowerCase().indexOf(q);
+    const start=Math.max(0,idx-80),end=Math.min(t.length,idx+q.length+80);
+    const snippet=(start>0?'...':'')+t.substring(start,end)+(end<t.length?'...':'');
+    const safe=snippet.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    const html=safe.replace(new RegExp(q,'gi'),m=>`<mark>${m}</mark>`);
+    const div=document.createElement('div');
+    div.className='result-item';
+    div.innerHTML=`<div class="result-page">📄 Página ${p}</div><div class="result-excerpt">${html}</div>`;
+    div.onclick=()=>{pageNum=parseInt(p);queueRenderPage(pageNum);if(window.innerWidth<900)window.scrollTo({top:canvas.offsetTop,behavior:'smooth'});}
+    resultsEl.appendChild(div);
   });
-
-  // desenhar overlays para página atual se incluir matches
-  drawHighlightsForPage(pageNum);
 }
-
-/* ----- Desenhar highlights (overlays) para uma página ----- */
-async function drawHighlightsForPage(pNum, focusFirst=false){
-  // limpar overlays
-  clearOverlays();
-
-  if(!matchesByPage[pNum]) return;
-
-  const page = await pdfDoc.getPage(pNum);
-  const viewport = page.getViewport({ scale: scale });
-  const textContent = pageTextStore[pNum] || await page.getTextContent();
-
-  // Para cada item que contém o termo, calculamos transform e coordenadas para overlay
-  const pageMatches = matchesByPage[pNum];
-
-  // Obter transform por item:
-  pageMatches.forEach(matchObj=>{
-    const item = matchObj.item;
-    // transform item.transform -> posição em user space then map to viewport
-    const transform = pdfjsLib.Util.transform(viewport.transform, item.transform);
-    // x,y são transform[4], transform[5] ; width ~ item.width * viewport.scale ; height ~ item.height * viewport.scale
-    const x = transform[4];
-    const y = transform[5];
-    const width = (item.width || (item.str.length*6)) * viewport.scale; // fallback width estimate
-    const height = (item.height || 10) * viewport.scale;
-
-    // canvas Y origin is top, but pdf transform gives y distance from bottom — we need to convert:
-    const top = canvas.offsetTop + (canvas.height - y - height);
-    const left = canvas.offsetLeft + x;
-
-    // create overlay div positioned relative to overlayContainer coordinates
-    // overlayContainer is absolutely placed over canvas area with same padding; compute offsets within it
-    // get bounding rects to convert page coords -> overlay coords
-    const canvasRect = canvas.getBoundingClientRect();
-    const containerRect = overlayContainer.getBoundingClientRect();
-
-    // position relative to overlayContainer:
-    const relLeft = (canvasRect.left - containerRect.left) + x;
-    const relTop = (canvasRect.top - containerRect.top) + (canvas.height - y - height);
-
-    const hl = document.createElement('div');
-    hl.className = 'hl';
-    hl.style.left = Math.round(relLeft) + 'px';
-    hl.style.top = Math.round(relTop) + 'px';
-    hl.style.width = Math.round(width) + 'px';
-    hl.style.height = Math.max( Math.round(height), 8 ) + 'px';
-    overlayContainer.appendChild(hl);
-  });
-
-  // Se pediram foco no primeiro destaque, animar scroll ou efeito
-  if(focusFirst){
-    const first = overlayContainer.querySelector('.hl');
-    if(first){
-      first.style.boxShadow = '0 0 0 3px rgba(255,235,59,0.3)';
-      setTimeout(()=>{ first.style.boxShadow = 'none'; }, 1200);
-    }
-  }
-}
-
-/* ----- Clear overlays ----- */
-function clearOverlays(){
-  overlayContainer.innerHTML = '';
-}
-
-/* ----- Clear search ----- */
 function clearSearch(){
-  document.getElementById('search-input').value = '';
-  currentSearchTerm = '';
-  matchesByPage = {};
-  pageTextStore = {}; // optional: clear cache
-  resultsEl.innerHTML = '';
-  sidebar.classList.remove('active');
-  clearOverlays();
-  // re-render page (to remove overlays)
-  renderPage(pageNum);
+  document.getElementById('search-input').value='';currentSearchTerm='';matchesByPage={};
+  sidebar.classList.remove('active');resultsEl.innerHTML='';renderPage(pageNum);
 }
-
-/* ----- Helpers ----- */
-function escapeHTML(str){
-  return str.replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
-}
-function escapeRegExp(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-
-/* ----- Inicializar ----- */
 loadPDF(URL_PDF);
-
-/* ----- Teclado: navegar páginas com setas ------ */
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'ArrowLeft') document.getElementById('prev-page').click();
-  else if(e.key === 'ArrowRight') document.getElementById('next-page').click();
-});
 </script>
-
 </body>
 </html>
