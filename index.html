@@ -4,11 +4,10 @@
   <meta charset="UTF-8">
   <title>Gerador de Código de Barras e QR Code</title>
 
-  <!-- Biblioteca para código de barras EAN-13 -->
+  <!-- Bibliotecas -->
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-
-  <!-- Biblioteca para QR Code -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
   <style>
     body {
@@ -23,7 +22,7 @@
     }
     button {
       padding: 10px 20px;
-      margin-left: 10px;
+      margin: 5px;
       font-size: 16px;
       cursor: pointer;
     }
@@ -36,6 +35,9 @@
     }
     .box {
       text-align: center;
+    }
+    canvas, svg {
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -50,29 +52,35 @@
     <div class="box">
       <h3>Código de Barras EAN-13</h3>
       <svg id="barcode"></svg>
+      <br>
+      <button onclick="baixarImagem('barcode', 'ean13.jpg')">Baixar JPG</button>
     </div>
 
     <div class="box">
       <h3>QR Code</h3>
       <div id="qrcode"></div>
+      <br>
+      <button onclick="baixarImagem('qrcode', 'qrcode.jpg')">Baixar JPG</button>
     </div>
   </div>
 
+  <br>
+  <button onclick="baixarPDF()">📄 Baixar ambos em PDF</button>
+
   <script>
-    function gerarCodigos() {
+    async function gerarCodigos() {
       const texto = document.getElementById("inputText").value.trim();
       const barcode = document.getElementById("barcode");
       const qrcodeDiv = document.getElementById("qrcode");
 
-      // Limpar QR anterior
-      qrcodeDiv.innerHTML = "";
+      qrcodeDiv.innerHTML = ""; // limpa anterior
 
       if (!texto) {
         alert("Por favor, insira um número ou texto.");
         return;
       }
 
-      // Gera o código de barras EAN-13 (só funciona com 12 ou 13 dígitos numéricos)
+      // Gera o código de barras
       try {
         JsBarcode("#barcode", texto, {
           format: "ean13",
@@ -91,6 +99,57 @@
         width: 150,
         height: 150
       });
+    }
+
+    function svgToImage(svgElement) {
+      const xml = new XMLSerializer().serializeToString(svgElement);
+      const svg64 = btoa(unescape(encodeURIComponent(xml)));
+      const image64 = 'data:image/svg+xml;base64,' + svg64;
+      return image64;
+    }
+
+    function baixarImagem(elementId, nomeArquivo) {
+      let element = document.getElementById(elementId);
+      let canvas;
+
+      if (element.tagName === "SVG") {
+        const imgSrc = svgToImage(element);
+        const image = new Image();
+        image.onload = () => {
+          canvas = document.createElement("canvas");
+          canvas.width = image.width;
+          canvas.height = image.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(image, 0, 0);
+          const link = document.createElement("a");
+          link.download = nomeArquivo;
+          link.href = canvas.toDataURL("image/jpeg");
+          link.click();
+        };
+        image.src = imgSrc;
+      } else {
+        // É um QR Code (canvas interno)
+        const qrCanvas = element.querySelector("canvas");
+        const link = document.createElement("a");
+        link.download = nomeArquivo;
+        link.href = qrCanvas.toDataURL("image/jpeg");
+        link.click();
+      }
+    }
+
+    function baixarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const barcodeImg = svgToImage(document.getElementById("barcode"));
+      const qrCanvas = document.querySelector("#qrcode canvas");
+      const qrImg = qrCanvas.toDataURL("image/png");
+
+      doc.text("Código de Barras EAN-13", 10, 10);
+      doc.addImage(barcodeImg, "PNG", 10, 15, 180, 30);
+      doc.text("QR Code", 10, 70);
+      doc.addImage(qrImg, "PNG", 10, 75, 50, 50);
+      doc.save("codigos.pdf");
     }
   </script>
 </body>
