@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Editor simples de PDF</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Editor simples de PDF</h1>
+
+  <div class="controls">
+    <input id="fileInput" type="file" accept="application/pdf" />
+    <button id="prevPage" disabled>« Página anterior</button>
+    <span id="pageInfo">-</span>
+    <button id="nextPage" disabled>Página seguinte »</button>
+    <button id="savePdf" disabled>Guardar como PDF</button>
+  </div>
+
+  <div id="container">
+    <div id="canvasContainer">
+      <canvas id="pdfCanvas"></canvas>
+      <div id="textLayer"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
