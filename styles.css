@@ -31,31 +31,38 @@ h1 { margin-bottom: 10px; }
   border: 1px solid #ddd;
 }
 
+/* textLayer cobre o canvas */
 #textLayer {
   position: absolute;
   left: 0;
   top: 0;
-  pointer-events: none; /* por defeito não captura eventos; os divs de texto terão pointer-events:auto */
+  pointer-events: none;
+  user-select: none;
 }
 
+/* cada bloco de texto */
 .textItem {
   position: absolute;
   white-space: pre;
   pointer-events: auto;
   cursor: text;
-  background: rgba(255,255,255,0.0);
-  color: black;
+  color: #000;
   font-variant-ligatures: none;
   user-select: none;
-  padding: 0;
+  padding: 2px 4px;
   margin: 0;
   overflow: visible;
+  /* important: máscara sobre o texto do canvas para evitar "duplo" */
+  background: rgba(255,255,255,0.88);
+  border-radius: 2px;
+  box-sizing: border-box;
+  border: 1px solid rgba(0,0,0,0.06);
 }
 
 /* quando editável */
 .textItem.editing {
-  outline: 1px solid #2b7cff;
-  background: rgba(255,255,255,0.85);
+  outline: 2px solid #2b7cff;
+  background: rgba(255,255,255,1);
   user-select: text;
 }
 
