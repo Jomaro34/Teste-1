@@ -1,7 +1,7 @@
-// app.js
-// Requisitos: pdf.js (via CDN) e PDFLib (via CDN)
-// Funcionalidade: carregar PDF, renderizar página, sobrepor textos como divs editáveis e guardar alterações num novo PDF.
+// app.js (versão corrigida)
+// Requisitos: pdf.js e PDFLib (CDN incluidas no index.html)
 
+// Elementos UI
 const fileInput = document.getElementById('fileInput');
 const pdfCanvas = document.getElementById('pdfCanvas');
 const textLayer = document.getElementById('textLayer');
@@ -10,13 +10,12 @@ const nextBtn = document.getElementById('nextPage');
 const pageInfo = document.getElementById('pageInfo');
 const saveBtn = document.getElementById('savePdf');
 
-let pdfDoc = null;         // PDF.js document (ArrayBuffer)
+let pdfDoc = null;         // PDF.js document
 let pdfData = null;        // ArrayBuffer original
 let currentPage = 1;
 let renderScale = 1.5;     // ajustar qualidade de renderização
-let renderViewport = null;
-let renderedCanvasWidth = 0, renderedCanvasHeight = 0;
-let edits = {};            // edits[pageNumber] = [{id, text, x,y,w,h,origText}, ...]
+let pageCanvasSizes = {};  // armazena canvas width/height por página (pixels)
+let edits = {};            // edits[pageNumber] = [{index, text, canvasX,canvasY,canvasW,canvasH, orig}, ...]
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
@@ -49,88 +48,82 @@ async function loadPdf(arrayBuffer) {
   prevBtn.disabled = false;
   nextBtn.disabled = false;
   saveBtn.disabled = false;
-  edits = {}; // reset
+  edits = {};
+  pageCanvasSizes = {};
   await renderPage(currentPage);
 }
 
 async function renderPage(pageNum) {
   const page = await pdfDoc.getPage(pageNum);
   const viewport = page.getViewport({ scale: renderScale });
-  renderViewport = viewport;
 
   const canvas = pdfCanvas;
   const context = canvas.getContext('2d');
 
+  // definir tamanho do canvas em pixels (device pixels)
   canvas.width = Math.floor(viewport.width);
   canvas.height = Math.floor(viewport.height);
-  renderedCanvasWidth = canvas.width;
-  renderedCanvasHeight = canvas.height;
 
-  // Ajustar tamanho visual (CSS) para manter 1:1 pixel ratio
+  // tamanho CSS igual a pixels (mantém relação 1:1)
   canvas.style.width = canvas.width + 'px';
   canvas.style.height = canvas.height + 'px';
 
-  // Renderizar no canvas
+  // renderizar página no canvas
   const renderContext = {
     canvasContext: context,
     viewport: viewport
   };
   await page.render(renderContext).promise;
 
-  // Posição e tamanho do textLayer
+  // guardar tamanhos do canvas para esta página
+  const canvasClientRect = canvas.getBoundingClientRect();
+  pageCanvasSizes[pageNum] = {
+    canvasWidth: canvas.width,            // pixels internos
+    canvasHeight: canvas.height,
+    cssWidth: canvasClientRect.width,     // CSS pixels usados para cálculo
+    cssHeight: canvasClientRect.height
+  };
+
+  // preparar textLayer
   textLayer.style.width = canvas.style.width;
   textLayer.style.height = canvas.style.height;
   textLayer.style.left = canvas.offsetLeft + 'px';
   textLayer.style.top = canvas.offsetTop + 'px';
-  textLayer.innerHTML = ''; // limpar antes de criar text divs
+  textLayer.innerHTML = '';
 
-  // Obter conteúdo de texto e criar divs posicionadas
+  // obter texto da página
   const textContent = await page.getTextContent({ normalizeWhitespace: true });
 
-  // Criar text layer via PDF.js util (opcional), mas vamos criar divs manualmente para controlar
-  // convertRects: cada item tem transform onde [4]=x, [5]=y em usuário espaço.
-  // Usaremos viewport.transform para converter para pixels.
-  const viewportTransform = viewport.transform; // matriz 6 elementos
   let itemIndex = 0;
-
   for (const item of textContent.items) {
-    // 'transform' é uma matriz [a,b,c,d,e,f], e fontSize está em item.transform[0] etc.
+    // transform: [a,b,c,d,e,f] ; e = x, f = y (em user units)
     const tx = item.transform[4];
     const ty = item.transform[5];
-    // medir largura aproximada: item.width (em PDF units) multiplicar pelo scale
-    // Use viewport.convertToViewportRectangle para obter retângulo em pixels
-    const rect = pdfjsLib.Util.transform(viewport.transform, [0,0,1,1, tx, ty]); // não ideal, portanto usar getTextContent fallback
+    const fontHeight = Math.abs(item.transform[0]) * renderScale || 12;
 
-    // Nós vamos renderizar uma div simples posicionada usando getTextContent's styles:
+    // calcular posição aproximada em pixels do canvas
+    // y em item.transform é baseline (origem bottom), portanto converter:
+    const x = tx * renderScale;
+    const y = viewport.height - (ty * renderScale) - fontHeight;
+
     const span = document.createElement('div');
     span.className = 'textItem';
-    // Texto bruto
     span.textContent = item.str;
-
-    // A PDF.js fornece transform e width; convertemos para px mais diretamente:
-    // Estimativa: item.width * viewport.scale
-    const fontHeight = item.transform[0] * renderScale; // estimativa de altura
-    const x = tx * renderScale;
-    // ty é baseline y; converter para top: viewport.height - ty*scale - fontHeight
-    const y = viewport.height - (ty * renderScale) - fontHeight;
+    span.dataset.page = pageNum;
+    span.dataset.index = itemIndex;
+    span.dataset.orig = item.str || '';
 
     span.style.left = `${x}px`;
     span.style.top = `${y}px`;
     span.style.fontSize = `${Math.max(8, fontHeight)}px`;
     span.style.lineHeight = `${Math.max(8, fontHeight)}px`;
-    span.style.transformOrigin = 'left top';
-    span.style.pointerEvents = 'auto';
-    span.dataset.page = pageNum;
-    span.dataset.index = itemIndex;
-    span.dataset.orig = item.str || '';
-    // largura aproximada — item.width * scale
+
     const w = (item.width || (item.str.length * fontHeight * 0.6)) * renderScale;
     span.style.width = `${Math.max(4, w)}px`;
     span.style.height = `${Math.max(4, fontHeight)}px`;
     span.style.overflow = 'visible';
     span.style.whiteSpace = 'pre';
 
-    // Make selectable/editable on click
     span.addEventListener('click', (ev) => {
       ev.stopPropagation();
       makeEditable(span);
@@ -141,49 +134,81 @@ async function renderPage(pageNum) {
   }
 
   pageInfo.textContent = `Página ${currentPage} / ${pdfDoc.numPages}`;
+
+  // reaplicar edições já feitas nesta página (posicionar texto editado)
+  if (edits[pageNum]) {
+    for (const ch of edits[pageNum]) {
+      // criar/atualizar um bloque similar para feedback visual
+      const overlay = document.createElement('div');
+      overlay.className = 'textItem';
+      overlay.textContent = ch.text;
+      overlay.style.left = `${ch.canvasX}px`;
+      overlay.style.top = `${ch.canvasY}px`;
+      overlay.style.fontSize = `${Math.max(8, ch.canvasH * 0.8)}px`;
+      overlay.style.width = `${ch.canvasW}px`;
+      overlay.style.height = `${ch.canvasH}px`;
+      overlay.dataset.page = pageNum;
+      overlay.dataset.index = ch.index;
+      overlay.dataset.orig = ch.orig || '';
+      overlay.addEventListener('click', (ev) => { ev.stopPropagation(); makeEditable(overlay); });
+      textLayer.appendChild(overlay);
+    }
+  }
 }
 
-// transform a div into editable input (contentEditable)
+// transforma uma div num campo editável
 function makeEditable(div) {
   if (div.classList.contains('editing')) return;
   div.classList.add('editing');
   div.contentEditable = 'true';
   div.focus();
 
-  // create a simple caret at end
+  // posicionar caret no fim
   document.execCommand('selectAll', false, null);
   document.getSelection().collapseToEnd();
 
   function finishEdit() {
+    if (!div) return;
     div.classList.remove('editing');
     div.contentEditable = 'false';
-    // store edit
+
     const page = parseInt(div.dataset.page, 10);
     if (!edits[page]) edits[page] = [];
+
     const rect = div.getBoundingClientRect();
     const canvasRect = pdfCanvas.getBoundingClientRect();
-    const localX = rect.left - canvasRect.left;
-    const localY = rect.top - canvasRect.top;
-    const localW = rect.width;
-    const localH = rect.height;
-    // update or push by index
+
+    // converter CSS pixels -> canvas pixels (device pixels)
+    const pageSize = pageCanvasSizes[page];
+    const scaleX = pageSize.canvasWidth / pageSize.cssWidth;
+    const scaleY = pageSize.canvasHeight / pageSize.cssHeight;
+
+    const cssX = rect.left - canvasRect.left;
+    const cssY = rect.top - canvasRect.top;
+    const canvasX = cssX * scaleX;
+    const canvasY = cssY * scaleY;
+    const canvasW = rect.width * scaleX;
+    const canvasH = rect.height * scaleY;
+
     const idx = div.dataset.index;
     const orig = div.dataset.orig || '';
     const text = div.textContent || '';
-    // Attempt to replace existing edit for same index
-    const slotIndex = edits[page].findIndex(e => e.index == idx);
+
     const entry = {
       index: idx,
       text,
       orig,
-      x: localX,
-      y: localY,
-      w: localW,
-      h: localH
+      canvasX,
+      canvasY,
+      canvasW,
+      canvasH
     };
+
+    const slotIndex = edits[page].findIndex(e => e.index == idx);
     if (slotIndex >= 0) edits[page][slotIndex] = entry;
     else edits[page].push(entry);
-    // remove selection
+
+    // Limpar seleção
     window.getSelection().removeAllRanges();
     document.removeEventListener('click', onDocClick);
   }
@@ -193,7 +218,6 @@ function makeEditable(div) {
     finishEdit();
   }
 
-  // finish on blur or clicking elsewhere or pressing Enter (without creating newline)
   div.addEventListener('blur', finishEdit, { once: true });
   div.addEventListener('keydown', function onKey(e) {
     if (e.key === 'Enter') {
@@ -201,18 +225,16 @@ function makeEditable(div) {
       finishEdit();
       div.removeEventListener('keydown', onKey);
     } else if (e.key === 'Escape') {
-      // revert
       div.textContent = div.dataset.orig || '';
       finishEdit();
       div.removeEventListener('keydown', onKey);
     }
   });
 
-  // click outside to finish
   setTimeout(() => document.addEventListener('click', onDocClick), 0);
 }
 
-// Save edited PDF using PDF-lib: desenha retângulos brancos e texto novo por cima
+// salva o PDF com as edições usando PDF-lib
 async function saveEditedPdf() {
   if (!pdfData) return;
   const uint8 = new Uint8Array(pdfData);
@@ -220,7 +242,6 @@ async function saveEditedPdf() {
   const pdfDocLib = await PDFDocument.load(uint8);
   const helvetica = await pdfDocLib.embedFont(StandardFonts.Helvetica);
 
-  // Para cada página com edições
   for (const [pageStr, changes] of Object.entries(edits)) {
     const pageNum = parseInt(pageStr, 10);
     if (!changes || changes.length === 0) continue;
@@ -229,22 +250,22 @@ async function saveEditedPdf() {
     const pageWidth = page.getWidth();
     const pageHeight = page.getHeight();
 
-    // Factor to convert canvas pixels (renderedCanvasWidth/Height) => PDF points
-    // Use the rendered canvas size for the specific page: note que renderScale é o mesmo para todas páginas aqui
-    const canvasW = renderedCanvasWidth;
-    const canvasH = renderedCanvasHeight;
+    // usar canvas size guardado para esta página
+    const pageSize = pageCanvasSizes[pageNum];
+    if (!pageSize) continue;
+    const canvasW = pageSize.canvasWidth;
+    const canvasH = pageSize.canvasHeight;
+
     const ratioX = pageWidth / canvasW;
     const ratioY = pageHeight / canvasH;
 
-    // For each change, draw a white rectangle to cover and then draw text
     for (const ch of changes) {
-      const xPdf = ch.x * ratioX;
-      // y in PDF-lib coordinates (bottom-left origin). ch.y is top position in CSS, so convert:
-      const yPdf = pageHeight - (ch.y + ch.h) * ratioY;
-      const wPdf = ch.w * ratioX;
-      const hPdf = ch.h * ratioY;
+      const xPdf = ch.canvasX * ratioX;
+      const yPdf = pageHeight - (ch.canvasY + ch.canvasH) * ratioY;
+      const wPdf = ch.canvasW * ratioX;
+      const hPdf = ch.canvasH * ratioY;
 
-      // Draw white rectangle to "erase" original text
+      // cobrir área original com branco
       page.drawRectangle({
         x: xPdf,
         y: yPdf,
@@ -253,26 +274,29 @@ async function saveEditedPdf() {
         color: rgb(1,1,1)
       });
 
-      // Determine font size to fit in the rectangle (simple heuristic)
-      const fontSize = Math.max(8, hPdf * 0.7);
+      // tamanho de fonte heurístico
+      let fontSize = Math.max(8, hPdf * 0.65);
 
-      // Draw the new text
-      page.drawText(ch.text, {
-        x: xPdf + 2 * ratioX,
-        y: yPdf + (hPdf - fontSize) / 2,
-        size: fontSize,
-        font: helvetica,
-        color: rgb(0, 0, 0),
-        maxWidth: wPdf - 4 * ratioX,
-      });
+      // suportar quebras de linha simples
+      const lines = (ch.text || '').split('\n');
+      let yText = yPdf + hPdf - fontSize; // começar do topo da caixa
+      for (const line of lines) {
+        page.drawText(line, {
+          x: xPdf + 2 * ratioX,
+          y: yText,
+          size: fontSize,
+          font: helvetica,
+          color: rgb(0,0,0),
+          maxWidth: wPdf - 4 * ratioX,
+        });
+        yText -= fontSize * 1.1;
+      }
     }
   }
 
   const modifiedBytes = await pdfDocLib.save();
   const blob = new Blob([modifiedBytes], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
-
-  // trigger download
   const a = document.createElement('a');
   a.href = url;
   a.download = 'edited.pdf';
