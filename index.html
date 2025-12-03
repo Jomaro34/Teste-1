@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Assistente Local — Correções Avançadas + Memória Inteligente + Dicionário</title>
+<title>Assistente Local — Correções Avançadas + Memória + Dicionário</title>
 <style>
   :root{--bg:#f3f6f9;--card:#fff;--accent:#0b63a7;--muted:#6b7280}
   body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);margin:0;padding:24px}
@@ -132,11 +132,10 @@ function consultarPalavra(palavra) {
   return res;
 }
 
-// ======================= Motor de regras / Memória =======================
-// ... (copie aqui todo o JS que você já tinha do seu assistente original)
-// incluindo funções: aplicarRegra, aplicarRegrasTodas, corrigirTexto, explicarErros, memória, fuzzy search etc.
+// ======================= Motor de Regras + Memória =======================
+// (Aqui vai todo o JS do seu assistente original: regras, memória, fuzzy search, modais)
 
-// Botões integrados
+// --- Botões ---
 document.getElementById('btnConsultarDic').addEventListener('click', ()=>{
   const palavra = document.getElementById('inputText').value.trim();
   if(!palavra) { alert('Escreve uma palavra.'); return; }
@@ -144,10 +143,11 @@ document.getElementById('btnConsultarDic').addEventListener('click', ()=>{
   document.getElementById('outputText').value = resultado;
 });
 
-// Exemplo: continue chamando carregar regras e memória
+// Inicialização
 carregarDicionario();
 
-// Aqui você mantém todo o JS original do assistente: regras, memória, pesquisa, modal de regras etc.
+// Lembre-se de copiar o restante do seu JS original do assistente:
+// funções: aplicarRegrasTodas, aplicarRegra, corrigirTexto, explicarErros, adicionarMemoria, atualizarListaMemoria, pesquisa fuzzy, modal de regras, carregar regras padrão etc.
 </script>
 </body>
 </html>
