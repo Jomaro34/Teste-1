@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "text": "Lembrar de enviar email importante amanhã.",
+    "meta": {
+      "tag": "tarefa"
+    },
+    "addedAt": "2025-01-01T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "text": "Comprar ingredientes para o jantar.",
+    "meta": {
+      "tag": "compras"
+    },
+    "addedAt": "2025-01-02T14:30:00Z"
+  },
+  {
+    "id": "3",
+    "text": "Anotar ideia para novo projecto de software.",
+    "meta": {
+      "tag": "ideia"
+    },
+    "addedAt": "2025-01-03T16:45:00Z"
+  }
+]

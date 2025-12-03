@@ -1,0 +1,2102 @@
+[
+  {
+    "id": "rule_1",
+    "pattern": "erro1",
+    "flags": "gi",
+    "replacement": "correcao1",
+    "description": "Correção automática para erro1"
+  },
+  {
+    "id": "rule_2",
+    "pattern": "erro2",
+    "flags": "gi",
+    "replacement": "correcao2",
+    "description": "Correção automática para erro2"
+  },
+  {
+    "id": "rule_3",
+    "pattern": "erro3",
+    "flags": "gi",
+    "replacement": "correcao3",
+    "description": "Correção automática para erro3"
+  },
+  {
+    "id": "rule_4",
+    "pattern": "erro4",
+    "flags": "gi",
+    "replacement": "correcao4",
+    "description": "Correção automática para erro4"
+  },
+  {
+    "id": "rule_5",
+    "pattern": "erro5",
+    "flags": "gi",
+    "replacement": "correcao5",
+    "description": "Correção automática para erro5"
+  },
+  {
+    "id": "rule_6",
+    "pattern": "erro6",
+    "flags": "gi",
+    "replacement": "correcao6",
+    "description": "Correção automática para erro6"
+  },
+  {
+    "id": "rule_7",
+    "pattern": "erro7",
+    "flags": "gi",
+    "replacement": "correcao7",
+    "description": "Correção automática para erro7"
+  },
+  {
+    "id": "rule_8",
+    "pattern": "erro8",
+    "flags": "gi",
+    "replacement": "correcao8",
+    "description": "Correção automática para erro8"
+  },
+  {
+    "id": "rule_9",
+    "pattern": "erro9",
+    "flags": "gi",
+    "replacement": "correcao9",
+    "description": "Correção automática para erro9"
+  },
+  {
+    "id": "rule_10",
+    "pattern": "erro10",
+    "flags": "gi",
+    "replacement": "correcao10",
+    "description": "Correção automática para erro10"
+  },
+  {
+    "id": "rule_11",
+    "pattern": "erro11",
+    "flags": "gi",
+    "replacement": "correcao11",
+    "description": "Correção automática para erro11"
+  },
+  {
+    "id": "rule_12",
+    "pattern": "erro12",
+    "flags": "gi",
+    "replacement": "correcao12",
+    "description": "Correção automática para erro12"
+  },
+  {
+    "id": "rule_13",
+    "pattern": "erro13",
+    "flags": "gi",
+    "replacement": "correcao13",
+    "description": "Correção automática para erro13"
+  },
+  {
+    "id": "rule_14",
+    "pattern": "erro14",
+    "flags": "gi",
+    "replacement": "correcao14",
+    "description": "Correção automática para erro14"
+  },
+  {
+    "id": "rule_15",
+    "pattern": "erro15",
+    "flags": "gi",
+    "replacement": "correcao15",
+    "description": "Correção automática para erro15"
+  },
+  {
+    "id": "rule_16",
+    "pattern": "erro16",
+    "flags": "gi",
+    "replacement": "correcao16",
+    "description": "Correção automática para erro16"
+  },
+  {
+    "id": "rule_17",
+    "pattern": "erro17",
+    "flags": "gi",
+    "replacement": "correcao17",
+    "description": "Correção automática para erro17"
+  },
+  {
+    "id": "rule_18",
+    "pattern": "erro18",
+    "flags": "gi",
+    "replacement": "correcao18",
+    "description": "Correção automática para erro18"
+  },
+  {
+    "id": "rule_19",
+    "pattern": "erro19",
+    "flags": "gi",
+    "replacement": "correcao19",
+    "description": "Correção automática para erro19"
+  },
+  {
+    "id": "rule_20",
+    "pattern": "erro20",
+    "flags": "gi",
+    "replacement": "correcao20",
+    "description": "Correção automática para erro20"
+  },
+  {
+    "id": "rule_21",
+    "pattern": "erro21",
+    "flags": "gi",
+    "replacement": "correcao21",
+    "description": "Correção automática para erro21"
+  },
+  {
+    "id": "rule_22",
+    "pattern": "erro22",
+    "flags": "gi",
+    "replacement": "correcao22",
+    "description": "Correção automática para erro22"
+  },
+  {
+    "id": "rule_23",
+    "pattern": "erro23",
+    "flags": "gi",
+    "replacement": "correcao23",
+    "description": "Correção automática para erro23"
+  },
+  {
+    "id": "rule_24",
+    "pattern": "erro24",
+    "flags": "gi",
+    "replacement": "correcao24",
+    "description": "Correção automática para erro24"
+  },
+  {
+    "id": "rule_25",
+    "pattern": "erro25",
+    "flags": "gi",
+    "replacement": "correcao25",
+    "description": "Correção automática para erro25"
+  },
+  {
+    "id": "rule_26",
+    "pattern": "erro26",
+    "flags": "gi",
+    "replacement": "correcao26",
+    "description": "Correção automática para erro26"
+  },
+  {
+    "id": "rule_27",
+    "pattern": "erro27",
+    "flags": "gi",
+    "replacement": "correcao27",
+    "description": "Correção automática para erro27"
+  },
+  {
+    "id": "rule_28",
+    "pattern": "erro28",
+    "flags": "gi",
+    "replacement": "correcao28",
+    "description": "Correção automática para erro28"
+  },
+  {
+    "id": "rule_29",
+    "pattern": "erro29",
+    "flags": "gi",
+    "replacement": "correcao29",
+    "description": "Correção automática para erro29"
+  },
+  {
+    "id": "rule_30",
+    "pattern": "erro30",
+    "flags": "gi",
+    "replacement": "correcao30",
+    "description": "Correção automática para erro30"
+  },
+  {
+    "id": "rule_31",
+    "pattern": "erro31",
+    "flags": "gi",
+    "replacement": "correcao31",
+    "description": "Correção automática para erro31"
+  },
+  {
+    "id": "rule_32",
+    "pattern": "erro32",
+    "flags": "gi",
+    "replacement": "correcao32",
+    "description": "Correção automática para erro32"
+  },
+  {
+    "id": "rule_33",
+    "pattern": "erro33",
+    "flags": "gi",
+    "replacement": "correcao33",
+    "description": "Correção automática para erro33"
+  },
+  {
+    "id": "rule_34",
+    "pattern": "erro34",
+    "flags": "gi",
+    "replacement": "correcao34",
+    "description": "Correção automática para erro34"
+  },
+  {
+    "id": "rule_35",
+    "pattern": "erro35",
+    "flags": "gi",
+    "replacement": "correcao35",
+    "description": "Correção automática para erro35"
+  },
+  {
+    "id": "rule_36",
+    "pattern": "erro36",
+    "flags": "gi",
+    "replacement": "correcao36",
+    "description": "Correção automática para erro36"
+  },
+  {
+    "id": "rule_37",
+    "pattern": "erro37",
+    "flags": "gi",
+    "replacement": "correcao37",
+    "description": "Correção automática para erro37"
+  },
+  {
+    "id": "rule_38",
+    "pattern": "erro38",
+    "flags": "gi",
+    "replacement": "correcao38",
+    "description": "Correção automática para erro38"
+  },
+  {
+    "id": "rule_39",
+    "pattern": "erro39",
+    "flags": "gi",
+    "replacement": "correcao39",
+    "description": "Correção automática para erro39"
+  },
+  {
+    "id": "rule_40",
+    "pattern": "erro40",
+    "flags": "gi",
+    "replacement": "correcao40",
+    "description": "Correção automática para erro40"
+  },
+  {
+    "id": "rule_41",
+    "pattern": "erro41",
+    "flags": "gi",
+    "replacement": "correcao41",
+    "description": "Correção automática para erro41"
+  },
+  {
+    "id": "rule_42",
+    "pattern": "erro42",
+    "flags": "gi",
+    "replacement": "correcao42",
+    "description": "Correção automática para erro42"
+  },
+  {
+    "id": "rule_43",
+    "pattern": "erro43",
+    "flags": "gi",
+    "replacement": "correcao43",
+    "description": "Correção automática para erro43"
+  },
+  {
+    "id": "rule_44",
+    "pattern": "erro44",
+    "flags": "gi",
+    "replacement": "correcao44",
+    "description": "Correção automática para erro44"
+  },
+  {
+    "id": "rule_45",
+    "pattern": "erro45",
+    "flags": "gi",
+    "replacement": "correcao45",
+    "description": "Correção automática para erro45"
+  },
+  {
+    "id": "rule_46",
+    "pattern": "erro46",
+    "flags": "gi",
+    "replacement": "correcao46",
+    "description": "Correção automática para erro46"
+  },
+  {
+    "id": "rule_47",
+    "pattern": "erro47",
+    "flags": "gi",
+    "replacement": "correcao47",
+    "description": "Correção automática para erro47"
+  },
+  {
+    "id": "rule_48",
+    "pattern": "erro48",
+    "flags": "gi",
+    "replacement": "correcao48",
+    "description": "Correção automática para erro48"
+  },
+  {
+    "id": "rule_49",
+    "pattern": "erro49",
+    "flags": "gi",
+    "replacement": "correcao49",
+    "description": "Correção automática para erro49"
+  },
+  {
+    "id": "rule_50",
+    "pattern": "erro50",
+    "flags": "gi",
+    "replacement": "correcao50",
+    "description": "Correção automática para erro50"
+  },
+  {
+    "id": "rule_51",
+    "pattern": "erro51",
+    "flags": "gi",
+    "replacement": "correcao51",
+    "description": "Correção automática para erro51"
+  },
+  {
+    "id": "rule_52",
+    "pattern": "erro52",
+    "flags": "gi",
+    "replacement": "correcao52",
+    "description": "Correção automática para erro52"
+  },
+  {
+    "id": "rule_53",
+    "pattern": "erro53",
+    "flags": "gi",
+    "replacement": "correcao53",
+    "description": "Correção automática para erro53"
+  },
+  {
+    "id": "rule_54",
+    "pattern": "erro54",
+    "flags": "gi",
+    "replacement": "correcao54",
+    "description": "Correção automática para erro54"
+  },
+  {
+    "id": "rule_55",
+    "pattern": "erro55",
+    "flags": "gi",
+    "replacement": "correcao55",
+    "description": "Correção automática para erro55"
+  },
+  {
+    "id": "rule_56",
+    "pattern": "erro56",
+    "flags": "gi",
+    "replacement": "correcao56",
+    "description": "Correção automática para erro56"
+  },
+  {
+    "id": "rule_57",
+    "pattern": "erro57",
+    "flags": "gi",
+    "replacement": "correcao57",
+    "description": "Correção automática para erro57"
+  },
+  {
+    "id": "rule_58",
+    "pattern": "erro58",
+    "flags": "gi",
+    "replacement": "correcao58",
+    "description": "Correção automática para erro58"
+  },
+  {
+    "id": "rule_59",
+    "pattern": "erro59",
+    "flags": "gi",
+    "replacement": "correcao59",
+    "description": "Correção automática para erro59"
+  },
+  {
+    "id": "rule_60",
+    "pattern": "erro60",
+    "flags": "gi",
+    "replacement": "correcao60",
+    "description": "Correção automática para erro60"
+  },
+  {
+    "id": "rule_61",
+    "pattern": "erro61",
+    "flags": "gi",
+    "replacement": "correcao61",
+    "description": "Correção automática para erro61"
+  },
+  {
+    "id": "rule_62",
+    "pattern": "erro62",
+    "flags": "gi",
+    "replacement": "correcao62",
+    "description": "Correção automática para erro62"
+  },
+  {
+    "id": "rule_63",
+    "pattern": "erro63",
+    "flags": "gi",
+    "replacement": "correcao63",
+    "description": "Correção automática para erro63"
+  },
+  {
+    "id": "rule_64",
+    "pattern": "erro64",
+    "flags": "gi",
+    "replacement": "correcao64",
+    "description": "Correção automática para erro64"
+  },
+  {
+    "id": "rule_65",
+    "pattern": "erro65",
+    "flags": "gi",
+    "replacement": "correcao65",
+    "description": "Correção automática para erro65"
+  },
+  {
+    "id": "rule_66",
+    "pattern": "erro66",
+    "flags": "gi",
+    "replacement": "correcao66",
+    "description": "Correção automática para erro66"
+  },
+  {
+    "id": "rule_67",
+    "pattern": "erro67",
+    "flags": "gi",
+    "replacement": "correcao67",
+    "description": "Correção automática para erro67"
+  },
+  {
+    "id": "rule_68",
+    "pattern": "erro68",
+    "flags": "gi",
+    "replacement": "correcao68",
+    "description": "Correção automática para erro68"
+  },
+  {
+    "id": "rule_69",
+    "pattern": "erro69",
+    "flags": "gi",
+    "replacement": "correcao69",
+    "description": "Correção automática para erro69"
+  },
+  {
+    "id": "rule_70",
+    "pattern": "erro70",
+    "flags": "gi",
+    "replacement": "correcao70",
+    "description": "Correção automática para erro70"
+  },
+  {
+    "id": "rule_71",
+    "pattern": "erro71",
+    "flags": "gi",
+    "replacement": "correcao71",
+    "description": "Correção automática para erro71"
+  },
+  {
+    "id": "rule_72",
+    "pattern": "erro72",
+    "flags": "gi",
+    "replacement": "correcao72",
+    "description": "Correção automática para erro72"
+  },
+  {
+    "id": "rule_73",
+    "pattern": "erro73",
+    "flags": "gi",
+    "replacement": "correcao73",
+    "description": "Correção automática para erro73"
+  },
+  {
+    "id": "rule_74",
+    "pattern": "erro74",
+    "flags": "gi",
+    "replacement": "correcao74",
+    "description": "Correção automática para erro74"
+  },
+  {
+    "id": "rule_75",
+    "pattern": "erro75",
+    "flags": "gi",
+    "replacement": "correcao75",
+    "description": "Correção automática para erro75"
+  },
+  {
+    "id": "rule_76",
+    "pattern": "erro76",
+    "flags": "gi",
+    "replacement": "correcao76",
+    "description": "Correção automática para erro76"
+  },
+  {
+    "id": "rule_77",
+    "pattern": "erro77",
+    "flags": "gi",
+    "replacement": "correcao77",
+    "description": "Correção automática para erro77"
+  },
+  {
+    "id": "rule_78",
+    "pattern": "erro78",
+    "flags": "gi",
+    "replacement": "correcao78",
+    "description": "Correção automática para erro78"
+  },
+  {
+    "id": "rule_79",
+    "pattern": "erro79",
+    "flags": "gi",
+    "replacement": "correcao79",
+    "description": "Correção automática para erro79"
+  },
+  {
+    "id": "rule_80",
+    "pattern": "erro80",
+    "flags": "gi",
+    "replacement": "correcao80",
+    "description": "Correção automática para erro80"
+  },
+  {
+    "id": "rule_81",
+    "pattern": "erro81",
+    "flags": "gi",
+    "replacement": "correcao81",
+    "description": "Correção automática para erro81"
+  },
+  {
+    "id": "rule_82",
+    "pattern": "erro82",
+    "flags": "gi",
+    "replacement": "correcao82",
+    "description": "Correção automática para erro82"
+  },
+  {
+    "id": "rule_83",
+    "pattern": "erro83",
+    "flags": "gi",
+    "replacement": "correcao83",
+    "description": "Correção automática para erro83"
+  },
+  {
+    "id": "rule_84",
+    "pattern": "erro84",
+    "flags": "gi",
+    "replacement": "correcao84",
+    "description": "Correção automática para erro84"
+  },
+  {
+    "id": "rule_85",
+    "pattern": "erro85",
+    "flags": "gi",
+    "replacement": "correcao85",
+    "description": "Correção automática para erro85"
+  },
+  {
+    "id": "rule_86",
+    "pattern": "erro86",
+    "flags": "gi",
+    "replacement": "correcao86",
+    "description": "Correção automática para erro86"
+  },
+  {
+    "id": "rule_87",
+    "pattern": "erro87",
+    "flags": "gi",
+    "replacement": "correcao87",
+    "description": "Correção automática para erro87"
+  },
+  {
+    "id": "rule_88",
+    "pattern": "erro88",
+    "flags": "gi",
+    "replacement": "correcao88",
+    "description": "Correção automática para erro88"
+  },
+  {
+    "id": "rule_89",
+    "pattern": "erro89",
+    "flags": "gi",
+    "replacement": "correcao89",
+    "description": "Correção automática para erro89"
+  },
+  {
+    "id": "rule_90",
+    "pattern": "erro90",
+    "flags": "gi",
+    "replacement": "correcao90",
+    "description": "Correção automática para erro90"
+  },
+  {
+    "id": "rule_91",
+    "pattern": "erro91",
+    "flags": "gi",
+    "replacement": "correcao91",
+    "description": "Correção automática para erro91"
+  },
+  {
+    "id": "rule_92",
+    "pattern": "erro92",
+    "flags": "gi",
+    "replacement": "correcao92",
+    "description": "Correção automática para erro92"
+  },
+  {
+    "id": "rule_93",
+    "pattern": "erro93",
+    "flags": "gi",
+    "replacement": "correcao93",
+    "description": "Correção automática para erro93"
+  },
+  {
+    "id": "rule_94",
+    "pattern": "erro94",
+    "flags": "gi",
+    "replacement": "correcao94",
+    "description": "Correção automática para erro94"
+  },
+  {
+    "id": "rule_95",
+    "pattern": "erro95",
+    "flags": "gi",
+    "replacement": "correcao95",
+    "description": "Correção automática para erro95"
+  },
+  {
+    "id": "rule_96",
+    "pattern": "erro96",
+    "flags": "gi",
+    "replacement": "correcao96",
+    "description": "Correção automática para erro96"
+  },
+  {
+    "id": "rule_97",
+    "pattern": "erro97",
+    "flags": "gi",
+    "replacement": "correcao97",
+    "description": "Correção automática para erro97"
+  },
+  {
+    "id": "rule_98",
+    "pattern": "erro98",
+    "flags": "gi",
+    "replacement": "correcao98",
+    "description": "Correção automática para erro98"
+  },
+  {
+    "id": "rule_99",
+    "pattern": "erro99",
+    "flags": "gi",
+    "replacement": "correcao99",
+    "description": "Correção automática para erro99"
+  },
+  {
+    "id": "rule_100",
+    "pattern": "erro100",
+    "flags": "gi",
+    "replacement": "correcao100",
+    "description": "Correção automática para erro100"
+  },
+  {
+    "id": "rule_101",
+    "pattern": "erro101",
+    "flags": "gi",
+    "replacement": "correcao101",
+    "description": "Correção automática para erro101"
+  },
+  {
+    "id": "rule_102",
+    "pattern": "erro102",
+    "flags": "gi",
+    "replacement": "correcao102",
+    "description": "Correção automática para erro102"
+  },
+  {
+    "id": "rule_103",
+    "pattern": "erro103",
+    "flags": "gi",
+    "replacement": "correcao103",
+    "description": "Correção automática para erro103"
+  },
+  {
+    "id": "rule_104",
+    "pattern": "erro104",
+    "flags": "gi",
+    "replacement": "correcao104",
+    "description": "Correção automática para erro104"
+  },
+  {
+    "id": "rule_105",
+    "pattern": "erro105",
+    "flags": "gi",
+    "replacement": "correcao105",
+    "description": "Correção automática para erro105"
+  },
+  {
+    "id": "rule_106",
+    "pattern": "erro106",
+    "flags": "gi",
+    "replacement": "correcao106",
+    "description": "Correção automática para erro106"
+  },
+  {
+    "id": "rule_107",
+    "pattern": "erro107",
+    "flags": "gi",
+    "replacement": "correcao107",
+    "description": "Correção automática para erro107"
+  },
+  {
+    "id": "rule_108",
+    "pattern": "erro108",
+    "flags": "gi",
+    "replacement": "correcao108",
+    "description": "Correção automática para erro108"
+  },
+  {
+    "id": "rule_109",
+    "pattern": "erro109",
+    "flags": "gi",
+    "replacement": "correcao109",
+    "description": "Correção automática para erro109"
+  },
+  {
+    "id": "rule_110",
+    "pattern": "erro110",
+    "flags": "gi",
+    "replacement": "correcao110",
+    "description": "Correção automática para erro110"
+  },
+  {
+    "id": "rule_111",
+    "pattern": "erro111",
+    "flags": "gi",
+    "replacement": "correcao111",
+    "description": "Correção automática para erro111"
+  },
+  {
+    "id": "rule_112",
+    "pattern": "erro112",
+    "flags": "gi",
+    "replacement": "correcao112",
+    "description": "Correção automática para erro112"
+  },
+  {
+    "id": "rule_113",
+    "pattern": "erro113",
+    "flags": "gi",
+    "replacement": "correcao113",
+    "description": "Correção automática para erro113"
+  },
+  {
+    "id": "rule_114",
+    "pattern": "erro114",
+    "flags": "gi",
+    "replacement": "correcao114",
+    "description": "Correção automática para erro114"
+  },
+  {
+    "id": "rule_115",
+    "pattern": "erro115",
+    "flags": "gi",
+    "replacement": "correcao115",
+    "description": "Correção automática para erro115"
+  },
+  {
+    "id": "rule_116",
+    "pattern": "erro116",
+    "flags": "gi",
+    "replacement": "correcao116",
+    "description": "Correção automática para erro116"
+  },
+  {
+    "id": "rule_117",
+    "pattern": "erro117",
+    "flags": "gi",
+    "replacement": "correcao117",
+    "description": "Correção automática para erro117"
+  },
+  {
+    "id": "rule_118",
+    "pattern": "erro118",
+    "flags": "gi",
+    "replacement": "correcao118",
+    "description": "Correção automática para erro118"
+  },
+  {
+    "id": "rule_119",
+    "pattern": "erro119",
+    "flags": "gi",
+    "replacement": "correcao119",
+    "description": "Correção automática para erro119"
+  },
+  {
+    "id": "rule_120",
+    "pattern": "erro120",
+    "flags": "gi",
+    "replacement": "correcao120",
+    "description": "Correção automática para erro120"
+  },
+  {
+    "id": "rule_121",
+    "pattern": "erro121",
+    "flags": "gi",
+    "replacement": "correcao121",
+    "description": "Correção automática para erro121"
+  },
+  {
+    "id": "rule_122",
+    "pattern": "erro122",
+    "flags": "gi",
+    "replacement": "correcao122",
+    "description": "Correção automática para erro122"
+  },
+  {
+    "id": "rule_123",
+    "pattern": "erro123",
+    "flags": "gi",
+    "replacement": "correcao123",
+    "description": "Correção automática para erro123"
+  },
+  {
+    "id": "rule_124",
+    "pattern": "erro124",
+    "flags": "gi",
+    "replacement": "correcao124",
+    "description": "Correção automática para erro124"
+  },
+  {
+    "id": "rule_125",
+    "pattern": "erro125",
+    "flags": "gi",
+    "replacement": "correcao125",
+    "description": "Correção automática para erro125"
+  },
+  {
+    "id": "rule_126",
+    "pattern": "erro126",
+    "flags": "gi",
+    "replacement": "correcao126",
+    "description": "Correção automática para erro126"
+  },
+  {
+    "id": "rule_127",
+    "pattern": "erro127",
+    "flags": "gi",
+    "replacement": "correcao127",
+    "description": "Correção automática para erro127"
+  },
+  {
+    "id": "rule_128",
+    "pattern": "erro128",
+    "flags": "gi",
+    "replacement": "correcao128",
+    "description": "Correção automática para erro128"
+  },
+  {
+    "id": "rule_129",
+    "pattern": "erro129",
+    "flags": "gi",
+    "replacement": "correcao129",
+    "description": "Correção automática para erro129"
+  },
+  {
+    "id": "rule_130",
+    "pattern": "erro130",
+    "flags": "gi",
+    "replacement": "correcao130",
+    "description": "Correção automática para erro130"
+  },
+  {
+    "id": "rule_131",
+    "pattern": "erro131",
+    "flags": "gi",
+    "replacement": "correcao131",
+    "description": "Correção automática para erro131"
+  },
+  {
+    "id": "rule_132",
+    "pattern": "erro132",
+    "flags": "gi",
+    "replacement": "correcao132",
+    "description": "Correção automática para erro132"
+  },
+  {
+    "id": "rule_133",
+    "pattern": "erro133",
+    "flags": "gi",
+    "replacement": "correcao133",
+    "description": "Correção automática para erro133"
+  },
+  {
+    "id": "rule_134",
+    "pattern": "erro134",
+    "flags": "gi",
+    "replacement": "correcao134",
+    "description": "Correção automática para erro134"
+  },
+  {
+    "id": "rule_135",
+    "pattern": "erro135",
+    "flags": "gi",
+    "replacement": "correcao135",
+    "description": "Correção automática para erro135"
+  },
+  {
+    "id": "rule_136",
+    "pattern": "erro136",
+    "flags": "gi",
+    "replacement": "correcao136",
+    "description": "Correção automática para erro136"
+  },
+  {
+    "id": "rule_137",
+    "pattern": "erro137",
+    "flags": "gi",
+    "replacement": "correcao137",
+    "description": "Correção automática para erro137"
+  },
+  {
+    "id": "rule_138",
+    "pattern": "erro138",
+    "flags": "gi",
+    "replacement": "correcao138",
+    "description": "Correção automática para erro138"
+  },
+  {
+    "id": "rule_139",
+    "pattern": "erro139",
+    "flags": "gi",
+    "replacement": "correcao139",
+    "description": "Correção automática para erro139"
+  },
+  {
+    "id": "rule_140",
+    "pattern": "erro140",
+    "flags": "gi",
+    "replacement": "correcao140",
+    "description": "Correção automática para erro140"
+  },
+  {
+    "id": "rule_141",
+    "pattern": "erro141",
+    "flags": "gi",
+    "replacement": "correcao141",
+    "description": "Correção automática para erro141"
+  },
+  {
+    "id": "rule_142",
+    "pattern": "erro142",
+    "flags": "gi",
+    "replacement": "correcao142",
+    "description": "Correção automática para erro142"
+  },
+  {
+    "id": "rule_143",
+    "pattern": "erro143",
+    "flags": "gi",
+    "replacement": "correcao143",
+    "description": "Correção automática para erro143"
+  },
+  {
+    "id": "rule_144",
+    "pattern": "erro144",
+    "flags": "gi",
+    "replacement": "correcao144",
+    "description": "Correção automática para erro144"
+  },
+  {
+    "id": "rule_145",
+    "pattern": "erro145",
+    "flags": "gi",
+    "replacement": "correcao145",
+    "description": "Correção automática para erro145"
+  },
+  {
+    "id": "rule_146",
+    "pattern": "erro146",
+    "flags": "gi",
+    "replacement": "correcao146",
+    "description": "Correção automática para erro146"
+  },
+  {
+    "id": "rule_147",
+    "pattern": "erro147",
+    "flags": "gi",
+    "replacement": "correcao147",
+    "description": "Correção automática para erro147"
+  },
+  {
+    "id": "rule_148",
+    "pattern": "erro148",
+    "flags": "gi",
+    "replacement": "correcao148",
+    "description": "Correção automática para erro148"
+  },
+  {
+    "id": "rule_149",
+    "pattern": "erro149",
+    "flags": "gi",
+    "replacement": "correcao149",
+    "description": "Correção automática para erro149"
+  },
+  {
+    "id": "rule_150",
+    "pattern": "erro150",
+    "flags": "gi",
+    "replacement": "correcao150",
+    "description": "Correção automática para erro150"
+  },
+  {
+    "id": "rule_151",
+    "pattern": "erro151",
+    "flags": "gi",
+    "replacement": "correcao151",
+    "description": "Correção automática para erro151"
+  },
+  {
+    "id": "rule_152",
+    "pattern": "erro152",
+    "flags": "gi",
+    "replacement": "correcao152",
+    "description": "Correção automática para erro152"
+  },
+  {
+    "id": "rule_153",
+    "pattern": "erro153",
+    "flags": "gi",
+    "replacement": "correcao153",
+    "description": "Correção automática para erro153"
+  },
+  {
+    "id": "rule_154",
+    "pattern": "erro154",
+    "flags": "gi",
+    "replacement": "correcao154",
+    "description": "Correção automática para erro154"
+  },
+  {
+    "id": "rule_155",
+    "pattern": "erro155",
+    "flags": "gi",
+    "replacement": "correcao155",
+    "description": "Correção automática para erro155"
+  },
+  {
+    "id": "rule_156",
+    "pattern": "erro156",
+    "flags": "gi",
+    "replacement": "correcao156",
+    "description": "Correção automática para erro156"
+  },
+  {
+    "id": "rule_157",
+    "pattern": "erro157",
+    "flags": "gi",
+    "replacement": "correcao157",
+    "description": "Correção automática para erro157"
+  },
+  {
+    "id": "rule_158",
+    "pattern": "erro158",
+    "flags": "gi",
+    "replacement": "correcao158",
+    "description": "Correção automática para erro158"
+  },
+  {
+    "id": "rule_159",
+    "pattern": "erro159",
+    "flags": "gi",
+    "replacement": "correcao159",
+    "description": "Correção automática para erro159"
+  },
+  {
+    "id": "rule_160",
+    "pattern": "erro160",
+    "flags": "gi",
+    "replacement": "correcao160",
+    "description": "Correção automática para erro160"
+  },
+  {
+    "id": "rule_161",
+    "pattern": "erro161",
+    "flags": "gi",
+    "replacement": "correcao161",
+    "description": "Correção automática para erro161"
+  },
+  {
+    "id": "rule_162",
+    "pattern": "erro162",
+    "flags": "gi",
+    "replacement": "correcao162",
+    "description": "Correção automática para erro162"
+  },
+  {
+    "id": "rule_163",
+    "pattern": "erro163",
+    "flags": "gi",
+    "replacement": "correcao163",
+    "description": "Correção automática para erro163"
+  },
+  {
+    "id": "rule_164",
+    "pattern": "erro164",
+    "flags": "gi",
+    "replacement": "correcao164",
+    "description": "Correção automática para erro164"
+  },
+  {
+    "id": "rule_165",
+    "pattern": "erro165",
+    "flags": "gi",
+    "replacement": "correcao165",
+    "description": "Correção automática para erro165"
+  },
+  {
+    "id": "rule_166",
+    "pattern": "erro166",
+    "flags": "gi",
+    "replacement": "correcao166",
+    "description": "Correção automática para erro166"
+  },
+  {
+    "id": "rule_167",
+    "pattern": "erro167",
+    "flags": "gi",
+    "replacement": "correcao167",
+    "description": "Correção automática para erro167"
+  },
+  {
+    "id": "rule_168",
+    "pattern": "erro168",
+    "flags": "gi",
+    "replacement": "correcao168",
+    "description": "Correção automática para erro168"
+  },
+  {
+    "id": "rule_169",
+    "pattern": "erro169",
+    "flags": "gi",
+    "replacement": "correcao169",
+    "description": "Correção automática para erro169"
+  },
+  {
+    "id": "rule_170",
+    "pattern": "erro170",
+    "flags": "gi",
+    "replacement": "correcao170",
+    "description": "Correção automática para erro170"
+  },
+  {
+    "id": "rule_171",
+    "pattern": "erro171",
+    "flags": "gi",
+    "replacement": "correcao171",
+    "description": "Correção automática para erro171"
+  },
+  {
+    "id": "rule_172",
+    "pattern": "erro172",
+    "flags": "gi",
+    "replacement": "correcao172",
+    "description": "Correção automática para erro172"
+  },
+  {
+    "id": "rule_173",
+    "pattern": "erro173",
+    "flags": "gi",
+    "replacement": "correcao173",
+    "description": "Correção automática para erro173"
+  },
+  {
+    "id": "rule_174",
+    "pattern": "erro174",
+    "flags": "gi",
+    "replacement": "correcao174",
+    "description": "Correção automática para erro174"
+  },
+  {
+    "id": "rule_175",
+    "pattern": "erro175",
+    "flags": "gi",
+    "replacement": "correcao175",
+    "description": "Correção automática para erro175"
+  },
+  {
+    "id": "rule_176",
+    "pattern": "erro176",
+    "flags": "gi",
+    "replacement": "correcao176",
+    "description": "Correção automática para erro176"
+  },
+  {
+    "id": "rule_177",
+    "pattern": "erro177",
+    "flags": "gi",
+    "replacement": "correcao177",
+    "description": "Correção automática para erro177"
+  },
+  {
+    "id": "rule_178",
+    "pattern": "erro178",
+    "flags": "gi",
+    "replacement": "correcao178",
+    "description": "Correção automática para erro178"
+  },
+  {
+    "id": "rule_179",
+    "pattern": "erro179",
+    "flags": "gi",
+    "replacement": "correcao179",
+    "description": "Correção automática para erro179"
+  },
+  {
+    "id": "rule_180",
+    "pattern": "erro180",
+    "flags": "gi",
+    "replacement": "correcao180",
+    "description": "Correção automática para erro180"
+  },
+  {
+    "id": "rule_181",
+    "pattern": "erro181",
+    "flags": "gi",
+    "replacement": "correcao181",
+    "description": "Correção automática para erro181"
+  },
+  {
+    "id": "rule_182",
+    "pattern": "erro182",
+    "flags": "gi",
+    "replacement": "correcao182",
+    "description": "Correção automática para erro182"
+  },
+  {
+    "id": "rule_183",
+    "pattern": "erro183",
+    "flags": "gi",
+    "replacement": "correcao183",
+    "description": "Correção automática para erro183"
+  },
+  {
+    "id": "rule_184",
+    "pattern": "erro184",
+    "flags": "gi",
+    "replacement": "correcao184",
+    "description": "Correção automática para erro184"
+  },
+  {
+    "id": "rule_185",
+    "pattern": "erro185",
+    "flags": "gi",
+    "replacement": "correcao185",
+    "description": "Correção automática para erro185"
+  },
+  {
+    "id": "rule_186",
+    "pattern": "erro186",
+    "flags": "gi",
+    "replacement": "correcao186",
+    "description": "Correção automática para erro186"
+  },
+  {
+    "id": "rule_187",
+    "pattern": "erro187",
+    "flags": "gi",
+    "replacement": "correcao187",
+    "description": "Correção automática para erro187"
+  },
+  {
+    "id": "rule_188",
+    "pattern": "erro188",
+    "flags": "gi",
+    "replacement": "correcao188",
+    "description": "Correção automática para erro188"
+  },
+  {
+    "id": "rule_189",
+    "pattern": "erro189",
+    "flags": "gi",
+    "replacement": "correcao189",
+    "description": "Correção automática para erro189"
+  },
+  {
+    "id": "rule_190",
+    "pattern": "erro190",
+    "flags": "gi",
+    "replacement": "correcao190",
+    "description": "Correção automática para erro190"
+  },
+  {
+    "id": "rule_191",
+    "pattern": "erro191",
+    "flags": "gi",
+    "replacement": "correcao191",
+    "description": "Correção automática para erro191"
+  },
+  {
+    "id": "rule_192",
+    "pattern": "erro192",
+    "flags": "gi",
+    "replacement": "correcao192",
+    "description": "Correção automática para erro192"
+  },
+  {
+    "id": "rule_193",
+    "pattern": "erro193",
+    "flags": "gi",
+    "replacement": "correcao193",
+    "description": "Correção automática para erro193"
+  },
+  {
+    "id": "rule_194",
+    "pattern": "erro194",
+    "flags": "gi",
+    "replacement": "correcao194",
+    "description": "Correção automática para erro194"
+  },
+  {
+    "id": "rule_195",
+    "pattern": "erro195",
+    "flags": "gi",
+    "replacement": "correcao195",
+    "description": "Correção automática para erro195"
+  },
+  {
+    "id": "rule_196",
+    "pattern": "erro196",
+    "flags": "gi",
+    "replacement": "correcao196",
+    "description": "Correção automática para erro196"
+  },
+  {
+    "id": "rule_197",
+    "pattern": "erro197",
+    "flags": "gi",
+    "replacement": "correcao197",
+    "description": "Correção automática para erro197"
+  },
+  {
+    "id": "rule_198",
+    "pattern": "erro198",
+    "flags": "gi",
+    "replacement": "correcao198",
+    "description": "Correção automática para erro198"
+  },
+  {
+    "id": "rule_199",
+    "pattern": "erro199",
+    "flags": "gi",
+    "replacement": "correcao199",
+    "description": "Correção automática para erro199"
+  },
+  {
+    "id": "rule_200",
+    "pattern": "erro200",
+    "flags": "gi",
+    "replacement": "correcao200",
+    "description": "Correção automática para erro200"
+  },
+  {
+    "id": "rule_201",
+    "pattern": "erro201",
+    "flags": "gi",
+    "replacement": "correcao201",
+    "description": "Correção automática para erro201"
+  },
+  {
+    "id": "rule_202",
+    "pattern": "erro202",
+    "flags": "gi",
+    "replacement": "correcao202",
+    "description": "Correção automática para erro202"
+  },
+  {
+    "id": "rule_203",
+    "pattern": "erro203",
+    "flags": "gi",
+    "replacement": "correcao203",
+    "description": "Correção automática para erro203"
+  },
+  {
+    "id": "rule_204",
+    "pattern": "erro204",
+    "flags": "gi",
+    "replacement": "correcao204",
+    "description": "Correção automática para erro204"
+  },
+  {
+    "id": "rule_205",
+    "pattern": "erro205",
+    "flags": "gi",
+    "replacement": "correcao205",
+    "description": "Correção automática para erro205"
+  },
+  {
+    "id": "rule_206",
+    "pattern": "erro206",
+    "flags": "gi",
+    "replacement": "correcao206",
+    "description": "Correção automática para erro206"
+  },
+  {
+    "id": "rule_207",
+    "pattern": "erro207",
+    "flags": "gi",
+    "replacement": "correcao207",
+    "description": "Correção automática para erro207"
+  },
+  {
+    "id": "rule_208",
+    "pattern": "erro208",
+    "flags": "gi",
+    "replacement": "correcao208",
+    "description": "Correção automática para erro208"
+  },
+  {
+    "id": "rule_209",
+    "pattern": "erro209",
+    "flags": "gi",
+    "replacement": "correcao209",
+    "description": "Correção automática para erro209"
+  },
+  {
+    "id": "rule_210",
+    "pattern": "erro210",
+    "flags": "gi",
+    "replacement": "correcao210",
+    "description": "Correção automática para erro210"
+  },
+  {
+    "id": "rule_211",
+    "pattern": "erro211",
+    "flags": "gi",
+    "replacement": "correcao211",
+    "description": "Correção automática para erro211"
+  },
+  {
+    "id": "rule_212",
+    "pattern": "erro212",
+    "flags": "gi",
+    "replacement": "correcao212",
+    "description": "Correção automática para erro212"
+  },
+  {
+    "id": "rule_213",
+    "pattern": "erro213",
+    "flags": "gi",
+    "replacement": "correcao213",
+    "description": "Correção automática para erro213"
+  },
+  {
+    "id": "rule_214",
+    "pattern": "erro214",
+    "flags": "gi",
+    "replacement": "correcao214",
+    "description": "Correção automática para erro214"
+  },
+  {
+    "id": "rule_215",
+    "pattern": "erro215",
+    "flags": "gi",
+    "replacement": "correcao215",
+    "description": "Correção automática para erro215"
+  },
+  {
+    "id": "rule_216",
+    "pattern": "erro216",
+    "flags": "gi",
+    "replacement": "correcao216",
+    "description": "Correção automática para erro216"
+  },
+  {
+    "id": "rule_217",
+    "pattern": "erro217",
+    "flags": "gi",
+    "replacement": "correcao217",
+    "description": "Correção automática para erro217"
+  },
+  {
+    "id": "rule_218",
+    "pattern": "erro218",
+    "flags": "gi",
+    "replacement": "correcao218",
+    "description": "Correção automática para erro218"
+  },
+  {
+    "id": "rule_219",
+    "pattern": "erro219",
+    "flags": "gi",
+    "replacement": "correcao219",
+    "description": "Correção automática para erro219"
+  },
+  {
+    "id": "rule_220",
+    "pattern": "erro220",
+    "flags": "gi",
+    "replacement": "correcao220",
+    "description": "Correção automática para erro220"
+  },
+  {
+    "id": "rule_221",
+    "pattern": "erro221",
+    "flags": "gi",
+    "replacement": "correcao221",
+    "description": "Correção automática para erro221"
+  },
+  {
+    "id": "rule_222",
+    "pattern": "erro222",
+    "flags": "gi",
+    "replacement": "correcao222",
+    "description": "Correção automática para erro222"
+  },
+  {
+    "id": "rule_223",
+    "pattern": "erro223",
+    "flags": "gi",
+    "replacement": "correcao223",
+    "description": "Correção automática para erro223"
+  },
+  {
+    "id": "rule_224",
+    "pattern": "erro224",
+    "flags": "gi",
+    "replacement": "correcao224",
+    "description": "Correção automática para erro224"
+  },
+  {
+    "id": "rule_225",
+    "pattern": "erro225",
+    "flags": "gi",
+    "replacement": "correcao225",
+    "description": "Correção automática para erro225"
+  },
+  {
+    "id": "rule_226",
+    "pattern": "erro226",
+    "flags": "gi",
+    "replacement": "correcao226",
+    "description": "Correção automática para erro226"
+  },
+  {
+    "id": "rule_227",
+    "pattern": "erro227",
+    "flags": "gi",
+    "replacement": "correcao227",
+    "description": "Correção automática para erro227"
+  },
+  {
+    "id": "rule_228",
+    "pattern": "erro228",
+    "flags": "gi",
+    "replacement": "correcao228",
+    "description": "Correção automática para erro228"
+  },
+  {
+    "id": "rule_229",
+    "pattern": "erro229",
+    "flags": "gi",
+    "replacement": "correcao229",
+    "description": "Correção automática para erro229"
+  },
+  {
+    "id": "rule_230",
+    "pattern": "erro230",
+    "flags": "gi",
+    "replacement": "correcao230",
+    "description": "Correção automática para erro230"
+  },
+  {
+    "id": "rule_231",
+    "pattern": "erro231",
+    "flags": "gi",
+    "replacement": "correcao231",
+    "description": "Correção automática para erro231"
+  },
+  {
+    "id": "rule_232",
+    "pattern": "erro232",
+    "flags": "gi",
+    "replacement": "correcao232",
+    "description": "Correção automática para erro232"
+  },
+  {
+    "id": "rule_233",
+    "pattern": "erro233",
+    "flags": "gi",
+    "replacement": "correcao233",
+    "description": "Correção automática para erro233"
+  },
+  {
+    "id": "rule_234",
+    "pattern": "erro234",
+    "flags": "gi",
+    "replacement": "correcao234",
+    "description": "Correção automática para erro234"
+  },
+  {
+    "id": "rule_235",
+    "pattern": "erro235",
+    "flags": "gi",
+    "replacement": "correcao235",
+    "description": "Correção automática para erro235"
+  },
+  {
+    "id": "rule_236",
+    "pattern": "erro236",
+    "flags": "gi",
+    "replacement": "correcao236",
+    "description": "Correção automática para erro236"
+  },
+  {
+    "id": "rule_237",
+    "pattern": "erro237",
+    "flags": "gi",
+    "replacement": "correcao237",
+    "description": "Correção automática para erro237"
+  },
+  {
+    "id": "rule_238",
+    "pattern": "erro238",
+    "flags": "gi",
+    "replacement": "correcao238",
+    "description": "Correção automática para erro238"
+  },
+  {
+    "id": "rule_239",
+    "pattern": "erro239",
+    "flags": "gi",
+    "replacement": "correcao239",
+    "description": "Correção automática para erro239"
+  },
+  {
+    "id": "rule_240",
+    "pattern": "erro240",
+    "flags": "gi",
+    "replacement": "correcao240",
+    "description": "Correção automática para erro240"
+  },
+  {
+    "id": "rule_241",
+    "pattern": "erro241",
+    "flags": "gi",
+    "replacement": "correcao241",
+    "description": "Correção automática para erro241"
+  },
+  {
+    "id": "rule_242",
+    "pattern": "erro242",
+    "flags": "gi",
+    "replacement": "correcao242",
+    "description": "Correção automática para erro242"
+  },
+  {
+    "id": "rule_243",
+    "pattern": "erro243",
+    "flags": "gi",
+    "replacement": "correcao243",
+    "description": "Correção automática para erro243"
+  },
+  {
+    "id": "rule_244",
+    "pattern": "erro244",
+    "flags": "gi",
+    "replacement": "correcao244",
+    "description": "Correção automática para erro244"
+  },
+  {
+    "id": "rule_245",
+    "pattern": "erro245",
+    "flags": "gi",
+    "replacement": "correcao245",
+    "description": "Correção automática para erro245"
+  },
+  {
+    "id": "rule_246",
+    "pattern": "erro246",
+    "flags": "gi",
+    "replacement": "correcao246",
+    "description": "Correção automática para erro246"
+  },
+  {
+    "id": "rule_247",
+    "pattern": "erro247",
+    "flags": "gi",
+    "replacement": "correcao247",
+    "description": "Correção automática para erro247"
+  },
+  {
+    "id": "rule_248",
+    "pattern": "erro248",
+    "flags": "gi",
+    "replacement": "correcao248",
+    "description": "Correção automática para erro248"
+  },
+  {
+    "id": "rule_249",
+    "pattern": "erro249",
+    "flags": "gi",
+    "replacement": "correcao249",
+    "description": "Correção automática para erro249"
+  },
+  {
+    "id": "rule_250",
+    "pattern": "erro250",
+    "flags": "gi",
+    "replacement": "correcao250",
+    "description": "Correção automática para erro250"
+  },
+  {
+    "id": "rule_251",
+    "pattern": "erro251",
+    "flags": "gi",
+    "replacement": "correcao251",
+    "description": "Correção automática para erro251"
+  },
+  {
+    "id": "rule_252",
+    "pattern": "erro252",
+    "flags": "gi",
+    "replacement": "correcao252",
+    "description": "Correção automática para erro252"
+  },
+  {
+    "id": "rule_253",
+    "pattern": "erro253",
+    "flags": "gi",
+    "replacement": "correcao253",
+    "description": "Correção automática para erro253"
+  },
+  {
+    "id": "rule_254",
+    "pattern": "erro254",
+    "flags": "gi",
+    "replacement": "correcao254",
+    "description": "Correção automática para erro254"
+  },
+  {
+    "id": "rule_255",
+    "pattern": "erro255",
+    "flags": "gi",
+    "replacement": "correcao255",
+    "description": "Correção automática para erro255"
+  },
+  {
+    "id": "rule_256",
+    "pattern": "erro256",
+    "flags": "gi",
+    "replacement": "correcao256",
+    "description": "Correção automática para erro256"
+  },
+  {
+    "id": "rule_257",
+    "pattern": "erro257",
+    "flags": "gi",
+    "replacement": "correcao257",
+    "description": "Correção automática para erro257"
+  },
+  {
+    "id": "rule_258",
+    "pattern": "erro258",
+    "flags": "gi",
+    "replacement": "correcao258",
+    "description": "Correção automática para erro258"
+  },
+  {
+    "id": "rule_259",
+    "pattern": "erro259",
+    "flags": "gi",
+    "replacement": "correcao259",
+    "description": "Correção automática para erro259"
+  },
+  {
+    "id": "rule_260",
+    "pattern": "erro260",
+    "flags": "gi",
+    "replacement": "correcao260",
+    "description": "Correção automática para erro260"
+  },
+  {
+    "id": "rule_261",
+    "pattern": "erro261",
+    "flags": "gi",
+    "replacement": "correcao261",
+    "description": "Correção automática para erro261"
+  },
+  {
+    "id": "rule_262",
+    "pattern": "erro262",
+    "flags": "gi",
+    "replacement": "correcao262",
+    "description": "Correção automática para erro262"
+  },
+  {
+    "id": "rule_263",
+    "pattern": "erro263",
+    "flags": "gi",
+    "replacement": "correcao263",
+    "description": "Correção automática para erro263"
+  },
+  {
+    "id": "rule_264",
+    "pattern": "erro264",
+    "flags": "gi",
+    "replacement": "correcao264",
+    "description": "Correção automática para erro264"
+  },
+  {
+    "id": "rule_265",
+    "pattern": "erro265",
+    "flags": "gi",
+    "replacement": "correcao265",
+    "description": "Correção automática para erro265"
+  },
+  {
+    "id": "rule_266",
+    "pattern": "erro266",
+    "flags": "gi",
+    "replacement": "correcao266",
+    "description": "Correção automática para erro266"
+  },
+  {
+    "id": "rule_267",
+    "pattern": "erro267",
+    "flags": "gi",
+    "replacement": "correcao267",
+    "description": "Correção automática para erro267"
+  },
+  {
+    "id": "rule_268",
+    "pattern": "erro268",
+    "flags": "gi",
+    "replacement": "correcao268",
+    "description": "Correção automática para erro268"
+  },
+  {
+    "id": "rule_269",
+    "pattern": "erro269",
+    "flags": "gi",
+    "replacement": "correcao269",
+    "description": "Correção automática para erro269"
+  },
+  {
+    "id": "rule_270",
+    "pattern": "erro270",
+    "flags": "gi",
+    "replacement": "correcao270",
+    "description": "Correção automática para erro270"
+  },
+  {
+    "id": "rule_271",
+    "pattern": "erro271",
+    "flags": "gi",
+    "replacement": "correcao271",
+    "description": "Correção automática para erro271"
+  },
+  {
+    "id": "rule_272",
+    "pattern": "erro272",
+    "flags": "gi",
+    "replacement": "correcao272",
+    "description": "Correção automática para erro272"
+  },
+  {
+    "id": "rule_273",
+    "pattern": "erro273",
+    "flags": "gi",
+    "replacement": "correcao273",
+    "description": "Correção automática para erro273"
+  },
+  {
+    "id": "rule_274",
+    "pattern": "erro274",
+    "flags": "gi",
+    "replacement": "correcao274",
+    "description": "Correção automática para erro274"
+  },
+  {
+    "id": "rule_275",
+    "pattern": "erro275",
+    "flags": "gi",
+    "replacement": "correcao275",
+    "description": "Correção automática para erro275"
+  },
+  {
+    "id": "rule_276",
+    "pattern": "erro276",
+    "flags": "gi",
+    "replacement": "correcao276",
+    "description": "Correção automática para erro276"
+  },
+  {
+    "id": "rule_277",
+    "pattern": "erro277",
+    "flags": "gi",
+    "replacement": "correcao277",
+    "description": "Correção automática para erro277"
+  },
+  {
+    "id": "rule_278",
+    "pattern": "erro278",
+    "flags": "gi",
+    "replacement": "correcao278",
+    "description": "Correção automática para erro278"
+  },
+  {
+    "id": "rule_279",
+    "pattern": "erro279",
+    "flags": "gi",
+    "replacement": "correcao279",
+    "description": "Correção automática para erro279"
+  },
+  {
+    "id": "rule_280",
+    "pattern": "erro280",
+    "flags": "gi",
+    "replacement": "correcao280",
+    "description": "Correção automática para erro280"
+  },
+  {
+    "id": "rule_281",
+    "pattern": "erro281",
+    "flags": "gi",
+    "replacement": "correcao281",
+    "description": "Correção automática para erro281"
+  },
+  {
+    "id": "rule_282",
+    "pattern": "erro282",
+    "flags": "gi",
+    "replacement": "correcao282",
+    "description": "Correção automática para erro282"
+  },
+  {
+    "id": "rule_283",
+    "pattern": "erro283",
+    "flags": "gi",
+    "replacement": "correcao283",
+    "description": "Correção automática para erro283"
+  },
+  {
+    "id": "rule_284",
+    "pattern": "erro284",
+    "flags": "gi",
+    "replacement": "correcao284",
+    "description": "Correção automática para erro284"
+  },
+  {
+    "id": "rule_285",
+    "pattern": "erro285",
+    "flags": "gi",
+    "replacement": "correcao285",
+    "description": "Correção automática para erro285"
+  },
+  {
+    "id": "rule_286",
+    "pattern": "erro286",
+    "flags": "gi",
+    "replacement": "correcao286",
+    "description": "Correção automática para erro286"
+  },
+  {
+    "id": "rule_287",
+    "pattern": "erro287",
+    "flags": "gi",
+    "replacement": "correcao287",
+    "description": "Correção automática para erro287"
+  },
+  {
+    "id": "rule_288",
+    "pattern": "erro288",
+    "flags": "gi",
+    "replacement": "correcao288",
+    "description": "Correção automática para erro288"
+  },
+  {
+    "id": "rule_289",
+    "pattern": "erro289",
+    "flags": "gi",
+    "replacement": "correcao289",
+    "description": "Correção automática para erro289"
+  },
+  {
+    "id": "rule_290",
+    "pattern": "erro290",
+    "flags": "gi",
+    "replacement": "correcao290",
+    "description": "Correção automática para erro290"
+  },
+  {
+    "id": "rule_291",
+    "pattern": "erro291",
+    "flags": "gi",
+    "replacement": "correcao291",
+    "description": "Correção automática para erro291"
+  },
+  {
+    "id": "rule_292",
+    "pattern": "erro292",
+    "flags": "gi",
+    "replacement": "correcao292",
+    "description": "Correção automática para erro292"
+  },
+  {
+    "id": "rule_293",
+    "pattern": "erro293",
+    "flags": "gi",
+    "replacement": "correcao293",
+    "description": "Correção automática para erro293"
+  },
+  {
+    "id": "rule_294",
+    "pattern": "erro294",
+    "flags": "gi",
+    "replacement": "correcao294",
+    "description": "Correção automática para erro294"
+  },
+  {
+    "id": "rule_295",
+    "pattern": "erro295",
+    "flags": "gi",
+    "replacement": "correcao295",
+    "description": "Correção automática para erro295"
+  },
+  {
+    "id": "rule_296",
+    "pattern": "erro296",
+    "flags": "gi",
+    "replacement": "correcao296",
+    "description": "Correção automática para erro296"
+  },
+  {
+    "id": "rule_297",
+    "pattern": "erro297",
+    "flags": "gi",
+    "replacement": "correcao297",
+    "description": "Correção automática para erro297"
+  },
+  {
+    "id": "rule_298",
+    "pattern": "erro298",
+    "flags": "gi",
+    "replacement": "correcao298",
+    "description": "Correção automática para erro298"
+  },
+  {
+    "id": "rule_299",
+    "pattern": "erro299",
+    "flags": "gi",
+    "replacement": "correcao299",
+    "description": "Correção automática para erro299"
+  },
+  {
+    "id": "rule_300",
+    "pattern": "erro300",
+    "flags": "gi",
+    "replacement": "correcao300",
+    "description": "Correção automática para erro300"
+  }
+]
