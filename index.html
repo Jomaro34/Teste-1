@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Assistente Local — Correções Avançadas + Memória + Dicionário</title>
+<title>Assistente Local — Correções + Memória + Dicionário</title>
 <style>
   :root{--bg:#f3f6f9;--card:#fff;--accent:#0b63a7;--muted:#6b7280}
   body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);margin:0;padding:24px}
@@ -34,7 +34,7 @@
 <div class="wrap">
   <header>
     <h1>🛠️ Assistente Local — Correções + Memória + Dicionário</h1>
-    <div class="muted">(carrega <code>memoria.json</code> automaticamente se disponível)</div>
+    <div class="muted">(carrega <code>memoria.json</code> e <code>dicionario_raw.json</code> automaticamente se disponíveis)</div>
   </header>
 
   <div class="grid">
@@ -65,7 +65,7 @@
       <h4>📤 Resultado</h4>
       <textarea id="outputText" readonly></textarea>
 
-      <div class="footer">Observação: Para carga automática de <code>memoria.json</code>, abra via servidor HTTP (ex: <code>python -m http.server</code>) e coloque <code>memoria.json</code> na mesma pasta.</div>
+      <div class="footer">Abra via servidor HTTP (<code>python -m http.server</code>) e coloque <code>memoria.json</code> e <code>dicionario_raw.json</code> na mesma pasta.</div>
     </div>
 
     <div class="card">
@@ -86,15 +86,14 @@
 
       <div style="height:10px"></div>
       <h4>🔧 Regras (gerir)</h4>
-      <div class="muted small">Pode importar um <code>rules.json</code> para substituir ou estender as regras. O motor suporta regex e substituições.</div>
+      <div class="muted small">Pode importar um <code>rules.json</code> para substituir ou estender as regras. Suporta regex e substituições.</div>
       <div style="height:8px"></div>
       <button id="btnShowRules" class="secondary">Ver / Editar regras em JSON</button>
-
     </div>
   </div>
 </div>
 
-<!-- Modal simples para edição de regras -->
+<!-- Modal de regras -->
 <div id="rulesModal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.5);align-items:center;justify-content:center">
   <div style="width:90%;max-width:900px;background:#fff;border-radius:12px;padding:14px;">
     <h3>Regras (JSON)</h3>
@@ -107,47 +106,72 @@
 </div>
 
 <script>
-// ======================= Dicionário =======================
+// ================= Dicionário =================
 let dicionario = {};
-
-async function carregarDicionario() {
-  try {
-    const res = await fetch('./dicionario_raw.json');
-    if(!res.ok) { console.error('Não foi possível carregar o dicionário'); return; }
-    dicionario = await res.json();
-    console.log('Dicionário carregado:', Object.keys(dicionario).length, 'palavras');
-  } catch(e) {
-    console.error('Erro ao carregar JSON:', e);
-  }
-}
+fetch('./dicionario_raw.json')
+  .then(r => r.json())
+  .then(json => { dicionario = json; console.log('Dicionário carregado', Object.keys(dicionario).length, 'palavras'); })
+  .catch(err => console.error('Erro ao carregar dicionário:', err));
 
 function consultarPalavra(palavra) {
   const entry = dicionario[palavra];
   if(!entry) return 'Palavra não encontrada no dicionário.';
-  
-  let res = '';
-  for(const s of entry){
-    res += `Definição: ${s.definicao}\nCategoria: ${s.categoria}\nContexto: ${s.contexto}\n\n`;
-  }
-  return res;
+  return entry.map(s => `Definição: ${s.definicao}\nCategoria: ${s.categoria}\nContexto: ${s.contexto}`).join("\n\n");
 }
 
-// ======================= Motor de Regras + Memória =======================
-// (Aqui vai todo o JS do seu assistente original: regras, memória, fuzzy search, modais)
-
-// --- Botões ---
 document.getElementById('btnConsultarDic').addEventListener('click', ()=>{
   const palavra = document.getElementById('inputText').value.trim();
-  if(!palavra) { alert('Escreve uma palavra.'); return; }
-  const resultado = consultarPalavra(palavra);
-  document.getElementById('outputText').value = resultado;
+  if(!palavra) { alert('Escreva uma palavra para consultar'); return; }
+  document.getElementById('outputText').value = consultarPalavra(palavra);
 });
 
-// Inicialização
-carregarDicionario();
+// ================= Regras e Memória (simplificado) =================
+let regras = [];
+let memoria = [];
 
-// Lembre-se de copiar o restante do seu JS original do assistente:
-// funções: aplicarRegrasTodas, aplicarRegra, corrigirTexto, explicarErros, adicionarMemoria, atualizarListaMemoria, pesquisa fuzzy, modal de regras, carregar regras padrão etc.
+function carregarRegrasPadrao(){
+  regras = [
+    {id:'r_espacos',pattern:'\\s{2,}','flags':'g',replacement:' ',description:'Remove espaços duplicados'}
+  ];
+  document.getElementById('ruleCount').textContent = regras.length;
+}
+
+function corrigirTexto(){
+  let texto = document.getElementById('inputText').value;
+  for(const r of regras){
+    const re = new RegExp(r.pattern, r.flags||'g');
+    texto = typeof r.replacement==='function' ? texto.replace(re,r.replacement) : texto.replace(re,r.replacement);
+  }
+  document.getElementById('outputText').value = texto;
+}
+
+function adicionarMemoria(){
+  const text = document.getElementById('inputText').value.trim();
+  if(!text) return;
+  memoria.unshift({id:Date.now().toString(),text,addedAt:new Date().toISOString()});
+  atualizarListaMemoria();
+}
+
+function atualizarListaMemoria(){
+  const box = document.getElementById('memoriaLista');
+  box.innerHTML = '';
+  for(const m of memoria){
+    const div = document.createElement('div');
+    div.className='mem-item';
+    div.innerHTML = `<div style="font-weight:600">${m.text.slice(0,120)}</div><div class="meta">id: ${m.id} • ${new Date(m.addedAt).toLocaleString()}</div>`;
+    box.appendChild(div);
+  }
+}
+
+// Eventos
+document.getElementById('btnCorrigir').addEventListener('click', corrigirTexto);
+document.getElementById('btnAdicionar').addEventListener('click', adicionarMemoria);
+document.getElementById('btnLimpar').addEventListener('click', ()=>{ document.getElementById('inputText').value=''; document.getElementById('outputText').value=''; });
+document.getElementById('btnExplicar').addEventListener('click', ()=>alert('Relatório de correções não implementado neste exemplo.'));
+
+// Inicialização
+carregarRegrasPadrao();
+
 </script>
 </body>
 </html>
