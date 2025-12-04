@@ -104,6 +104,11 @@
         <button id="btnSearch" class="secondary">🔍</button>
       </div>
 
+      <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+        <input id="filterTag" placeholder="Filtrar por tag..." style="flex:1;padding:8px;border-radius:8px;border:1px solid #e6eef6;font-size:13px">
+        <button id="btnFilterTag" class="secondary">🏷️</button>
+      </div>
+
       <div class="row" style="margin-bottom:12px">
         <button id="btnAutoLoad">📂 Carregar memoria.json</button>
         <button id="btnClearMem" class="danger">🗑️ Limpar Tudo</button>
@@ -342,9 +347,12 @@ function adicionarMemoria() {
     return;
   }
   
+  const tag = prompt('🏷️ Tag (opcional - ex: tarefa, ideia, compras):');
+  
   const item = {
     id: Date.now().toString(),
     text: text,
+    meta: tag ? { tag: tag.trim() } : {},
     addedAt: new Date().toISOString()
   };
   
@@ -357,7 +365,18 @@ function atualizarListaMemoria(filtro = null) {
   const box = document.getElementById('memoriaLista');
   box.innerHTML = '';
   
-  const items = filtro ? memoria.filter(m => fuzzySearch(filtro, m.text)) : memoria;
+  let items = memoria;
+  
+  // Filtro por texto (fuzzy search)
+  if(filtro) {
+    items = items.filter(m => fuzzySearch(filtro, m.text));
+  }
+  
+  // Filtro por tag
+  const tagFilter = document.getElementById('filterTag')?.value.trim().toLowerCase();
+  if(tagFilter) {
+    items = items.filter(m => m.meta && m.meta.tag && m.meta.tag.toLowerCase().includes(tagFilter));
+  }
   
   if(items.length === 0) {
     box.innerHTML = '<div class="muted" style="text-align:center;padding:20px">Nenhum item encontrado</div>';
@@ -372,7 +391,10 @@ function atualizarListaMemoria(filtro = null) {
     const preview = m.text.length > 150 ? m.text.slice(0, 150) + '...' : m.text;
     const highlighted = filtro ? highlightMatch(preview, filtro) : preview;
     
+    const tag = m.meta && m.meta.tag ? `<span style="background:#10b981;color:#fff;padding:3px 8px;border-radius:12px;font-size:11px;margin-right:6px;font-weight:600">🏷️ ${m.meta.tag}</span>` : '';
+    
     div.innerHTML = `
+      ${tag}
       <div style="font-weight:500;margin-bottom:4px">${highlighted}</div>
       <div class="meta">
         🆔 ${m.id} • 📅 ${new Date(m.addedAt).toLocaleString('pt-PT')}
@@ -440,6 +462,10 @@ function exportarMemoria() {
 document.getElementById('btnAdicionar').addEventListener('click', adicionarMemoria);
 document.getElementById('btnSearch').addEventListener('click', pesquisarMemoria);
 document.getElementById('searchQ').addEventListener('input', (e) => {
+  if(e.target.value === '') atualizarListaMemoria();
+});
+document.getElementById('btnFilterTag').addEventListener('click', () => atualizarListaMemoria());
+document.getElementById('filterTag').addEventListener('input', (e) => {
   if(e.target.value === '') atualizarListaMemoria();
 });
 document.getElementById('btnAutoLoad').addEventListener('click', carregarMemoriaJSON);
