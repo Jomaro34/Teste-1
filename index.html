@@ -5,173 +5,535 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Assistente Local — Correções + Memória + Dicionário</title>
 <style>
-  :root{--bg:#f3f6f9;--card:#fff;--accent:#0b63a7;--muted:#6b7280}
+  :root{--bg:#f3f6f9;--card:#fff;--accent:#0b63a7;--muted:#6b7280;--success:#059669;--danger:#dc2626}
+  *{box-sizing:border-box}
   body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);margin:0;padding:24px}
-  .wrap{max-width:1100px;margin:0 auto}
-  header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+  .wrap{max-width:1200px;margin:0 auto}
+  header{display:flex;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap}
   h1{margin:0;font-size:20px}
   .grid{display:grid;grid-template-columns:1fr 420px;gap:18px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
   .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.06)}
-  textarea{width:100%;min-height:140px;border:1px solid #e6eef6;border-radius:8px;padding:12px;font-size:15px}
-  button{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+  textarea{width:100%;min-height:140px;border:1px solid #e6eef6;border-radius:8px;padding:12px;font-size:15px;font-family:inherit;resize:vertical}
+  button{background:var(--accent);color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:14px;transition:opacity 0.2s}
+  button:hover{opacity:0.9}
+  button:disabled{opacity:0.5;cursor:not-allowed}
   .secondary{background:#475569}
+  .success{background:var(--success)}
+  .danger{background:var(--danger)}
   .muted{color:var(--muted);font-size:13px}
-  .row{display:flex;gap:8px;align-items:center}
-  .mem-list{max-height:300px;overflow:auto;border:1px solid #eef3f8;padding:8px;border-radius:8px}
-  .mem-item{padding:8px;border-bottom:1px solid #f1f5f9}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .mem-list{max-height:300px;overflow:auto;border:1px solid #eef3f8;padding:8px;border-radius:8px;background:#fafbfc}
+  .mem-item{padding:10px;border-bottom:1px solid #f1f5f9;background:#fff;margin-bottom:6px;border-radius:6px;cursor:pointer;transition:background 0.2s}
+  .mem-item:hover{background:#f8fafc}
   .small{font-size:13px}
-  .controls{display:flex;gap:8px;flex-wrap:wrap}
-  .pill{background:#eef6fb;padding:6px 8px;border-radius:999px;font-size:13px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .pill{background:#eef6fb;padding:6px 10px;border-radius:999px;font-size:13px;color:var(--accent);font-weight:500}
   input[type="file"]{display:none}
-  .rule-count{font-weight:600}
-  .search-result{padding:8px;border-radius:6px;margin-bottom:6px;background:#fcfeff;border:1px solid #eef7ff}
-  mark{background:yellow}
-  .meta{font-size:12px;color:var(--muted)}
-  .footer{margin-top:12px;font-size:13px;color:var(--muted)}
+  .rule-count{font-weight:600;color:var(--accent)}
+  .search-result{padding:10px;border-radius:6px;margin-bottom:6px;background:#fff;border:1px solid #e0f2fe}
+  mark{background:#fef08a;padding:2px 4px;border-radius:3px}
+  .meta{font-size:12px;color:var(--muted);margin-top:4px}
+  .footer{margin-top:12px;font-size:13px;color:var(--muted);padding:10px;background:#f8fafc;border-radius:8px}
+  .alert{padding:10px;border-radius:8px;margin:10px 0;font-size:14px}
+  .alert-success{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}
+  .alert-info{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
+  .alert-warning{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+  h3,h4{margin-top:0}
+  label.file-label{background:#475569;color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:14px;display:inline-block}
+  label.file-label:hover{opacity:0.9}
+  code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:13px;color:#334155}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>🛠️ Assistente Local — Correções + Memória + Dicionário</h1>
-    <div class="muted">(carrega <code>memoria.json</code> e <code>dicionario_raw.json</code> automaticamente se disponíveis)</div>
+    <div class="muted">Carrega automaticamente <code>rules.json</code>, <code>memoria.json</code> e <code>dicionario_raw.json</code></div>
   </header>
+
+  <div id="alerts"></div>
 
   <div class="grid">
     <div class="card">
-      <h3>✍️ Editor</h3>
-      <textarea id="inputText" placeholder="Escreve aqui..." spellcheck="true"></textarea>
-      <div style="height:12px"></div>
+      <h3>✍️ Editor de Texto</h3>
+      <textarea id="inputText" placeholder="Escreve ou cola o teu texto aqui..." spellcheck="true"></textarea>
+      
       <div class="controls">
-        <button id="btnCorrigir">Corrigir (aplicar regras)</button>
-        <button id="btnExplicar" class="secondary">Explicar erros</button>
-        <button id="btnAdicionar">Adicionar à memória</button>
-        <button id="btnConsultarDic" class="secondary">Consultar Dicionário</button>
-        <button id="btnLimpar" class="secondary">Limpar</button>
-        <div class="pill">Regras: <span id="ruleCount" class="rule-count"></span></div>
+        <button id="btnCorrigir">🔧 Corrigir Texto</button>
+        <button id="btnExplicar" class="secondary">📝 Explicar Correções</button>
+        <button id="btnAdicionar" class="success">💾 Guardar na Memória</button>
+        <button id="btnLimpar" class="secondary">🗑️ Limpar</button>
+        <div class="pill">Regras ativas: <span id="ruleCount" class="rule-count">0</span></div>
       </div>
 
-      <div style="height:12px"></div>
+      <div style="height:16px"></div>
+      <h4>🔍 Consulta de Dicionário</h4>
+      <div class="row">
+        <input id="searchDic" placeholder="Palavra a procurar..." style="flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef6;font-size:14px">
+        <button id="btnConsultarDic" class="secondary">Consultar</button>
+      </div>
+      <div id="dicResults" style="margin-top:10px"></div>
+
+      <div style="height:16px"></div>
       <h4>📥 Importar / Exportar</h4>
-      <div class="row" style="gap:6px;margin-bottom:8px">
-        <label class="secondary" for="fileRules" style="padding:8px;border-radius:8px;cursor:pointer">Importar regras (rules.json)</label>
+      <div class="row" style="gap:8px;margin-bottom:8px">
+        <label class="file-label" for="fileRules">📄 Importar Regras</label>
         <input id="fileRules" type="file" accept="application/json">
-        <label class="secondary" for="fileMem" style="padding:8px;border-radius:8px;cursor:pointer">Importar memória (.json)</label>
+        
+        <label class="file-label" for="fileMem">📄 Importar Memória</label>
         <input id="fileMem" type="file" accept="application/json">
-        <button id="exportMem" class="">Exportar memória</button>
+        
+        <button id="exportMem" class="success">💾 Exportar Memória</button>
       </div>
 
-      <div style="height:12px"></div>
-      <h4>📤 Resultado</h4>
-      <textarea id="outputText" readonly></textarea>
+      <div style="height:16px"></div>
+      <h4>📤 Resultado / Output</h4>
+      <textarea id="outputText" readonly style="background:#fafbfc"></textarea>
 
-      <div class="footer">Abra via servidor HTTP (<code>python -m http.server</code>) e coloque <code>memoria.json</code> e <code>dicionario_raw.json</code> na mesma pasta.</div>
+      <div class="footer">
+        <strong>💡 Dica:</strong> Inicia um servidor HTTP local (<code>python -m http.server 8000</code>) e coloca os arquivos JSON na mesma pasta.
+      </div>
     </div>
 
     <div class="card">
       <h3>💾 Memória Inteligente</h3>
 
-      <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
-        <input id="searchQ" placeholder="Pesquisar na memória (fuzzy)" style="flex:1;padding:8px;border-radius:8px;border:1px solid #eef3f8">
-        <button id="btnSearch" class="secondary">Pesquisar</button>
+      <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+        <input id="searchQ" placeholder="Pesquisar na memória (fuzzy search)..." style="flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef6;font-size:14px">
+        <button id="btnSearch" class="secondary">🔍</button>
       </div>
 
-      <div style="display:flex;gap:6px;margin-bottom:10px;align-items:center">
-        <button id="btnAutoLoad" class="">Carregar memoria.json</button>
-        <button id="btnClearMem" class="secondary">Limpar memória</button>
+      <div class="row" style="margin-bottom:12px">
+        <button id="btnAutoLoad">📂 Carregar memoria.json</button>
+        <button id="btnClearMem" class="danger">🗑️ Limpar Tudo</button>
+        <div class="pill">Itens: <span id="memCount" class="rule-count">0</span></div>
       </div>
 
-      <div class="muted small">Resultados:</div>
-      <div class="mem-list" id="memoriaLista"></div>
+      <div class="muted small" style="margin-bottom:6px">Clica num item para carregá-lo no editor:</div>
+      <div class="mem-list" id="memoriaLista">
+        <div class="muted" style="text-align:center;padding:20px">Nenhum item guardado ainda</div>
+      </div>
 
-      <div style="height:10px"></div>
-      <h4>🔧 Regras (gerir)</h4>
-      <div class="muted small">Pode importar um <code>rules.json</code> para substituir ou estender as regras. Suporta regex e substituições.</div>
-      <div style="height:8px"></div>
-      <button id="btnShowRules" class="secondary">Ver / Editar regras em JSON</button>
+      <div style="height:16px"></div>
+      <h4>🔧 Gestão de Regras</h4>
+      <div class="muted small" style="margin-bottom:8px">
+        As regras são aplicadas sequencialmente. Suporta regex e funções de substituição.
+      </div>
+      <button id="btnShowRules" class="secondary">📋 Ver / Editar Regras (JSON)</button>
     </div>
   </div>
 </div>
 
 <!-- Modal de regras -->
-<div id="rulesModal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.5);align-items:center;justify-content:center">
-  <div style="width:90%;max-width:900px;background:#fff;border-radius:12px;padding:14px;">
-    <h3>Regras (JSON)</h3>
-    <textarea id="rulesEditor" style="min-height:260px;width:100%;border:1px solid #eef3f8;border-radius:8px;padding:10px"></textarea>
-    <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
-      <button id="saveRules">Salvar regras</button>
-      <button id="closeRules" class="secondary">Fechar</button>
+<div id="rulesModal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.6);align-items:center;justify-content:center;z-index:1000">
+  <div style="width:90%;max-width:900px;background:#fff;border-radius:12px;padding:20px;max-height:90vh;overflow:auto">
+    <h3>📋 Editor de Regras (JSON)</h3>
+    <div class="muted small" style="margin-bottom:10px">
+      Formato: <code>[{id, pattern, flags, replacement, description}, ...]</code>
+    </div>
+    <textarea id="rulesEditor" style="min-height:350px;width:100%;border:1px solid #e6eef6;border-radius:8px;padding:12px;font-family:monospace;font-size:13px"></textarea>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+      <button id="saveRules" class="success">💾 Salvar Alterações</button>
+      <button id="closeRules" class="secondary">✖️ Fechar</button>
     </div>
   </div>
 </div>
 
 <script>
-// ================= Dicionário =================
-let dicionario = {};
-fetch('./dicionario_raw.json')
-  .then(r => r.json())
-  .then(json => { dicionario = json; console.log('Dicionário carregado', Object.keys(dicionario).length, 'palavras'); })
-  .catch(err => console.error('Erro ao carregar dicionário:', err));
-
-function consultarPalavra(palavra) {
-  const entry = dicionario[palavra];
-  if(!entry) return 'Palavra não encontrada no dicionário.';
-  return entry.map(s => `Definição: ${s.definicao}\nCategoria: ${s.categoria}\nContexto: ${s.contexto}`).join("\n\n");
+// ================= UTILITÁRIOS =================
+function showAlert(msg, type='info') {
+  const alertBox = document.getElementById('alerts');
+  const div = document.createElement('div');
+  div.className = `alert alert-${type}`;
+  div.textContent = msg;
+  alertBox.appendChild(div);
+  setTimeout(() => div.remove(), 4000);
 }
 
-document.getElementById('btnConsultarDic').addEventListener('click', ()=>{
-  const palavra = document.getElementById('inputText').value.trim();
-  if(!palavra) { alert('Escreva uma palavra para consultar'); return; }
-  document.getElementById('outputText').value = consultarPalavra(palavra);
+function fuzzySearch(query, text) {
+  query = query.toLowerCase();
+  text = text.toLowerCase();
+  let qi = 0;
+  for(let i = 0; i < text.length && qi < query.length; i++) {
+    if(text[i] === query[qi]) qi++;
+  }
+  return qi === query.length;
+}
+
+function highlightMatch(text, query) {
+  if(!query) return text;
+  const regex = new RegExp(`(${query})`, 'gi');
+  return text.replace(regex, '<mark>$1</mark>');
+}
+
+// ================= DICIONÁRIO =================
+let dicionario = {};
+
+fetch('./dicionario_raw.json')
+  .then(r => r.json())
+  .then(json => {
+    dicionario = json;
+    showAlert(`✅ Dicionário carregado: ${Object.keys(dicionario).length} palavras`, 'success');
+  })
+  .catch(err => {
+    console.warn('Dicionário não encontrado:', err);
+    showAlert('⚠️ dicionario_raw.json não encontrado. Coloca o ficheiro na mesma pasta.', 'warning');
+  });
+
+function consultarPalavra(palavra) {
+  palavra = palavra.trim();
+  
+  // Busca exacta
+  if(dicionario[palavra]) {
+    return formatarDefinicoes(palavra, dicionario[palavra]);
+  }
+  
+  // Busca parcial (case-insensitive)
+  const matches = Object.keys(dicionario).filter(k => 
+    k.toLowerCase().includes(palavra.toLowerCase())
+  );
+  
+  if(matches.length === 0) {
+    return `<div class="muted">❌ Palavra "<strong>${palavra}</strong>" não encontrada no dicionário.</div>`;
+  }
+  
+  if(matches.length === 1) {
+    return formatarDefinicoes(matches[0], dicionario[matches[0]]);
+  }
+  
+  // Múltiplas correspondências
+  let html = `<div class="alert alert-info">Encontradas ${matches.length} correspondências para "<strong>${palavra}</strong>":</div>`;
+  matches.slice(0, 5).forEach(match => {
+    html += formatarDefinicoes(match, dicionario[match]);
+  });
+  if(matches.length > 5) {
+    html += `<div class="muted" style="margin-top:8px">... e mais ${matches.length - 5} resultados</div>`;
+  }
+  return html;
+}
+
+function formatarDefinicoes(palavra, definicoes) {
+  let html = `<div class="search-result"><h4 style="margin:0 0 8px 0;color:var(--accent)">${palavra}</h4>`;
+  definicoes.forEach((def, idx) => {
+    html += `<div style="margin-bottom:8px">`;
+    if(def.categoria) html += `<span style="background:#e0f2fe;padding:2px 6px;border-radius:4px;font-size:12px;margin-right:6px">${def.categoria}</span>`;
+    html += `<strong>Definição:</strong> ${def.definicao}`;
+    if(def.contexto) html += `<br><em style="color:var(--muted);font-size:13px">Contexto: ${def.contexto}</em>`;
+    html += `</div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+document.getElementById('btnConsultarDic').addEventListener('click', () => {
+  const palavra = document.getElementById('searchDic').value.trim();
+  if(!palavra) {
+    showAlert('⚠️ Escreve uma palavra para consultar', 'warning');
+    return;
+  }
+  document.getElementById('dicResults').innerHTML = consultarPalavra(palavra);
 });
 
-// ================= Regras e Memória (simplificado) =================
-let regras = [];
-let memoria = [];
+document.getElementById('searchDic').addEventListener('keypress', (e) => {
+  if(e.key === 'Enter') document.getElementById('btnConsultarDic').click();
+});
 
-function carregarRegrasPadrao(){
+// ================= REGRAS =================
+let regras = [];
+
+function carregarRegrasPadrao() {
   regras = [
-    {id:'r_espacos',pattern:'\\s{2,}','flags':'g',replacement:' ',description:'Remove espaços duplicados'}
+    {id:'r_espacos', pattern:'\\s{2,}', flags:'g', replacement:' ', description:'Remove espaços duplicados'},
+    {id:'r_virgula', pattern:'\\s+,', flags:'g', replacement:',', description:'Remove espaço antes de vírgula'},
+    {id:'r_ponto', pattern:'\\s+\\.', flags:'g', replacement:'.', description:'Remove espaço antes de ponto'},
+    {id:'r_exclamacao', pattern:'\\s+!', flags:'g', replacement:'!', description:'Remove espaço antes de !'},
+    {id:'r_interrogacao', pattern:'\\s+\\?', flags:'g', replacement:'?', description:'Remove espaço antes de ?'},
+    {id:'r_espaco_apos', pattern:'([,\\.!?:;])([A-Za-zÀ-ÿ])', flags:'g', replacement:'$1 $2', description:'Adiciona espaço após pontuação'},
   ];
+  atualizarContagemRegras();
+}
+
+function atualizarContagemRegras() {
   document.getElementById('ruleCount').textContent = regras.length;
 }
 
-function corrigirTexto(){
+// Carregar rules.json automaticamente
+fetch('./rules.json')
+  .then(r => r.json())
+  .then(json => {
+    if(Array.isArray(json)) {
+      regras = json;
+      atualizarContagemRegras();
+      showAlert(`✅ Regras carregadas: ${regras.length} regras`, 'success');
+    }
+  })
+  .catch(err => {
+    console.warn('rules.json não encontrado, usando regras padrão');
+    carregarRegrasPadrao();
+    showAlert('⚠️ rules.json não encontrado. A usar regras padrão.', 'warning');
+  });
+
+let correcoes = [];
+
+function corrigirTexto() {
   let texto = document.getElementById('inputText').value;
-  for(const r of regras){
-    const re = new RegExp(r.pattern, r.flags||'g');
-    texto = typeof r.replacement==='function' ? texto.replace(re,r.replacement) : texto.replace(re,r.replacement);
+  if(!texto.trim()) {
+    showAlert('⚠️ Escreve algo para corrigir!', 'warning');
+    return;
   }
+  
+  correcoes = [];
+  const textoOriginal = texto;
+  
+  for(const r of regras) {
+    try {
+      const re = new RegExp(r.pattern, r.flags || 'g');
+      const antes = texto;
+      texto = texto.replace(re, r.replacement);
+      
+      if(antes !== texto) {
+        correcoes.push({
+          regra: r.id,
+          descricao: r.description,
+          antes: antes.substring(0, 100),
+          depois: texto.substring(0, 100)
+        });
+      }
+    } catch(err) {
+      console.error('Erro na regra', r.id, err);
+    }
+  }
+  
   document.getElementById('outputText').value = texto;
+  
+  if(correcoes.length > 0) {
+    showAlert(`✅ ${correcoes.length} correção(ões) aplicada(s)`, 'success');
+  } else {
+    showAlert('ℹ️ Nenhuma correção necessária', 'info');
+  }
 }
 
-function adicionarMemoria(){
+function explicarCorrecoes() {
+  if(correcoes.length === 0) {
+    showAlert('ℹ️ Executa "Corrigir Texto" primeiro', 'info');
+    return;
+  }
+  
+  let explicacao = '📝 RELATÓRIO DE CORREÇÕES\n\n';
+  correcoes.forEach((c, idx) => {
+    explicacao += `${idx+1}. ${c.descricao}\n`;
+    explicacao += `   Regra: ${c.regra}\n\n`;
+  });
+  
+  document.getElementById('outputText').value = explicacao;
+}
+
+document.getElementById('btnCorrigir').addEventListener('click', corrigirTexto);
+document.getElementById('btnExplicar').addEventListener('click', explicarCorrecoes);
+
+// ================= MEMÓRIA =================
+let memoria = [];
+
+function adicionarMemoria() {
   const text = document.getElementById('inputText').value.trim();
-  if(!text) return;
-  memoria.unshift({id:Date.now().toString(),text,addedAt:new Date().toISOString()});
+  if(!text) {
+    showAlert('⚠️ Escreve algo para guardar na memória', 'warning');
+    return;
+  }
+  
+  const item = {
+    id: Date.now().toString(),
+    text: text,
+    addedAt: new Date().toISOString()
+  };
+  
+  memoria.unshift(item);
   atualizarListaMemoria();
+  showAlert('✅ Item adicionado à memória', 'success');
 }
 
-function atualizarListaMemoria(){
+function atualizarListaMemoria(filtro = null) {
   const box = document.getElementById('memoriaLista');
   box.innerHTML = '';
-  for(const m of memoria){
-    const div = document.createElement('div');
-    div.className='mem-item';
-    div.innerHTML = `<div style="font-weight:600">${m.text.slice(0,120)}</div><div class="meta">id: ${m.id} • ${new Date(m.addedAt).toLocaleString()}</div>`;
-    box.appendChild(div);
+  
+  const items = filtro ? memoria.filter(m => fuzzySearch(filtro, m.text)) : memoria;
+  
+  if(items.length === 0) {
+    box.innerHTML = '<div class="muted" style="text-align:center;padding:20px">Nenhum item encontrado</div>';
+    document.getElementById('memCount').textContent = '0';
+    return;
   }
+  
+  items.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'mem-item';
+    
+    const preview = m.text.length > 150 ? m.text.slice(0, 150) + '...' : m.text;
+    const highlighted = filtro ? highlightMatch(preview, filtro) : preview;
+    
+    div.innerHTML = `
+      <div style="font-weight:500;margin-bottom:4px">${highlighted}</div>
+      <div class="meta">
+        🆔 ${m.id} • 📅 ${new Date(m.addedAt).toLocaleString('pt-PT')}
+      </div>
+    `;
+    
+    div.addEventListener('click', () => {
+      document.getElementById('inputText').value = m.text;
+      showAlert('✅ Item carregado no editor', 'success');
+    });
+    
+    box.appendChild(div);
+  });
+  
+  document.getElementById('memCount').textContent = memoria.length;
 }
 
-// Eventos
-document.getElementById('btnCorrigir').addEventListener('click', corrigirTexto);
+function pesquisarMemoria() {
+  const query = document.getElementById('searchQ').value.trim();
+  if(!query) {
+    atualizarListaMemoria();
+    return;
+  }
+  atualizarListaMemoria(query);
+}
+
+function carregarMemoriaJSON() {
+  fetch('./memoria.json')
+    .then(r => r.json())
+    .then(json => {
+      if(Array.isArray(json)) {
+        memoria = json;
+        atualizarListaMemoria();
+        showAlert(`✅ Memória carregada: ${memoria.length} itens`, 'success');
+      }
+    })
+    .catch(err => {
+      showAlert('⚠️ memoria.json não encontrado ou inválido', 'warning');
+    });
+}
+
+function limparMemoria() {
+  if(!confirm('⚠️ Tens a certeza que queres limpar toda a memória?')) return;
+  memoria = [];
+  atualizarListaMemoria();
+  showAlert('🗑️ Memória limpa', 'info');
+}
+
+function exportarMemoria() {
+  if(memoria.length === 0) {
+    showAlert('⚠️ Memória vazia. Nada para exportar.', 'warning');
+    return;
+  }
+  
+  const blob = new Blob([JSON.stringify(memoria, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `memoria_${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showAlert('✅ Memória exportada com sucesso', 'success');
+}
+
 document.getElementById('btnAdicionar').addEventListener('click', adicionarMemoria);
-document.getElementById('btnLimpar').addEventListener('click', ()=>{ document.getElementById('inputText').value=''; document.getElementById('outputText').value=''; });
-document.getElementById('btnExplicar').addEventListener('click', ()=>alert('Relatório de correções não implementado neste exemplo.'));
+document.getElementById('btnSearch').addEventListener('click', pesquisarMemoria);
+document.getElementById('searchQ').addEventListener('input', (e) => {
+  if(e.target.value === '') atualizarListaMemoria();
+});
+document.getElementById('btnAutoLoad').addEventListener('click', carregarMemoriaJSON);
+document.getElementById('btnClearMem').addEventListener('click', limparMemoria);
+document.getElementById('exportMem').addEventListener('click', exportarMemoria);
+
+// Carregar memoria.json automaticamente
+fetch('./memoria.json')
+  .then(r => r.json())
+  .then(json => {
+    if(Array.isArray(json)) {
+      memoria = json;
+      atualizarListaMemoria();
+      showAlert(`✅ Memória carregada automaticamente: ${memoria.length} itens`, 'success');
+    }
+  })
+  .catch(() => {
+    console.log('memoria.json não encontrado (normal na primeira execução)');
+  });
+
+// ================= IMPORT/EXPORT =================
+document.getElementById('fileRules').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const json = JSON.parse(ev.target.result);
+      if(Array.isArray(json)) {
+        regras = json;
+        atualizarContagemRegras();
+        showAlert(`✅ ${regras.length} regras importadas`, 'success');
+      }
+    } catch(err) {
+      showAlert('❌ Erro ao importar regras: JSON inválido', 'warning');
+    }
+  };
+  reader.readAsText(file);
+});
+
+document.getElementById('fileMem').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const json = JSON.parse(ev.target.result);
+      if(Array.isArray(json)) {
+        memoria = json;
+        atualizarListaMemoria();
+        showAlert(`✅ ${memoria.length} itens de memória importados`, 'success');
+      }
+    } catch(err) {
+      showAlert('❌ Erro ao importar memória: JSON inválido', 'warning');
+    }
+  };
+  reader.readAsText(file);
+});
+
+// ================= MODAL DE REGRAS =================
+document.getElementById('btnShowRules').addEventListener('click', () => {
+  document.getElementById('rulesEditor').value = JSON.stringify(regras, null, 2);
+  document.getElementById('rulesModal').style.display = 'flex';
+});
+
+document.getElementById('closeRules').addEventListener('click', () => {
+  document.getElementById('rulesModal').style.display = 'none';
+});
+
+document.getElementById('saveRules').addEventListener('click', () => {
+  try {
+    const json = JSON.parse(document.getElementById('rulesEditor').value);
+    if(!Array.isArray(json)) throw new Error('Deve ser um array');
+    regras = json;
+    atualizarContagemRegras();
+    showAlert('✅ Regras atualizadas com sucesso', 'success');
+    document.getElementById('rulesModal').style.display = 'none';
+  } catch(err) {
+    showAlert('❌ JSON inválido. Verifica a sintaxe.', 'warning');
+  }
+});
+
+// ================= OUTROS =================
+document.getElementById('btnLimpar').addEventListener('click', () => {
+  document.getElementById('inputText').value = '';
+  document.getElementById('outputText').value = '';
+  correcoes = [];
+});
 
 // Inicialização
-carregarRegrasPadrao();
-
+atualizarListaMemoria();
+console.log('🚀 Assistente Local inicializado');
 </script>
 </body>
 </html>
