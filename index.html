@@ -61,7 +61,7 @@
       <h3>📝 Texto Original</h3>
       <textarea id="inputText" placeholder="Cola ou escreve o teu texto aqui... 
 
-Exemplo: 'Eu tanbem gosto muito de ir a praia e tomar un cafe.'"></textarea>
+Exemplo: 'Eu vai á escolaa e depois vamos tomar un cafe.'"></textarea>
       
       <div class="controls">
         <button id="btnCorrigir">🔧 Corrigir Agora</button>
@@ -120,58 +120,88 @@ Exemplo: 'Eu tanbem gosto muito de ir a praia e tomar un cafe.'"></textarea>
 <script>
 // ================= REGRAS DE CORREÇÃO ORTOGRÁFICA =================
 const regrasOrtograficas = [
-  // Erros comuns de digitação
-  {palavra: /\btanbem\b/gi, correcao: 'também', tipo: 'Ortografia', explicacao: 'Acentuação correta: também'},
-  {palavra: /\btambem\b/gi, correcao: 'também', tipo: 'Ortografia', explicacao: 'Falta acento: também'},
-  {palavra: /\bvc\b/gi, correcao: 'você', tipo: 'Abreviatura', explicacao: 'Evitar abreviaturas informais'},
-  {palavra: /\btb\b/gi, correcao: 'também', tipo: 'Abreviatura', explicacao: 'Evitar abreviaturas informais'},
-  {palavra: /\bpq\b/gi, correcao: 'porque', tipo: 'Abreviatura', explicacao: 'Evitar abreviaturas informais'},
-  {palavra: /\bkd\b/gi, correcao: 'cadê', tipo: 'Abreviatura', explicacao: 'Evitar abreviaturas informais'},
+  // CONJUGAÇÕES VERBAIS - EU
+  {palavra: /\beu\s+vai\b/gi, correcao: 'eu vou', tipo: 'Conjugação Verbal', explicacao: 'Verbo "ir" na 1ª pessoa do singular: EU VOU'},
+  {palavra: /\beu\s+vamos\b/gi, correcao: 'eu vou', tipo: 'Conjugação Verbal', explicacao: 'EU = vou (não vamos)'},
+  {palavra: /\beu\s+é\b/gi, correcao: 'eu sou', tipo: 'Conjugação Verbal', explicacao: 'Verbo "ser": EU SOU'},
+  {palavra: /\beu\s+está\b/gi, correcao: 'eu estou', tipo: 'Conjugação Verbal', explicacao: 'Verbo "estar": EU ESTOU'},
+  {palavra: /\beu\s+tem\b/gi, correcao: 'eu tenho', tipo: 'Conjugação Verbal', explicacao: 'Verbo "ter": EU TENHO'},
+  {palavra: /\beu\s+faz\b/gi, correcao: 'eu faço', tipo: 'Conjugação Verbal', explicacao: 'Verbo "fazer": EU FAÇO'},
+  {palavra: /\beu\s+quer\b/gi, correcao: 'eu quero', tipo: 'Conjugação Verbal', explicacao: 'Verbo "querer": EU QUERO'},
   
-  // Acentuação
-  {palavra: /\bcafe\b/gi, correcao: 'café', tipo: 'Acentuação', explicacao: 'Falta acento agudo: café'},
-  {palavra: /\bvoce\b/gi, correcao: 'você', tipo: 'Acentuação', explicacao: 'Falta acento circunflexo: você'},
-  {palavra: /\be\s+/gi, correcao: 'é ', tipo: 'Acentuação', explicacao: 'Verbo "ser" no presente: é'},
-  {palavra: /\bsera\b/gi, correcao: 'será', tipo: 'Acentuação', explicacao: 'Futuro do verbo ser: será'},
-  {palavra: /\bpara\s+(o|a|os|as)\b/gi, correcao: (match, artigo) => `para ${artigo}`, tipo: 'Correção', explicacao: 'Correção gramatical'},
+  // CONJUGAÇÕES VERBAIS - TU
+  {palavra: /\btu\s+vou\b/gi, correcao: 'tu vais', tipo: 'Conjugação Verbal', explicacao: 'Verbo "ir": TU VAIS'},
+  {palavra: /\btu\s+sou\b/gi, correcao: 'tu és', tipo: 'Conjugação Verbal', explicacao: 'Verbo "ser": TU ÉS'},
+  {palavra: /\btu\s+tem\b/gi, correcao: 'tu tens', tipo: 'Conjugação Verbal', explicacao: 'Verbo "ter": TU TENS'},
+  
+  // CONJUGAÇÕES VERBAIS - ELE/ELA
+  {palavra: /\bele\s+vou\b/gi, correcao: 'ele vai', tipo: 'Conjugação Verbal', explicacao: 'Verbo "ir": ELE VAI'},
+  {palavra: /\bela\s+vou\b/gi, correcao: 'ela vai', tipo: 'Conjugação Verbal', explicacao: 'Verbo "ir": ELA VAI'},
+  {palavra: /\bele\s+sou\b/gi, correcao: 'ele é', tipo: 'Conjugação Verbal', explicacao: 'Verbo "ser": ELE É'},
+  {palavra: /\bela\s+sou\b/gi, correcao: 'ela é', tipo: 'Conjugação Verbal', explicacao: 'Verbo "ser": ELA É'},
+  
+  // LETRAS DUPLICADAS (erros de digitação)
+  {palavra: /\b(\w+?)([aeiouáéíóúãõâêô])\2+(\w*)\b/gi, correcao: (match, inicio, vogal, fim) => inicio + vogal + fim, tipo: 'Ortografia', explicacao: 'Letras duplicadas desnecessárias'},
+  {palavra: /\b(\w+?)([bcdfghjklmnpqrstvwxyz])\2{2,}(\w*)\b/gi, correcao: (match, inicio, consoante, fim) => inicio + consoante + fim, tipo: 'Ortografia', explicacao: 'Consoantes triplicadas (erro)'},
+  
+  // ACENTOS INCORRETOS
+  {palavra: /\bá\b/gi, correcao: 'à', tipo: 'Acentuação', explicacao: 'Crase: À (não Á)'},
+  {palavra: /\be\s+/g, correcao: 'é ', tipo: 'Acentuação', explicacao: 'Verbo "ser" presente: É (com acento)'},
+  
+  // CRASE
+  {palavra: /\ba\s+a\s+/gi, correcao: 'à ', tipo: 'Crase', explicacao: 'Crase: preposição A + artigo A = À'},
+  {palavra: /\bvou\s+a\s+(escola|praia|casa|cidade|farmácia|loja)\b/gi, correcao: 'vou à $1', tipo: 'Crase', explicacao: 'Crase obrigatória antes de lugar feminino'},
+  {palavra: /\bchego\s+a\s+(escola|praia|casa|cidade|farmácia|loja)\b/gi, correcao: 'chego à $1', tipo: 'Crase', explicacao: 'Crase obrigatória'},
+  {palavra: /\ba\s+as\s+/gi, correcao: 'às ', tipo: 'Crase', explicacao: 'Crase no plural: ÀS'},
+  
+  // Erros comuns de digitação
+  {palavra: /\btanbem\b/gi, correcao: 'também', tipo: 'Ortografia', explicacao: 'Forma correta: TAMBÉM'},
+  {palavra: /\btambem\b/gi, correcao: 'também', tipo: 'Ortografia', explicacao: 'Falta acento: TAMBÉM'},
+  {palavra: /\bvc\b/gi, correcao: 'você', tipo: 'Abreviatura', explicacao: 'Evitar abreviaturas: VOCÊ'},
+  {palavra: /\btb\b/gi, correcao: 'também', tipo: 'Abreviatura', explicacao: 'Evitar abreviaturas: TAMBÉM'},
+  {palavra: /\bpq\b/gi, correcao: 'porque', tipo: 'Abreviatura', explicacao: 'Evitar abreviaturas: PORQUE'},
+  {palavra: /\bkd\b/gi, correcao: 'cadê', tipo: 'Abreviatura', explicacao: 'Evitar abreviaturas: CADÊ'},
+  {palavra: /\bn\b/gi, correcao: 'não', tipo: 'Abreviatura', explicacao: 'Evitar abreviaturas: NÃO'},
+  {palavra: /\bmto\b/gi, correcao: 'muito', tipo: 'Abreviatura', explicacao: 'Evitar abreviaturas: MUITO'},
+  
+  // Acentuação básica
+  {palavra: /\bcafe\b/gi, correcao: 'café', tipo: 'Acentuação', explicacao: 'Acento agudo: CAFÉ'},
+  {palavra: /\bvoce\b/gi, correcao: 'você', tipo: 'Acentuação', explicacao: 'Acento circunflexo: VOCÊ'},
+  {palavra: /\bsera\b/gi, correcao: 'será', tipo: 'Acentuação', explicacao: 'Futuro: SERÁ'},
+  {palavra: /\besta\b/gi, correcao: 'está', tipo: 'Acentuação', explicacao: 'Verbo estar: ESTÁ'},
+  {palavra: /\bestao\b/gi, correcao: 'estão', tipo: 'Acentuação', explicacao: 'Plural: ESTÃO'},
+  {palavra: /\bsao\b/gi, correcao: 'são', tipo: 'Acentuação', explicacao: 'Verbo ser/adjetivo: SÃO'},
+  {palavra: /\btem\b/gi, correcao: 'têm', tipo: 'Acentuação', explicacao: '3ª pessoa plural: TÊM (eles têm)'},
+  {palavra: /\bpara\b/gi, correcao: 'para', tipo: 'Verificação', explicacao: 'Preposição (não precisa acento geralmente)'},
   
   // Artigos
-  {palavra: /\bun\s+/gi, correcao: 'um ', tipo: 'Artigo', explicacao: 'Artigo indefinido masculino: um'},
-  {palavra: /\buma\s+([aeiouáéíóú])/gi, correcao: 'uma $1', tipo: 'Artigo', explicacao: 'Artigo indefinido feminino: uma'},
-  
-  // A/À
-  {palavra: /\ba\s+(a|as)\s+/gi, correcao: 'à $1 ', tipo: 'Crase', explicacao: 'Crase antes de artigo definido feminino'},
-  {palavra: /\bvou\s+a\s+praia\b/gi, correcao: 'vou à praia', tipo: 'Crase', explicacao: 'Crase obrigatória: à praia'},
-  {palavra: /\bvou\s+a\s+escola\b/gi, correcao: 'vou à escola', tipo: 'Crase', explicacao: 'Crase obrigatória: à escola'},
+  {palavra: /\bun\s+/gi, correcao: 'um ', tipo: 'Artigo', explicacao: 'Artigo indefinido: UM'},
+  {palavra: /\buns\s+/gi, correcao: 'uns ', tipo: 'Artigo', explicacao: 'Artigo plural: UNS'},
   
   // Mais vs Mas
-  {palavra: /\b,\s*mas\s+/gi, correcao: ', mas ', tipo: 'Conjunção', explicacao: 'Conjunção adversativa: mas (não mais)'},
+  {palavra: /\bmais\s+(não|nao|nunca|nem|também|eu|você|ele|ela)/gi, correcao: 'mas $1', tipo: 'Conjunção', explicacao: 'Conjunção adversativa: MAS (porém)'},
   
-  // Homonimos
-  {palavra: /\bmais\s+(não|nao|nunca|nem)/gi, correcao: 'mas $1', tipo: 'Homônimo', explicacao: 'Conjunção adversativa: mas (não mais)'},
-  {palavra: /\bonde\s+(voce|você|tu|ele|ela|eles|elas)/gi, correcao: 'aonde $1', tipo: 'Homônimo', explicacao: 'Com movimento: aonde (para onde)'},
+  // Onde vs Aonde
+  {palavra: /\bonde\s+(vou|vamos|vai|vais|foram)\b/gi, correcao: 'aonde $1', tipo: 'Advérbio', explicacao: 'Com movimento: AONDE'},
   
-  // Plural
-  {palavra: /\bpessoas\s+muito\b/gi, correcao: 'pessoas muito', tipo: 'Concordância', explicacao: 'Concordância nominal correta'},
+  // Há vs A
+  {palavra: /\ba\s+(\d+)\s+(anos|meses|dias|horas)\b/gi, correcao: 'há $1 $2', tipo: 'Verbo haver', explicacao: 'Tempo passado: HÁ (não A)'},
+  
+  // Por que / Porque / Porquê / Por quê
+  {palavra: /\bpor\s+que\s+([^?]*)\?/gi, correcao: 'por que $1?', tipo: 'Ortografia', explicacao: 'Pergunta: POR QUE (separado)'},
+  {palavra: /\bporque\s+([^.!?]*)[.!]/gi, correcao: 'porque $1', tipo: 'Ortografia', explicacao: 'Resposta: PORQUE (junto)'},
   
   // Espaçamento e pontuação
-  {palavra: /\s{2,}/g, correcao: ' ', tipo: 'Formatação', explicacao: 'Remover espaços duplicados'},
-  {palavra: /\s+,/g, correcao: ',', tipo: 'Pontuação', explicacao: 'Espaço antes de vírgula'},
-  {palavra: /\s+\./g, correcao: '.', tipo: 'Pontuação', explicacao: 'Espaço antes de ponto'},
-  {palavra: /\s+!/g, correcao: '!', tipo: 'Pontuação', explicacao: 'Espaço antes de exclamação'},
-  {palavra: /\s+\?/g, correcao: '?', tipo: 'Pontuação', explicacao: 'Espaço antes de interrogação'},
+  {palavra: /\s{2,}/g, correcao: ' ', tipo: 'Formatação', explicacao: 'Espaços duplicados'},
+  {palavra: /\s+,/g, correcao: ',', tipo: 'Pontuação', explicacao: 'Sem espaço antes de vírgula'},
+  {palavra: /\s+\./g, correcao: '.', tipo: 'Pontuação', explicacao: 'Sem espaço antes de ponto'},
+  {palavra: /\s+!/g, correcao: '!', tipo: 'Pontuação', explicacao: 'Sem espaço antes de !'},
+  {palavra: /\s+\?/g, correcao: '?', tipo: 'Pontuação', explicacao: 'Sem espaço antes de ?'},
   {palavra: /([,\.!?:;])([A-Za-zÀ-ÿ])/g, correcao: '$1 $2', tipo: 'Pontuação', explicacao: 'Espaço após pontuação'},
   
-  // Maiúsculas após ponto
-  {palavra: /\.\s+([a-zà-ÿ])/g, correcao: (match, letra) => `. ${letra.toUpperCase()}`, tipo: 'Maiúscula', explicacao: 'Maiúscula após ponto final'},
-  
-  // Erros comuns portugueses
-  {palavra: /\bbom\s+dia\b/gi, correcao: 'bom dia', tipo: 'Saudação', explicacao: 'Saudação sem hífen'},
-  {palavra: /\bboa\s+tarde\b/gi, correcao: 'boa tarde', tipo: 'Saudação', explicacao: 'Saudação sem hífen'},
-  {palavra: /\bboa\s+noite\b/gi, correcao: 'boa noite', tipo: 'Saudação', explicacao: 'Saudação sem hífen'},
-  {palavra: /\bde\s+repente\b/gi, correcao: 'de repente', tipo: 'Locução', explicacao: 'Locução adverbial correta'},
-  {palavra: /\bpor\s+isso\b/gi, correcao: 'por isso', tipo: 'Locução', explicacao: 'Locução conjuntiva correta'},
-  {palavra: /\btalvez\b/gi, correcao: 'talvez', tipo: 'Advérbio', explicacao: 'Advérbio de dúvida'},
+  // Maiúsculas
+  {palavra: /\.\s+([a-zà-ÿ])/g, correcao: (match, letra) => `. ${letra.toUpperCase()}`, tipo: 'Maiúscula', explicacao: 'Maiúscula após ponto'},
+  {palavra: /^([a-zà-ÿ])/g, correcao: (match, letra) => letra.toUpperCase(), tipo: 'Maiúscula', explicacao: 'Maiúscula no início do texto'},
 ];
 
 // ================= UTILITÁRIOS =================
@@ -197,26 +227,42 @@ function corrigirTexto() {
   
   let textoCorrigido = input;
   correcoes = [];
+  let mudancas = new Set();
   
   // Aplicar cada regra
   regrasOrtograficas.forEach(regra => {
-    const matches = textoCorrigido.match(regra.palavra);
-    if(matches) {
-      const antes = textoCorrigido;
-      textoCorrigido = textoCorrigido.replace(regra.palavra, regra.correcao);
-      
-      if(antes !== textoCorrigido) {
-        matches.forEach(match => {
+    const antes = textoCorrigido;
+    
+    // Para funções de substituição complexas
+    if(typeof regra.correcao === 'function') {
+      textoCorrigido = textoCorrigido.replace(regra.palavra, (...args) => {
+        const original = args[0];
+        const resultado = regra.correcao(...args);
+        if(original !== resultado && !mudancas.has(original + resultado)) {
+          mudancas.add(original + resultado);
           correcoes.push({
-            antes: match.trim(),
-            depois: typeof regra.correcao === 'function' ? 
-              match.replace(regra.palavra, regra.correcao).trim() : 
-              regra.correcao,
+            antes: original.trim(),
+            depois: resultado.trim(),
             tipo: regra.tipo,
             explicacao: regra.explicacao
           });
-        });
-      }
+        }
+        return resultado;
+      });
+    } else {
+      // Para substituições simples
+      textoCorrigido = textoCorrigido.replace(regra.palavra, (match) => {
+        if(match !== regra.correcao && !mudancas.has(match + regra.correcao)) {
+          mudancas.add(match + regra.correcao);
+          correcoes.push({
+            antes: match.trim(),
+            depois: regra.correcao.trim(),
+            tipo: regra.tipo,
+            explicacao: regra.explicacao
+          });
+        }
+        return regra.correcao;
+      });
     }
   });
   
@@ -226,7 +272,7 @@ function corrigirTexto() {
   // Atualizar estatísticas
   const palavrasOriginais = input.trim().split(/\s+/).length;
   const errosEncontrados = correcoes.length;
-  const palavrasCorretas = palavrasOriginais - errosEncontrados;
+  const palavrasCorretas = Math.max(0, palavrasOriginais - errosEncontrados);
   
   document.getElementById('statCorretas').textContent = palavrasCorretas;
   document.getElementById('statErros').textContent = errosEncontrados;
@@ -305,7 +351,7 @@ document.getElementById('btnLimpar').addEventListener('click', () => {
 });
 
 document.getElementById('btnExemplo').addEventListener('click', () => {
-  document.getElementById('inputText').value = `Ola! Eu tanbem gosto muito de ir a praia e tomar un cafe pela manha. voce vai amanha? pq eu posso ir tb. sera que vai chover? Mas eu acho que e melhor irmos de tarde.`;
+  document.getElementById('inputText').value = `eu vai á escolaa e depois vamos tomar un cafe. ele sou muito inteligente e ela tem muita paciencia. vc tambem vai?`;
   showAlert('📋 Exemplo carregado! Agora clica em "Corrigir Agora"', 'info');
 });
 
