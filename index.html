@@ -5,75 +5,144 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dicionário em JSON — Pesquisa</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f6fa; }
+  body { 
+    font-family: Arial, sans-serif; 
+    margin: 0; 
+    padding: 20px; 
+    background: #f5f6fa; 
+  }
   h1 { margin-top: 0; }
-  .box { background: white; padding: 16px; border-radius: 10px; max-width: 800px; margin: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-  #resultado { margin-top: 20px; padding: 10px; background: #fff; border-radius: 8px; min-height: 60px; border: 1px solid #ddd; }
-  input { width: 100%; padding: 10px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; }
-  .item { margin-bottom: 12px; }
-  .categoria { font-weight: bold; color: #333; }
-  .contexto { color: #666; font-size: 14px; }
+  .box { 
+    background: white; 
+    padding: 16px; 
+    border-radius: 10px; 
+    max-width: 800px; 
+    margin: auto; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+  }
+  #resultado { 
+    margin-top: 20px; 
+    padding: 10px; 
+    background: #fff; 
+    border-radius: 8px; 
+    min-height: 60px; 
+    border: 1px solid #ddd; 
+  }
+  input { 
+    width: 100%; 
+    padding: 10px; 
+    font-size: 16px; 
+    border-radius: 8px; 
+    border: 1px solid #ccc; 
+    box-sizing: border-box;
+  }
+  .item { 
+    margin-bottom: 12px; 
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+  }
+  .item:last-child {
+    border-bottom: none;
+  }
+  .categoria { 
+    font-weight: bold; 
+    color: #2c3e50; 
+    margin-bottom: 4px;
+  }
+  .definicao {
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  .contexto { 
+    color: #7f8c8d; 
+    font-size: 14px;
+    font-style: italic;
+  }
+  .loading {
+    color: #3498db;
+    font-style: italic;
+  }
+  .error {
+    color: #e74c3c;
+    padding: 10px;
+    background: #fadbd8;
+    border-radius: 6px;
+  }
 </style>
 </head>
 <body>
 <div class="box">
   <h1>📘 Dicionário em JSON</h1>
   <p>Escreve uma palavra para pesquisar o significado.</p>
-
   <input id="campoPesquisa" placeholder="Pesquisar palavra..." oninput="pesquisar()" />
-
-  <div id="resultado">Nenhuma pesquisa ainda.</div>
+  <div id="resultado">A carregar dicionário...</div>
 </div>
-
 <script>
+let dicionario = {};
+
 // ===============================
-// Carrega o dicionário (substitua o conteúdo por dicionario.json externo se quiser)
+// Carrega o dicionário do ficheiro JSON
 // ===============================
-const dicionario = {
-  "K": [
-    {
-      "definicao": "Esta letra não se escreve em nomes portugueses, mas só naquelles que, sendo estrangeiros, ainda não foram aportuguesados, como Kentucky, Kessel, Königstein, Kyrpoy, etc.",
-      "categoria": "",
-      "contexto": ""
+async function carregarDicionario() {
+  const out = document.getElementById('resultado');
+  try {
+    const resposta = await fetch('dicionario.json');
+    if (!resposta.ok) {
+      throw new Error('Não foi possível carregar o dicionário');
     }
-  ],
-  "Kabbfússia": [
-    {
-      "definicao": "Gênero de plantas compostas.",
-      "categoria": "f.",
-      "contexto": ""
-    }
-  ]
-};
+    dicionario = await resposta.json();
+    out.innerHTML = 'Nenhuma pesquisa ainda.';
+    console.log('Dicionário carregado com sucesso!', Object.keys(dicionario).length, 'palavras');
+  } catch (erro) {
+    console.error('Erro ao carregar dicionário:', erro);
+    out.innerHTML = `<div class="error">
+      <strong>Erro ao carregar o dicionário!</strong><br>
+      Certifica-te que o ficheiro <code>dicionario.json</code> está na mesma pasta que este HTML.
+    </div>`;
+  }
+}
 
 // ===============================
 // Função de pesquisa
 // ===============================
-function pesquisar(){
+function pesquisar() {
   const termo = document.getElementById('campoPesquisa').value.trim();
   const out = document.getElementById('resultado');
-
-  if(!termo){ out.innerHTML = 'Nenhuma pesquisa ainda.'; return; }
-
+  
+  if (!termo) { 
+    out.innerHTML = 'Nenhuma pesquisa ainda.'; 
+    return; 
+  }
+  
+  // Procura a palavra (case-insensitive)
   const chave = Object.keys(dicionario).find(k => k.toLowerCase() === termo.toLowerCase());
-
-  if(!chave){
-    out.innerHTML = `<p><b>"${termo}"</b> não encontrado.</p>`;
+  
+  if (!chave) {
+    out.innerHTML = `<p><b>"${termo}"</b> não encontrado no dicionário.</p>`;
     return;
   }
-
+  
   const sentidos = dicionario[chave];
   let html = `<h3>${chave}</h3>`;
+  
   sentidos.forEach(s => {
-    html += `<div class='item'>
-      <div class='categoria'>${s.categoria || ''}</div>
-      <div>${s.definicao}</div>
-      <div class='contexto'>${s.contexto || ''}</div>
-    </div>`;
+    html += `<div class='item'>`;
+    if (s.categoria) {
+      html += `<div class='categoria'>${s.categoria}</div>`;
+    }
+    html += `<div class='definicao'>${s.definicao}</div>`;
+    if (s.contexto) {
+      html += `<div class='contexto'>${s.contexto}</div>`;
+    }
+    html += `</div>`;
   });
-
+  
   out.innerHTML = html;
 }
+
+// Carrega o dicionário quando a página carregar
+carregarDicionario();
 </script>
 </body>
 </html>
