@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<title>Buscador de Rimas Offline com Persistência</title>
+<style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; max-width: 850px; line-height: 1.6; color: #333; }
+    h2, h3 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+    label { font-weight: bold; display: block; margin-top: 15px; }
+    input, select, button, textarea { margin: 10px 0; padding: 12px; width: 100%; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+
+    button { background-color: #3498db; color: white; border: none; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+    button:hover { background-color: #2980b9; }
+
+    .btn-exportar { background-color: #27ae60; }
+    .btn-exportar:hover { background-color: #219150; }
+
+    .btn-limpar { background-color: #e74c3c; width: auto; padding: 10px 20px; font-size: 12px; }
+    .btn-limpar:hover { background-color: #c0392b; }
+
+    .resultado { margin-top: 20px; padding: 15px; background: #fdfdfd; border: 1px dashed #3498db; border-left: 5px solid #3498db; min-height: 40px; word-wrap: break-word; }
+    textarea { height: 120px; resize: vertical; }
+    .seccao-gestao { background: #f4f7f6; padding: 20px; border-radius: 8px; margin-top: 40px; }
+    .instrucoes { font-size: 13px; color: #666; margin-bottom: 10px; }
+    hr { margin: 40px 0; border: 0; border-top: 1px solid #eee; }
+</style>
+</head>
+<body>
+
+<h2>Buscador de Rimas Offline</h2>
+
+<label>Palavra para procurar rima:</label>
+<input type="text" id="palavra" placeholder="Ex: direcção, facto, projecto...">
+
+<label>Tamanho da terminação (sufixo):</label>
+<select id="tamanho">
+    <option value="5">5 letras</option>
+    <option value="4">4 letras</option>
+    <option value="3" selected>3 letras</option>
+    <option value="2">2 letras</option>
+</select>
+
+<button onclick="procurarRimas()">Procurar Rimas</button>
+
+<div class="resultado" id="resultado">A carregar base de dados...</div>
+
+<div class="seccao-gestao">
+    <h3>Gestão da Base de Dados</h3>
+
+    <label>Adicionar novas palavras:</label>
+    <p class="instrucoes">Introduza palavras separadas por vírgulas para enriquecer a sua base de dados.</p>
+    <textarea id="novasPalavras" placeholder="Ex: selecção, contacto, baptismo, Egipto..."></textarea>
+    <button onclick="adicionarPalavras()">Adicionar à Lista</button>
+
+    <hr>
+
+    <label>Exportar para Backup:</label>
+    <p class="instrucoes">Descarregue a sua lista actual (incluindo as palavras que adicionou) num ficheiro JSON.</p>
+    <button class="btn-exportar" onclick="exportarJSON()">Exportar Base de Dados (.json)</button>
+
+    <div style="text-align: right; margin-top: 20px;">
+        <button class="btn-limpar" onclick="limparBase()">Restaurar Base do Ficheiro JSON</button>
+    </div>
+</div>
+
+<script>
+let palavras = [];
+
+// Função para carregar os dados do ficheiro JSON
+async function carregarBaseDeDados() {
+    const divResultado = document.getElementById("resultado");
+    try {
+        // Tenta obter dados do localStorage primeiro
+        const dadosLocais = localStorage.getItem("palavras");
+
+        if (dadosLocais) {
+            palavras = JSON.parse(dadosLocais);
+            divResultado.innerHTML = "Base de dados carregada do armazenamento local.";
+        } else {
+            // Se não houver nada no localStorage, carrega o ficheiro JSON
+            const resposta = await fetch('rimas.json');
+            if (!resposta.ok) throw new Error("Não foi possível carregar o ficheiro rimas.json");
+            palavras = await resposta.json();
+            salvarBase();
+            divResultado.innerHTML = "Base de dados carregada do ficheiro JSON com sucesso.";
+        }
+    } catch (erro) {
+        console.error(erro);
+        divResultado.innerHTML = "<span style='color:red'>Erro ao carregar rimas.json. Certifique-se de que o ficheiro está na mesma pasta e que está a usar um servidor local.</span>";
+    }
+}
+
+// Inicia o carregamento ao abrir a página
+carregarBaseDeDados();
+
+function salvarBase() {
+    localStorage.setItem("palavras", JSON.stringify(palavras));
+}
+
+function removerAcentos(str) {
+    if (!str) return "";
+    return str.normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .replace(/ç/g, "c")
+              .replace(/Ç/g, "C")
+              .toLowerCase();
+}
+
+function gerarTerminacao(palavra, tamanho) {
+    if (tamanho <= palavra.length) {
+        return removerAcentos(palavra.slice(-tamanho));
+    }
+    return "";
+}
+
+function procurarRimas() {
+    const palavraBase = document.getElementById("palavra").value.trim();
+    const divResultado = document.getElementById("resultado");
+
+    if (!palavraBase) {
+        divResultado.innerHTML = "<strong>Aviso:</strong> Por favor, introduza uma palavra!";
+        return;
+    }
+
+    const tamanho = parseInt(document.getElementById("tamanho").value);
+    const termoProcurado = gerarTerminacao(palavraBase, tamanho);
+
+    if (termoProcurado === "") {
+        divResultado.innerHTML = "<strong>Aviso:</strong> A palavra introduzida é demasiado curta.";
+        return;
+    }
+
+    const rimas = palavras.filter(p => {
+        const termoPalavra = gerarTerminacao(p, tamanho);
+        return termoPalavra === termoProcurado && removerAcentos(p) !== removerAcentos(palavraBase);
+    });
+
+    rimas.sort((a, b) => a.localeCompare(b, 'pt-PT'));
+
+    divResultado.innerHTML = rimas.length
+        ? "<strong>Foram encontradas " + rimas.length + " rimas:</strong><br>" + rimas.join(", ")
+        : "Não foram encontradas rimas para a terminação '" + termoProcurado + "'.";
+}
+
+function adicionarPalavras() {
+    const inputNovas = document.getElementById("novasPalavras").value;
+    if (!inputNovas.trim()) return;
+
+    const listaNovas = inputNovas.split(",");
+    let contador = 0;
+
+    listaNovas.forEach(p => {
+        const pal = p.trim();
+        if (pal && !palavras.some(existente => existente.toLowerCase() === pal.toLowerCase())) {
+            palavras.push(pal);
+            contador++;
+        }
+    });
+
+    if (contador > 0) {
+        salvarBase();
+        document.getElementById("novasPalavras").value = "";
+        alert(contador + " palavra(s) adicionada(s)!");
+    }
+}
+
+function exportarJSON() {
+    const palavrasOrdenadas = [...palavras].sort((a, b) => a.localeCompare(b, 'pt-PT'));
+    const dados = JSON.stringify(palavrasOrdenadas, null, 4);
+    const blob = new Blob([dados], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'base_de_rimas_backup.json';
+    a.click();
+}
+
+async function limparBase() {
+    if (confirm("Deseja apagar as alterações locais e recarregar o ficheiro JSON original?")) {
+        localStorage.removeItem("palavras");
+        await carregarBaseDeDados();
+        alert("A base de dados foi restaurada a partir do ficheiro rimas.json.");
+    }
+}
+</script>
+</body>
+</html>
