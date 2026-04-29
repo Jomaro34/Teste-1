@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-PT">
 <head>
   <meta charset="UTF-8" />
@@ -118,13 +118,14 @@
             palavras = JSON.parse(guardadas);
         } else {
             try {
-                // LIGAÇÃO AO FICHEIRO EXTERNO rimas.json
-                const response = await fetch('rimas.json');
+                // Adicionado parâmetro de versão para evitar cache em dispositivos móveis
+                const response = await fetch('rimas.json?v=' + Date.now());
                 if (response.ok) {
                     palavras = await response.json();
                 } else { throw new Error(); }
             } catch (e) {
-                palavras = ["acção", "direcção", "facto", "contacto", "óptimo", "espectro", "recepção"];
+                // Palavras de exemplo caso falhe o carregamento
+                palavras = ["acção", "direcção", "facto", "contacto", "óptimo", "espectro", "recepção", "selecção", "projecto", "Egipto"];
             }
         }
     }
