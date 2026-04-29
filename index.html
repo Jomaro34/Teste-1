@@ -34,6 +34,9 @@
 
     @media (max-width: 600px) { .main-wrapper { padding: 10px; } #rimador-container { padding: 15px; } }
   </style>
+  
+  <!-- Carregamento directo da base de dados via ficheiro JS para máxima compatibilidade móvel -->
+  <script src="rimas.js"></script>
 </head>
 <body>
 
@@ -79,8 +82,6 @@
       </div>
     </div>
 
-
-
     <!-- Foto do autor e Respectivos LINKs -->
     <p style="text-align: center;">
       <a href="https://jomaro34.github.io/Jomaro-Cabrela-Autobiografia/">
@@ -117,15 +118,12 @@
         if (guardadas) {
             palavras = JSON.parse(guardadas);
         } else {
-            try {
-                // Adicionado parâmetro de versão para evitar cache em dispositivos móveis
-                const response = await fetch('rimas.json?v=' + Date.now());
-                if (response.ok) {
-                    palavras = await response.json();
-                } else { throw new Error(); }
-            } catch (e) {
-                // Palavras de exemplo caso falhe o carregamento
-                palavras = ["acção", "direcção", "facto", "contacto", "óptimo", "espectro", "recepção", "selecção", "projecto", "Egipto"];
+            // Verifica se a variável base_palavras foi carregada via rimas.js
+            if (typeof base_palavras !== 'undefined') {
+                palavras = base_palavras;
+            } else {
+                // Caso de segurança se o ficheiro falhar
+                palavras = ["acção", "direcção", "facto", "contacto", "óptimo", "espectro", "recepção"];
             }
         }
     }
