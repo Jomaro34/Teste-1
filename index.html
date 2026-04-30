@@ -19,12 +19,8 @@
     button { background-color: #3498db; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
     button:hover { background-color: #2980b9; }
 
-    .btn-success { background-color: #27ae60; }
-    .btn-secondary { background-color: #95a5a6; font-size: 14px; }
-    .btn-danger { background-color: #e74c3c; width: auto; display: block; margin: 20px auto 0; padding: 8px 15px; font-size: 13px; }
-
     #resultadoRimas { margin-top: 20px; padding: 15px; background: #fff; border-left: 5px solid #3498db; min-height: 40px; word-wrap: break-word; }
-    .gestao-base { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #ddd; }
+
     .bio-section { margin-top: 40px; margin-bottom: 20px; text-align: center; }
     .bio-photo { width: 120px; height: auto; border-radius: 50%; margin-bottom: 10px; border: 2px solid #eee; }
     .bio-link { text-decoration: none; color: #333; font-weight: bold; display: block; margin-top: 5px; }
@@ -34,8 +30,8 @@
 
     @media (max-width: 600px) { .main-wrapper { padding: 10px; } #rimador-container { padding: 15px; } }
   </style>
-  
-  <!-- Carregamento directo da base de dados via ficheiro JS para máxima compatibilidade móvel -->
+
+  <!-- Carregamento directo da base de dados via ficheiro JS -->
   <script src="rimas.js"></script>
 </head>
 <body>
@@ -63,26 +59,9 @@
       <button onclick="procurarRimas()">Procurar Rimas</button>
 
       <div id="resultadoRimas">As rimas aparecerão aqui...</div>
-
-      <div class="gestao-base">
-        <h3>Gestão da Base de Dados</h3>
-        <p style="font-size: 14px; color: #666; text-align: center;">Introduza palavras separadas por vírgulas para enriquecer a sua base local.</p>
-
-        <textarea id="novasPalavras" rows="3" placeholder="amor, cantar, lugar..."></textarea>
-        <button class="btn-success" onclick="adicionarPalavras()">Adicionar à Lista</button>
-
-        <label>Exportar Backup:</label>
-        <button class="btn-secondary" onclick="exportarJSON()">Exportar base de Dados (.json)</button>
-
-        <label style="margin-top: 20px;">Restaurar de Ficheiro:</label>
-        <input type="file" id="importFile" accept=".json" style="font-size: 14px; padding: 10px; border: 1px dashed #aaa; width: 100%;">
-        <button class="btn-secondary" onclick="importarJSON()">Restaurar Base do Ficheiro JSON</button>
-
-        <button class="btn-danger" onclick="limparBase()">Limpar Alterações Locais</button>
-      </div>
     </div>
 
-    <!-- Foto do autor e Respectivos LINKs -->
+    <!-- Foto do autor e respetivos links -->
     <p style="text-align: center;">
       <a href="https://jomaro34.github.io/Jomaro-Cabrela-Autobiografia/">
         <img src="JomaroCabrelaPB_LR.jpg" alt="" width="80" height="110" />
@@ -91,7 +70,6 @@
     <p style="text-align: center;">
       <a href="https://jomaro34.github.io/Jomaro-Cabrela/">&copy; Jomaro Cabrela / José Rodrigues</a>
     </p>
-
 
     <div class="social-footer — REDES SOCIAIS">
       <a href="https://www.facebook.com/jomarocabrela/"><img src="FaceBook.jpg" class="social-icon"></a>
@@ -113,23 +91,12 @@
   <script>
     let palavras = [];
 
-    async function inicializar() {
-        const guardadas = localStorage.getItem('base_rimas_custom');
-        if (guardadas) {
-            palavras = JSON.parse(guardadas);
+    function inicializar() {
+        if (typeof base_palavras !== 'undefined') {
+            palavras = base_palavras;
         } else {
-            // Verifica se a variável base_palavras foi carregada via rimas.js
-            if (typeof base_palavras !== 'undefined') {
-                palavras = base_palavras;
-            } else {
-                // Caso de segurança se o ficheiro falhar
-                palavras = ["acção", "direcção", "facto", "contacto", "óptimo", "espectro", "recepção"];
-            }
+            palavras = ["acção", "direcção", "facto", "contacto", "óptimo", "espectro", "recepção"];
         }
-    }
-
-    function salvarBase() {
-        localStorage.setItem('base_rimas_custom', JSON.stringify(palavras));
     }
 
     function procurarRimas() {
@@ -152,57 +119,10 @@
         }
     }
 
-    function adicionarPalavras() {
-        const input = document.getElementById("novasPalavras").value;
-        if (!input.trim()) return;
-        const lista = input.split(",");
-        let count = 0;
-        lista.forEach(p => {
-            const pal = p.trim();
-            if (pal && !palavras.some(ex => ex.toLowerCase() === pal.toLowerCase())) {
-                palavras.push(pal);
-                count++;
-            }
-        });
-        if (count > 0) { salvarBase(); alert(count + " palavras adicionadas!"); location.reload(); }
-    }
-
-    function exportarJSON() {
-        const ordenadas = [...palavras].sort((a, b) => a.localeCompare(b, 'pt-PT'));
-        const blob = new Blob([JSON.stringify(ordenadas, null, 4)], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'rimas_backup.json';
-        a.click();
-    }
-
-    function importarJSON() {
-        const file = document.getElementById('importFile').files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const importadas = JSON.parse(e.target.result);
-                if (Array.isArray(importadas)) {
-                    palavras = Array.from(new Set([...palavras, ...importadas]));
-                    salvarBase();
-                    alert("Base actualizada!");
-                    location.reload();
-                }
-            } catch (err) { alert("Erro no ficheiro."); }
-        };
-        reader.readAsText(file);
-    }
-
-    function limparBase() {
-        if (confirm("Deseja apagar as alterações locais e recarregar a base original?")) {
-            localStorage.removeItem('base_rimas_custom');
-            location.reload();
-        }
-    }
-
     inicializar();
   </script>
+</body>
+</html>
+
 </body>
 </html>
