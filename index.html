@@ -3,7 +3,7 @@
 <head>
 
   <script src="https://cdn.counter.dev/script.js" data-id="e7a29e89-effa-49c1-8723-d4f954930e9a" data-utcoffset="0"></script>
-  
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dicionário de Rimas</title>
@@ -45,24 +45,239 @@
       <img src="Dicinario_rimas.png" alt="Dicionário de Rimas" class="logo" style="margin-top:10px;" />
     </div>
 
-    <div id="rimador-container">
-      <h2>Procura de Rimas</h2>
 
-      <label for="palavra">Escreva a palavra para procurar rima:</label>
-      <input type="text" id="palavra" placeholder="Ex: acção" onkeyup="if(event.keyCode===13) procurarRimas()">
 
-      <label for="tamanhoSufixo">Tamanho da terminação (sufixo):</label>
-      <select id="tamanhoSufixo">
+<div class="main-wrapper">
+  <div id="rimador-container">
+    <h2>Dicionário de Rimas de Precisão</h2>
+
+    <div class="input-group">
+      <input type="text" id="palavra" placeholder="Escreva uma palavra..." onkeyup="if(event.keyCode===13) executarProcura()">
+    </div>
+
+    <div class="opcoes-filtro">
+      <label title="Mesmos sons desde a vogal tónica">
+        <input type="radio" name="precisao" value="perfeita" checked onchange="toggleTerminacao()"> Rima Perfeita
+      </label>
+      <label title="Só as vogais coincidem desde a tónica, preservando nasalidade">
+        <input type="radio" name="precisao" value="assonante" onchange="toggleTerminacao()"> Assonante (Vogais)
+      </label>
+      <label title="Inclui a consoante antes da tónica — rima mais exigente">
+        <input type="radio" name="precisao" value="rica" onchange="toggleTerminacao()"> Rica / Preciosa
+      </label>
+      <label title="Apenas terminação ortográfica">
+        <input type="radio" name="precisao" value="terminacao" onchange="toggleTerminacao()"> Por Terminação
+      </label>
+    </div>
+
+    <div id="bloco-terminacao" class="terminacao-opcoes">
+      <label for="numLetras">Comparar as últimas</label>
+      <select id="numLetras">
         <option value="2">2 letras</option>
-        <option value="3" selected>3 letras</option>
+        <option value="3">3 letras</option>
         <option value="4">4 letras</option>
         <option value="5">5 letras</option>
       </select>
-
-      <button onclick="procurarRimas()">Procurar Rimas</button>
-
-      <div id="resultadoRimas">As rimas aparecerão aqui...</div>
+      <span>da palavra</span>
     </div>
+
+    <button onclick="executarProcura()">Procurar Rimas</button>
+
+    <div id="resultadoRimas">Aguardando pesquisa...</div>
+  </div>
+</div>
+
+<script>
+function toggleTerminacao() {
+  const modo = document.querySelector('input[name="precisao"]:checked').value;
+  document.getElementById("bloco-terminacao").style.display = (modo === "terminacao") ? "flex" : "none";
+}
+
+const VOGAIS_AC  = "áàâãéèêíóòôõúü";
+const VOGAIS_SIM = "aeiouáàâãéèêíóòôõúü";
+const eVogal = c => c && VOGAIS_SIM.includes(c.toLowerCase());
+
+function semAcento(s) {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+function limpar(s) {
+  return semAcento(s).toLowerCase().replace(/[^a-z]/g, "");
+}
+
+// Normalização fonética do português europeu
+function normFon(s) {
+  return limpar(s)
+    .replace(/nh/g, "ɲ")
+    .replace(/lh/g, "ʎ")
+    .replace(/ch|x/g, "ʃ")
+    .replace(/ss|c(?=[ei])|ç/g, "s")
+    .replace(/rr/g, "R")
+    .replace(/z(?=[^aeiou]|$)/g, "s")
+    .replace(/d(?=[^aeiou]|$)/g, "t")
+    .replace(/b/g, "v")
+    .replace(/(?<=[aeiou])s(?=[aeiou])/g, "z")
+    .replace(/(?<=[aeiou])s(?=[^aeiou]|$)/g, "ʃ")
+    .replace(/g(?=[ei])/g, "ʒ")
+    .replace(/j/g, "ʒ");
+}
+
+/**
+ * Normaliza vogais preservando nasalidade mas igualando timbre.
+ * Usado na rima assonante:
+ *   ã → N  (nasal aberta)
+ *   õ → Õ  (nasal fechada posterior)
+ *   ẽ → Ẽ  (nasal fechada anterior)
+ *   â,à,á,a → a  (oral aberta)
+ *   ê,é,è,e → e  (oral anterior)
+ *   î,í,ì,i → i
+ *   ô,ó,ò,o → o
+ *   û,ú,ù,u → u
+ */
+function normVogalAssonante(c) {
+  const lc = c.toLowerCase();
+  if ("ãà".includes(lc)) return "N";   // nasal/aberta — ã e à são distintos mas na assonante agrupamos nasais
+  if (lc === "ã")        return "N";
+  if (lc === "õ")        return "Õ";
+  if (lc === "ê" || lc === "é" || lc === "è" || lc === "e") return "e";
+  if (lc === "â" || lc === "á" || lc === "à" || lc === "a") return "a";
+  if (lc === "ã")        return "N";
+  if (lc === "î" || lc === "í" || lc === "ì" || lc === "i") return "i";
+  if (lc === "ô" || lc === "ó" || lc === "ò" || lc === "o") return "o";
+  if (lc === "û" || lc === "ú" || lc === "ù" || lc === "u") return "u";
+  return lc;
+}
+
+// Mapa explícito para garantir cobertura total
+const MAPA_VOGAL = {
+  a:"a", á:"a", à:"a", â:"a", ã:"N",
+  e:"e", é:"e", è:"e", ê:"e",
+  i:"i", í:"i", ì:"i", î:"i",
+  o:"o", ó:"o", ò:"o", ô:"o", õ:"Õ",
+  u:"u", ú:"u", ù:"u", û:"u", ü:"u"
+};
+
+function vogalNorm(c) {
+  return MAPA_VOGAL[c.toLowerCase()] || c.toLowerCase();
+}
+
+/**
+ * Devolve o índice da vogal tónica.
+ * 1. Acento gráfico explícito → essa vogal é a tónica.
+ * 2. Sem acento → regras ortográficas do português.
+ */
+function posicaoTonica(p) {
+  const s = p.toLowerCase();
+
+  // 1. Percorre da esquerda; a primeira vogal acentuada é a tónica
+  for (let i = 0; i < s.length; i++) {
+    if (VOGAIS_AC.includes(s[i])) return i;
+  }
+
+  // 2. Regras ortográficas sem acento gráfico
+  const fim = semAcento(s);
+
+  // Oxítonas: terminam em -r, -l, -z, -im, -um, -ão, -ã, -ões, consoante+s
+  if (/[rlz]$/.test(fim) ||
+      /(?<![aeiou])s$/.test(fim) ||
+      /im$/.test(fim) ||
+      /um$/.test(fim) ||
+      /ão$/.test(fim) ||
+      /ã$/.test(fim)  ||
+      /ões$/.test(fim)) {
+    for (let i = s.length - 1; i >= 0; i--) {
+      if (eVogal(s[i])) return i;
+    }
+  }
+
+  // Paroxítonas: penúltima vogal
+  let v = 0;
+  for (let i = s.length - 1; i >= 0; i--) {
+    if (eVogal(s[i])) {
+      v++;
+      if (v === 2) return i;
+    }
+  }
+
+  // Fallback: última vogal
+  for (let i = s.length - 1; i >= 0; i--) {
+    if (eVogal(s[i])) return i;
+  }
+  return 0;
+}
+
+function assinaturaRima(palavra, modo, nLetras) {
+  const p = palavra.toLowerCase().trim();
+
+  if (modo === "terminacao") return p.slice(-nLetras);
+
+  const pos = posicaoTonica(p);
+  const desde = p.substring(pos);
+
+  if (modo === "assonante") {
+    // Extrai apenas as vogais desde a tónica, preservando nasalidade
+    return desde.split("").filter(eVogal).map(vogalNorm).join("");
+  }
+
+  if (modo === "rica") {
+    const conAntes = (pos > 0 && !eVogal(p[pos - 1])) ? limpar(p[pos - 1]) : "";
+    return conAntes + normFon(desde);
+  }
+
+  // Perfeita: normalização fonética desde a tónica
+  return normFon(desde);
+}
+
+function executarProcura() {
+  const input = document.getElementById("palavra").value.trim();
+  const div   = document.getElementById("resultadoRimas");
+  const modo  = document.querySelector('input[name="precisao"]:checked').value;
+  const nLetras = parseInt(document.getElementById("numLetras").value) || 3;
+
+  if (typeof base_palavras === 'undefined') {
+    div.innerHTML = "<span style='color:red'>Erro: Base de dados (rimas.js) não encontrada.</span>";
+    return;
+  }
+  if (input.length < 2) {
+    div.innerHTML = "Introduza uma palavra maior.";
+    return;
+  }
+
+  const sig = assinaturaRima(input, modo, nLetras);
+
+  const resultados = base_palavras.filter(pal => {
+    if (pal.toLowerCase() === input.toLowerCase() || pal.length < 2) return false;
+    return assinaturaRima(pal, modo, nLetras) === sig;
+  });
+
+  if (resultados.length === 0) {
+    div.innerHTML = `Não foram encontradas rimas para <b>${input}</b>.`;
+    return;
+  }
+
+  const sorted = resultados.sort((a, b) => a.localeCompare(b, "pt"));
+  const total  = sorted.length;
+
+  let badge = "";
+  if (modo === "terminacao")     badge = `<span class='badge'>-${input.slice(-nLetras)}</span>`;
+  else if (modo === "rica")      badge = `<span class='badge'>Rica /${sig}/</span>`;
+  else if (modo === "assonante") badge = `<span class='badge'>Vogais: ${sig}</span>`;
+  else                           badge = `<span class='badge'>/${sig}/</span>`;
+
+  let html = `<div class='stats'><b>${total}</b> rimas para "<b>${input}</b>"${badge}</div>`;
+  sorted.forEach(p => {
+    html += `<span class='palavra' onclick="document.getElementById('palavra').value='${p}';executarProcura()">${p}</span>`;
+  });
+  html += `<div class='hint'>Clique numa palavra para pesquisar as suas rimas.</div>`;
+  div.innerHTML = html;
+}
+</script>
+
+
+
+
+
+
+
 
     <!-- Foto do autor e respetivos links -->
     <p style="text-align: center;">
