@@ -1,132 +1,277 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-
-  <script src="https://cdn.counter.dev/script.js" data-id="e7a29e89-effa-49c1-8723-d4f954930e9a" data-utcoffset="0"></script>
-  
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dicionário de Rimas</title>
-  <link rel="icon" type="image/png" href="favicon.png?v=2" sizes="32x32">
+  <title>Dicionário de Rimas Profissional</title>
   <style>
-    body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffffff; display: flex; justify-content: center; }
-    .main-wrapper { width: 100%; max-width: 800px; padding: 15px; box-sizing: border-box; text-align: center; }
-    .logo-container { display: flex; flex-direction: column; align-items: center; margin-top: 12px; margin-bottom: 25px; }
-    .logo { max-width: 100%; height: auto; }
+    body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: #fff; display: flex; justify-content: center; }
+    .main-wrapper { width: 100%; max-width: 850px; padding: 20px; text-align: center; }
 
-    #rimador-container { background: #f9f9f9; padding: 25px; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px; text-align: left; }
-    h2, h3 { color: #2c3e50; margin-bottom: 15px; text-align: center; }
-    label { font-weight: bold; display: block; margin-top: 15px; color: #555; }
+    /* IMAGEM DE CABEÇALHO */
+    .header-img { display: block; margin: 0 auto 20px auto; max-width: 100%; height: auto; }
 
-    input, select, textarea, button { margin: 10px 0; padding: 14px; width: 100%; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-    button { background-color: #3498db; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
-    button:hover { background-color: #2980b9; }
+    #rimador-container { background: #f9f9f9; padding: 25px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: left; }
+    h2 { color: #2c3e50; text-align: center; margin-bottom: 20px; }
 
-    #resultadoRimas { margin-top: 20px; padding: 15px; background: #fff; border-left: 5px solid #3498db; min-height: 40px; word-wrap: break-word; }
+    .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+    input[type=text] { flex: 1; padding: 12px; border: 2px solid #3498db; border-radius: 6px; font-size: 16px; }
 
-    .bio-section { margin-top: 40px; margin-bottom: 20px; text-align: center; }
-    .bio-photo { width: 120px; height: auto; border-radius: 50%; margin-bottom: 10px; border: 2px solid #eee; }
-    .bio-link { text-decoration: none; color: #333; font-weight: bold; display: block; margin-top: 5px; }
-    .social-footer { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 30px; }
-    .social-icon { width: 32px; height: 32px; }
-    .footer-note { font-size: 0.9em; color: #777; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; font-style: italic; text-align: center; }
+    .terminacao-opcoes { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 10px 14px; background: #eaf4fb; border: 1px solid #b0d4ed; border-radius: 8px; font-size: 0.9em; color: #2c3e50; }
+    .terminacao-opcoes label { font-weight: 500; }
+    .terminacao-opcoes select { padding: 6px 10px; border: 1px solid #3498db; border-radius: 6px; background: white; cursor: pointer; font-size: 0.9em; }
+    #bloco-terminacao { display: none; }
 
-    @media (max-width: 600px) { .main-wrapper { padding: 10px; } #rimador-container { padding: 15px; } }
+    button { width: 100%; padding: 14px; background: #3498db; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    button:hover { background: #2980b9; }
+
+    .opcoes-filtro { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
+    .opcoes-filtro label { cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid #3498db; border-radius: 20px; font-size: 0.9em; transition: 0.15s; }
+    .opcoes-filtro label:has(input:checked) { background: #3498db; color: white; }
+    .opcoes-filtro input[type=radio] { accent-color: white; }
+
+    #resultadoRimas { margin-top: 25px; line-height: 1.8; border-top: 2px solid #3498db; padding-top: 15px; min-height: 100px; }
+    .stats { background: #fdfdfd; padding: 10px; border-radius: 4px; font-size: 0.9em; margin-bottom: 15px; border: 1px solid #eee; }
+    .badge { background: #3498db; color: white; padding: 2px 10px; border-radius: 10px; font-size: 0.8em; margin-left: 6px; }
+    .palavra { display: inline-block; margin: 3px 4px; padding: 3px 10px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.1s; font-size: 0.95em; }
+    .palavra:hover { background: #eaf4fb; }
+    .hint { font-size: 0.8em; color: #999; margin-top: 10px; }
+
+    /* RODAPÉ */
+    .site-footer { margin-top: 40px; padding: 30px 20px 20px; text-align: center; border-top: 2px solid #e0e0e0; }
+    .site-footer p { margin: 6px 0; font-size: 0.9em; color: #555; }
+    .site-footer a { color: #2c3e50; text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; }
+    .site-footer img[width="80"] { border-radius: 4px; display: block; margin: 0 auto 8px auto; }
+
+    .social-footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 16px 0 10px; }
+    .social-icon { width: 36px; height: 36px; object-fit: cover; border-radius: 6px; transition: opacity 0.2s, transform 0.2s; }
+    .social-icon:hover { opacity: 0.8; transform: scale(1.1); }
+
+    .footer-note { font-size: 0.8em; color: #999; margin-top: 10px; font-style: italic; }
   </style>
-
-  <!-- Carregamento directo da base de dados via ficheiro JS -->
   <script src="rimas.js"></script>
 </head>
 <body>
 
-  <div class="main-wrapper">
-    <div class="logo-container">
-      <img src="topo_site.jpg" alt="" class="logo" />
-      <img src="Dicinario_rimas.png" alt="Dicionário de Rimas" class="logo" style="margin-top:10px;" />
+<div class="main-wrapper">
+
+  <!-- IMAGEM DE CABEÇALHO -->
+  <img src="Dicinario_rimas.png" alt="Dicionário de Rimas" class="header-img" />
+
+  <div id="rimador-container">
+    <h2>Dicionário de Rimas de Precisão</h2>
+
+    <div class="input-group">
+      <input type="text" id="palavra" placeholder="Escreva uma palavra..." onkeyup="if(event.keyCode===13) executarProcura()">
     </div>
 
-    <div id="rimador-container">
-      <h2>Procura de Rimas</h2>
+    <div class="opcoes-filtro">
+      <label title="Mesmos sons desde a vogal tónica">
+        <input type="radio" name="precisao" value="perfeita" checked onchange="toggleTerminacao()"> Rima Perfeita
+      </label>
+      <label title="Só as vogais coincidem desde a tónica, preservando nasalidade">
+        <input type="radio" name="precisao" value="assonante" onchange="toggleTerminacao()"> Assonante (Vogais)
+      </label>
+      <label title="Inclui a consoante antes da tónica — rima mais exigente">
+        <input type="radio" name="precisao" value="rica" onchange="toggleTerminacao()"> Rica / Preciosa
+      </label>
+      <label title="Apenas terminação ortográfica">
+        <input type="radio" name="precisao" value="terminacao" onchange="toggleTerminacao()"> Por Terminação
+      </label>
+    </div>
 
-      <label for="palavra">Escreva a palavra para procurar rima:</label>
-      <input type="text" id="palavra" placeholder="Ex: acção" onkeyup="if(event.keyCode===13) procurarRimas()">
-
-      <label for="tamanhoSufixo">Tamanho da terminação (sufixo):</label>
-      <select id="tamanhoSufixo">
+    <div id="bloco-terminacao" class="terminacao-opcoes">
+      <label for="numLetras">Comparar as últimas</label>
+      <select id="numLetras">
         <option value="2">2 letras</option>
-        <option value="3" selected>3 letras</option>
+        <option value="3">3 letras</option>
         <option value="4">4 letras</option>
         <option value="5">5 letras</option>
       </select>
-
-      <button onclick="procurarRimas()">Procurar Rimas</button>
-
-      <div id="resultadoRimas">As rimas aparecerão aqui...</div>
+      <span>da palavra</span>
     </div>
 
-    <!-- Foto do autor e respetivos links -->
-    <p style="text-align: center;">
+    <button onclick="executarProcura()">Procurar Rimas</button>
+
+    <div id="resultadoRimas">Aguardando pesquisa...</div>
+  </div>
+
+  <!-- RODAPÉ AUTOR + REDES SOCIAIS -->
+  <footer class="site-footer">
+    <!-- AUTOR -->
+    <p>
       <a href="https://jomaro34.github.io/Jomaro-Cabrela-Autobiografia/">
-        <img src="JomaroCabrelaPB_LR.jpg" alt="" width="80" height="110" />
+        <img src="JomaroCabrelaPB_LR.jpg" width="80" height="110" alt="Jomaro Cabrela" />
       </a>
     </p>
-    <p style="text-align: center;">
+    <p>
       <a href="https://jomaro34.github.io/Jomaro-Cabrela/">&copy; Jomaro Cabrela / José Rodrigues</a>
     </p>
 
-    <div class="social-footer — REDES SOCIAIS">
-      <a href="https://www.facebook.com/jomarocabrela/"><img src="FaceBook.jpg" class="social-icon"></a>
-      <a href="https://www.facebook.com/jomarocabrelaarte/"><img src="FaceBook.jpg" class="social-icon"></a>
-      <a href="https://www.instagram.com/jomarocabrela/"><img src="Instagram.jpg" class="social-icon"></a>
-      <a href="https://pt.pinterest.com/jcabrela/"><img src="Pinterest.jpg" class="social-icon"></a>
-      <a href="https://www.youtube.com/@jomarocabrela"><img src="OriginalSongsRS.jpg" class="social-icon"></a>
-      <a href="https://x.com/JCabrela"><img src="X.jpg" class="social-icon"></a>
-      <a href="https://jomaro-cabrela-art.blogspot.com/"><img src="blogspot.jpg" class="social-icon"></a>
-      <a href="https://jomaro34.github.io/Dicionario_Rimas/"><img src="Rimas.jpg" class="social-icon"></a>
-      <a href="https://jomaro34.github.io/Colectanea-Proverbios-Ditados-Expressoes-Populares/"><img src="ColectaneaProverbios.jpg" class="social-icon"></a>
-      <a href="mailto:jomarocabrela@gmail.com"><img src="Mail_Branco.jpg" class="social-icon"></a>
+    <!-- SOCIAL -->
+    <div class="social-footer">
+      <a href="https://www.facebook.com/jomarocabrela/"><img src="FaceBook.jpg" class="social-icon" alt="Facebook"></a>
+      <a href="https://www.facebook.com/jomarocabrelaarte/"><img src="FaceBook.jpg" class="social-icon" alt="Facebook Arte"></a>
+      <a href="https://www.instagram.com/jomarocabrela/"><img src="Instagram.jpg" class="social-icon" alt="Instagram"></a>
+      <a href="https://pt.pinterest.com/jcabrela/"><img src="Pinterest.jpg" class="social-icon" alt="Pinterest"></a>
+      <a href="https://www.youtube.com/@jomarocabrela"><img src="OriginalSongsRS.jpg" class="social-icon" alt="YouTube"></a>
+      <a href="https://x.com/JCabrela"><img src="X.jpg" class="social-icon" alt="X / Twitter"></a>
+      <a href="https://jomaro-cabrela-art.blogspot.com/"><img src="blogspot.jpg" class="social-icon" alt="Blogspot"></a>
+      <a href="https://jomaro34.github.io/Dicionario_Rimas/"><img src="Rimas.jpg" class="social-icon" alt="Dicionário de Rimas"></a>
+      <a href="https://jomaro34.github.io/Colectanea-Proverbios-Ditados-Expressoes-Populares/"><img src="ColectaneaProverbios.jpg" class="social-icon" alt="Colectânea de Provérbios"></a>
+      <a href="mailto:jomarocabrela@gmail.com"><img src="Mail_Branco.jpg" class="social-icon" alt="Email"></a>
     </div>
 
     <div class="footer-note">
-      Todos os textos apresentados estão escritos em português europeu, respeitando a grafia anterior ao Acordo Ortográfico de 1990.
+      Todos os textos apresentados estão escritos em português europeu.
     </div>
-  </div>
+  </footer>
 
-  <script>
-    let palavras = [];
+</div>
 
-    function inicializar() {
-        if (typeof base_palavras !== 'undefined') {
-            palavras = base_palavras;
-        } else {
-            palavras = ["acção", "direcção", "facto", "contacto", "óptimo", "espectro", "recepção"];
-        }
+<script>
+function toggleTerminacao() {
+  const modo = document.querySelector('input[name="precisao"]:checked').value;
+  document.getElementById("bloco-terminacao").style.display = (modo === "terminacao") ? "flex" : "none";
+}
+
+const VOGAIS_AC  = "áàâãéèêíóòôõúü";
+const VOGAIS_SIM = "aeiouáàâãéèêíóòôõúü";
+const eVogal = c => c && VOGAIS_SIM.includes(c.toLowerCase());
+
+function semAcento(s) {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+function limpar(s) {
+  return semAcento(s).toLowerCase().replace(/[^a-z]/g, "");
+}
+
+function normFon(s) {
+  return limpar(s)
+    .replace(/nh/g, "ɲ")
+    .replace(/lh/g, "ʎ")
+    .replace(/ch|x/g, "ʃ")
+    .replace(/ss|c(?=[ei])|ç/g, "s")
+    .replace(/rr/g, "R")
+    .replace(/z(?=[^aeiou]|$)/g, "s")
+    .replace(/d(?=[^aeiou]|$)/g, "t")
+    .replace(/b/g, "v")
+    .replace(/(?<=[aeiou])s(?=[aeiou])/g, "z")
+    .replace(/(?<=[aeiou])s(?=[^aeiou]|$)/g, "ʃ")
+    .replace(/g(?=[ei])/g, "ʒ")
+    .replace(/j/g, "ʒ");
+}
+
+const MAPA_VOGAL = {
+  a:"a", á:"a", à:"a", â:"a", ã:"N",
+  e:"e", é:"e", è:"e", ê:"e",
+  i:"i", í:"i", ì:"i", î:"i",
+  o:"o", ó:"o", ò:"o", ô:"o", õ:"Õ",
+  u:"u", ú:"u", ù:"u", û:"u", ü:"u"
+};
+
+function vogalNorm(c) {
+  return MAPA_VOGAL[c.toLowerCase()] || c.toLowerCase();
+}
+
+function posicaoTonica(p) {
+  const s = p.toLowerCase();
+
+  for (let i = 0; i < s.length; i++) {
+    if (VOGAIS_AC.includes(s[i])) return i;
+  }
+
+  const fim = semAcento(s);
+
+  if (/[rlz]$/.test(fim) ||
+      /(?<![aeiou])s$/.test(fim) ||
+      /im$/.test(fim) ||
+      /um$/.test(fim) ||
+      /ão$/.test(fim) ||
+      /ã$/.test(fim)  ||
+      /ões$/.test(fim)) {
+    for (let i = s.length - 1; i >= 0; i--) {
+      if (eVogal(s[i])) return i;
     }
+  }
 
-    function procurarRimas() {
-        const palavraInput = document.getElementById("palavra").value.toLowerCase().trim();
-        const tamanho = parseInt(document.getElementById("tamanhoSufixo").value);
-        const div = document.getElementById("resultadoRimas");
-
-        if (palavraInput.length < tamanho) {
-            div.innerHTML = "A palavra é demasiado curta para esse sufixo.";
-            return;
-        }
-
-        const sufixo = palavraInput.slice(-tamanho);
-        const rimas = palavras.filter(p => p.toLowerCase().endsWith(sufixo) && p.toLowerCase() !== palavraInput);
-
-        if (rimas.length > 0) {
-            div.innerHTML = "<strong>Rimas encontradas (" + rimas.length + ") com '" + sufixo + "':</strong><br>" + rimas.sort().join(", ");
-        } else {
-            div.innerHTML = "Não foram encontradas rimas para a terminação '" + sufixo + "'.";
-        }
+  let v = 0;
+  for (let i = s.length - 1; i >= 0; i--) {
+    if (eVogal(s[i])) {
+      v++;
+      if (v === 2) return i;
     }
+  }
 
-    inicializar();
-  </script>
-</body>
-</html>
+  for (let i = s.length - 1; i >= 0; i--) {
+    if (eVogal(s[i])) return i;
+  }
+  return 0;
+}
 
+function assinaturaRima(palavra, modo, nLetras) {
+  const p = palavra.toLowerCase().trim();
+
+  if (modo === "terminacao") return p.slice(-nLetras);
+
+  const pos = posicaoTonica(p);
+  const desde = p.substring(pos);
+
+  if (modo === "assonante") {
+    return desde.split("").filter(eVogal).map(vogalNorm).join("");
+  }
+
+  if (modo === "rica") {
+    const conAntes = (pos > 0 && !eVogal(p[pos - 1])) ? limpar(p[pos - 1]) : "";
+    return conAntes + normFon(desde);
+  }
+
+  return normFon(desde);
+}
+
+function executarProcura() {
+  const input = document.getElementById("palavra").value.trim();
+  const div   = document.getElementById("resultadoRimas");
+  const modo  = document.querySelector('input[name="precisao"]:checked').value;
+  const nLetras = parseInt(document.getElementById("numLetras").value) || 3;
+
+  if (typeof base_palavras === 'undefined') {
+    div.innerHTML = "<span style='color:red'>Erro: Base de dados (rimas.js) não encontrada.</span>";
+    return;
+  }
+  if (input.length < 2) {
+    div.innerHTML = "Introduza uma palavra maior.";
+    return;
+  }
+
+  const sig = assinaturaRima(input, modo, nLetras);
+
+  const resultados = base_palavras.filter(pal => {
+    if (pal.toLowerCase() === input.toLowerCase() || pal.length < 2) return false;
+    return assinaturaRima(pal, modo, nLetras) === sig;
+  });
+
+  if (resultados.length === 0) {
+    div.innerHTML = `Não foram encontradas rimas para <b>${input}</b>.`;
+    return;
+  }
+
+  const sorted = resultados.sort((a, b) => a.localeCompare(b, "pt"));
+  const total  = sorted.length;
+
+  let badge = "";
+  if (modo === "terminacao")     badge = `<span class='badge'>-${input.slice(-nLetras)}</span>`;
+  else if (modo === "rica")      badge = `<span class='badge'>Rica /${sig}/</span>`;
+  else if (modo === "assonante") badge = `<span class='badge'>Vogais: ${sig}</span>`;
+  else                           badge = `<span class='badge'>/${sig}/</span>`;
+
+  let html = `<div class='stats'><b>${total}</b> rimas para "<b>${input}</b>"${badge}</div>`;
+  sorted.forEach(p => {
+    html += `<span class='palavra' onclick="document.getElementById('palavra').value='${p}';executarProcura()">${p}</span>`;
+  });
+  html += `<div class='hint'>Clique numa palavra para pesquisar as suas rimas.</div>`;
+  div.innerHTML = html;
+}
+</script>
 </body>
 </html>
