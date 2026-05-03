@@ -2,52 +2,283 @@
 <html lang="pt-PT">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dicionário de Rimas Profissional</title>
   <style>
-    body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: #fff; display: flex; justify-content: center; }
-    .main-wrapper { width: 100%; max-width: 850px; padding: 20px; text-align: center; }
+    *, *::before, *::after { box-sizing: border-box; }
 
-    /* IMAGEM DE CABEÇALHO */
-    .header-img { display: block; margin: 0 auto 20px auto; max-width: 100%; height: auto; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      font-size: 16px;
+    }
 
-    #rimador-container { background: #f9f9f9; padding: 25px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: left; }
-    h2 { color: #2c3e50; text-align: center; margin-bottom: 20px; }
+    .main-wrapper {
+      width: 100%;
+      max-width: 850px;
+      padding: 12px;
+      text-align: center;
+    }
 
-    .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
-    input[type=text] { flex: 1; padding: 12px; border: 2px solid #3498db; border-radius: 6px; font-size: 16px; }
+    .header-img {
+      display: block;
+      margin: 0 auto 16px auto;
+      max-width: 100%;
+      height: auto;
+    }
 
-    .terminacao-opcoes { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 10px 14px; background: #eaf4fb; border: 1px solid #b0d4ed; border-radius: 8px; font-size: 0.9em; color: #2c3e50; }
-    .terminacao-opcoes label { font-weight: 500; }
-    .terminacao-opcoes select { padding: 6px 10px; border: 1px solid #3498db; border-radius: 6px; background: white; cursor: pointer; font-size: 0.9em; }
-    #bloco-terminacao { display: none; }
+    #rimador-container {
+      background: #f9f9f9;
+      padding: 20px 16px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      text-align: left;
+    }
 
-    button { width: 100%; padding: 14px; background: #3498db; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    button:hover { background: #2980b9; }
+    h2 {
+      color: #2c3e50;
+      text-align: center;
+      margin: 0 0 18px;
+      font-size: clamp(17px, 4vw, 22px);
+    }
 
-    .opcoes-filtro { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
-    .opcoes-filtro label { cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid #3498db; border-radius: 20px; font-size: 0.9em; transition: 0.15s; }
-    .opcoes-filtro label:has(input:checked) { background: #3498db; color: white; }
-    .opcoes-filtro input[type=radio] { accent-color: white; }
+    .input-group {
+      display: flex;
+      gap: 0;
+      margin-bottom: 14px;
+    }
 
-    #resultadoRimas { margin-top: 25px; line-height: 1.8; border-top: 2px solid #3498db; padding-top: 15px; min-height: 100px; }
-    .stats { background: #fdfdfd; padding: 10px; border-radius: 4px; font-size: 0.9em; margin-bottom: 15px; border: 1px solid #eee; }
-    .badge { background: #3498db; color: white; padding: 2px 10px; border-radius: 10px; font-size: 0.8em; margin-left: 6px; }
-    .palavra { display: inline-block; margin: 3px 4px; padding: 3px 10px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.1s; font-size: 0.95em; }
-    .palavra:hover { background: #eaf4fb; }
-    .hint { font-size: 0.8em; color: #999; margin-top: 10px; }
+    input[type=text] {
+      flex: 1;
+      padding: 14px 12px;
+      border: 2px solid #3498db;
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+      font-size: 18px;
+      outline: none;
+      min-width: 0;
+      -webkit-appearance: none;
+    }
+
+    .btn-pesquisar {
+      padding: 14px 18px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 0 8px 8px 0;
+      font-size: 22px;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .btn-pesquisar:hover { background: #2980b9; }
+    .btn-pesquisar:active { background: #1f6fa0; }
+
+    .opcoes-filtro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .opcoes-filtro label {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 10px;
+      border: 1.5px solid #3498db;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.3;
+      transition: 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .opcoes-filtro label:has(input:checked) {
+      background: #3498db;
+      color: white;
+    }
+
+    .opcoes-filtro input[type=radio] {
+      accent-color: white;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .terminacao-opcoes {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      background: #eaf4fb;
+      border: 1px solid #b0d4ed;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #2c3e50;
+    }
+
+    .terminacao-opcoes select {
+      padding: 8px 12px;
+      border: 1px solid #3498db;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 15px;
+      -webkit-appearance: none;
+    }
+
+    #resultadoRimas {
+      margin-top: 22px;
+      line-height: 1.8;
+      border-top: 2px solid #3498db;
+      padding-top: 14px;
+      min-height: 80px;
+    }
+
+    .stats {
+      background: #fdfdfd;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 15px;
+      margin-bottom: 14px;
+      border: 1px solid #eee;
+    }
+
+    .badge {
+      background: #3498db;
+      color: white;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin-left: 6px;
+    }
+
+    .palavras-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .palavra {
+      padding: 8px 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.1s;
+      font-size: 15px;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .palavra:hover, .palavra:active { background: #eaf4fb; }
+
+    .hint {
+      font-size: 13px;
+      color: #999;
+      margin-top: 10px;
+    }
 
     /* RODAPÉ */
-    .site-footer { margin-top: 40px; padding: 30px 20px 20px; text-align: center; border-top: 2px solid #e0e0e0; }
-    .site-footer p { margin: 6px 0; font-size: 0.9em; color: #555; }
+    .site-footer {
+      margin-top: 36px;
+      padding: 24px 12px 20px;
+      text-align: center;
+      border-top: 2px solid #e0e0e0;
+    }
+
+    .site-footer p {
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+    }
+
     .site-footer a { color: #2c3e50; text-decoration: none; }
     .site-footer a:hover { text-decoration: underline; }
-    .site-footer img[width="80"] { border-radius: 4px; display: block; margin: 0 auto 8px auto; }
 
-    .social-footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 16px 0 10px; }
-    .social-icon { width: 36px; height: 36px; object-fit: cover; border-radius: 6px; transition: opacity 0.2s, transform 0.2s; }
+    .site-footer img[width="80"] {
+      border-radius: 4px;
+      display: block;
+      margin: 0 auto 8px auto;
+    }
+
+    .social-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 14px 0 10px;
+    }
+
+    .social-icon {
+      width: 44px;
+      height: 44px;
+      object-fit: cover;
+      border-radius: 8px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
     .social-icon:hover { opacity: 0.8; transform: scale(1.1); }
 
-    .footer-note { font-size: 0.8em; color: #999; margin-top: 10px; font-style: italic; }
+    .footer-note {
+      font-size: 12px;
+      color: #999;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    /* Desktop: voltar ao layout original */
+    @media (min-width: 600px) {
+      .main-wrapper { padding: 20px; }
+
+      .input-group { gap: 10px; }
+
+      input[type=text] {
+        border-right: 2px solid #3498db;
+        border-radius: 6px;
+        font-size: 16px;
+      }
+
+      .btn-pesquisar { display: none; }
+
+      .btn-pesquisar-full {
+        display: block !important;
+        width: 100%;
+        padding: 14px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+        margin-top: 4px;
+      }
+      .btn-pesquisar-full:hover { background: #2980b9; }
+
+      .opcoes-filtro {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .opcoes-filtro label {
+        padding: 8px 14px;
+        border-radius: 20px;
+      }
+
+      .palavra { font-size: 0.95em; }
+    }
   </style>
   <script src="rimas.js"></script>
 </head>
@@ -55,14 +286,17 @@
 
 <div class="main-wrapper">
 
-  <!-- IMAGEM DE CABEÇALHO -->
   <img src="Dicinario_rimas.png" alt="Dicionário de Rimas" class="header-img" />
 
   <div id="rimador-container">
     <h2>Dicionário de Rimas de Precisão</h2>
 
     <div class="input-group">
-      <input type="text" id="palavra" placeholder="Escreva uma palavra..." onkeyup="if(event.keyCode===13) executarProcura()">
+      <input type="text" id="palavra" placeholder="Escreva uma palavra..."
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        onkeyup="if(event.keyCode===13) executarProcura()">
+      <!-- Botão integrado no input — só visível em mobile -->
+      <button class="btn-pesquisar" onclick="executarProcura()" aria-label="Procurar">&#128269;</button>
     </div>
 
     <div class="opcoes-filtro">
@@ -91,14 +325,13 @@
       <span>da palavra</span>
     </div>
 
-    <button onclick="executarProcura()">Procurar Rimas</button>
+    <!-- Botão grande — só visível em desktop -->
+    <button class="btn-pesquisar-full" style="display:none" onclick="executarProcura()">Procurar Rimas</button>
 
     <div id="resultadoRimas">Aguardando pesquisa...</div>
   </div>
 
-  <!-- RODAPÉ AUTOR + REDES SOCIAIS -->
   <footer class="site-footer">
-    <!-- AUTOR -->
     <p>
       <a href="https://jomaro34.github.io/Jomaro-Cabrela-Autobiografia/">
         <img src="JomaroCabrelaPB_LR.jpg" width="80" height="110" alt="Jomaro Cabrela" />
@@ -108,7 +341,6 @@
       <a href="https://jomaro34.github.io/Jomaro-Cabrela/">&copy; Jomaro Cabrela / José Rodrigues</a>
     </p>
 
-    <!-- SOCIAL -->
     <div class="social-footer">
       <a href="https://www.facebook.com/jomarocabrela/"><img src="FaceBook.jpg" class="social-icon" alt="Facebook"></a>
       <a href="https://www.facebook.com/jomarocabrelaarte/"><img src="FaceBook.jpg" class="social-icon" alt="Facebook Arte"></a>
@@ -176,33 +408,20 @@ function vogalNorm(c) {
 
 function posicaoTonica(p) {
   const s = p.toLowerCase();
-
   for (let i = 0; i < s.length; i++) {
     if (VOGAIS_AC.includes(s[i])) return i;
   }
-
   const fim = semAcento(s);
-
-  if (/[rlz]$/.test(fim) ||
-      /(?<![aeiou])s$/.test(fim) ||
-      /im$/.test(fim) ||
-      /um$/.test(fim) ||
-      /ão$/.test(fim) ||
-      /ã$/.test(fim)  ||
-      /ões$/.test(fim)) {
+  if (/[rlz]$/.test(fim) || /(?<![aeiou])s$/.test(fim) || /im$/.test(fim) ||
+      /um$/.test(fim) || /ão$/.test(fim) || /ã$/.test(fim) || /ões$/.test(fim)) {
     for (let i = s.length - 1; i >= 0; i--) {
       if (eVogal(s[i])) return i;
     }
   }
-
   let v = 0;
   for (let i = s.length - 1; i >= 0; i--) {
-    if (eVogal(s[i])) {
-      v++;
-      if (v === 2) return i;
-    }
+    if (eVogal(s[i])) { v++; if (v === 2) return i; }
   }
-
   for (let i = s.length - 1; i >= 0; i--) {
     if (eVogal(s[i])) return i;
   }
@@ -211,21 +430,16 @@ function posicaoTonica(p) {
 
 function assinaturaRima(palavra, modo, nLetras) {
   const p = palavra.toLowerCase().trim();
-
   if (modo === "terminacao") return p.slice(-nLetras);
-
   const pos = posicaoTonica(p);
   const desde = p.substring(pos);
-
   if (modo === "assonante") {
     return desde.split("").filter(eVogal).map(vogalNorm).join("");
   }
-
   if (modo === "rica") {
     const conAntes = (pos > 0 && !eVogal(p[pos - 1])) ? limpar(p[pos - 1]) : "";
     return conAntes + normFon(desde);
   }
-
   return normFon(desde);
 }
 
@@ -245,7 +459,6 @@ function executarProcura() {
   }
 
   const sig = assinaturaRima(input, modo, nLetras);
-
   const resultados = base_palavras.filter(pal => {
     if (pal.toLowerCase() === input.toLowerCase() || pal.length < 2) return false;
     return assinaturaRima(pal, modo, nLetras) === sig;
@@ -266,10 +479,12 @@ function executarProcura() {
   else                           badge = `<span class='badge'>/${sig}/</span>`;
 
   let html = `<div class='stats'><b>${total}</b> rimas para "<b>${input}</b>"${badge}</div>`;
+  html += `<div class='palavras-grid'>`;
   sorted.forEach(p => {
     html += `<span class='palavra' onclick="document.getElementById('palavra').value='${p}';executarProcura()">${p}</span>`;
   });
-  html += `<div class='hint'>Clique numa palavra para pesquisar as suas rimas.</div>`;
+  html += `</div>`;
+  html += `<div class='hint'>Toque numa palavra para pesquisar as suas rimas.</div>`;
   div.innerHTML = html;
 }
 </script>
